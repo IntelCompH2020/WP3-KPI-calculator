@@ -1,0 +1,8 @@
+{
+  "functions": [
+      {
+          "function": "ind_caller",
+          "module": "caller.i09_func"
+      }
+  ]
+}
