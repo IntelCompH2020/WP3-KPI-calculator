@@ -1,5 +1,5 @@
 # Update this file:
-#   pre-commit autoupdate
+# pre-commit autoupdate
 repos:
   - hooks:
       - id: commitizen

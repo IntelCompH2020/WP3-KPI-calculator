@@ -1,0 +1,76 @@
+{
+    "metadata":
+      {
+        "label": "PLACEHOLDER",
+        "code": "PLACEHOLDER"
+      },
+    "schema": {
+      "fields": [
+        {
+          "code": "domain",
+          "name": "Domain",
+          "basetype": "keyword"
+        },
+        {
+          "code": "country",
+          "name": "Country",
+          "basetype": "keyword"
+        },
+        {
+          "code": "dg",
+          "name": "Domain & Geographic Coverage",
+          "basetype": "keyword"
+        },
+        {
+          "code": "dgid",
+          "name": "Domain & Geographic Coverage ID",
+          "basetype": "keyword"
+        },
+        {
+          "code": "pv",
+          "name": "primary view",
+          "basetype": "keyword"
+        },
+        {
+          "code": "pvId",
+          "name": "primary view ID",
+          "basetype": "keyword"
+        },
+        {
+          "code": "ind",
+          "name": "Indicator",
+          "basetype": "keyword"
+        },
+        {
+          "code": "indid",
+          "name": "Indicator Id",
+          "basetype": "keyword"
+        },
+        {
+          "code": "sv",
+          "name": "Secondary view",
+          "basetype": "keyword"
+        },
+        {
+          "code": "svid",
+          "name": "Secondary view ID",
+          "basetype": "keyword"
+        },
+        {
+          "code": "key",
+          "name": "Key",
+          "basetype": "PLACEHOLDER"
+        },
+        {
+          "code": "value",
+          "name": "Value",
+          "basetype": "PLACEHOLDER"
+        },
+        {
+          "code": "year",
+          "name": "Year",
+          "basetype": "integer"
+        }
+      ]
+    }
+  }
