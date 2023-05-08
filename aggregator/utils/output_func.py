@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+import requests
 
 script_dir = Path(__file__).resolve().parent.parent
 
@@ -90,29 +91,54 @@ def get_data(dgid, pvid, indid, svid, data):
     return output
 
 
-def produce_results(dgid, pvid, results):
-    # Convert results to desired format
-    output_lake = Path("/media/datalake/stiviewer")
-    output_dir = output_lake.joinpath("output")
-    # output_dir = script_dir.joinpath("output")
-    # print(output_dir)
-    count = 0
+def produce_results(dgid, pvid, results, logging):
+    
+    # Read the configuration from the JSON file
+    with open("utils/pass.json") as file:
+        config = json.load(file)
+
+    # Extract the values from the configuration
+    client_id = config["client_id"]
+    username = config["username"]
+    client_secret = config["client_secret"]
+    password = config["password"]
+
+    # Get the access token using requests
+    url = "https://gateway.opix.ai/auth/realms/default/protocol/openid-connect/token"
+    data = {
+        "client_id": client_id,
+        "grant_type": "password",
+        "client_secret": client_secret,
+        "scope": "openid",
+        "username": username,
+        "password": password,
+    }
+
+    response = requests.post(url, data=data)
+    access_token = response.json()["access_token"]
+
     for indid in results.keys():
         for svid in results[indid].keys():
             data = get_data(dgid, pvid, indid, svid, results[indid][svid])
-            print(data)
 
-            data_file = json.dumps(data, indent=2)
-            count += len(data_file)
-            data_path = output_dir.joinpath(f"{dgid}_{pvid}_{indid}_{svid}_data.json")
-            with open(data_path, "w") as f:
-                f.write(data_file)
-            indicator_schema = get_indicator_schema(
-                dgid, pvid, indid, svid, results[indid][svid]
+            # Call the function to send the data to the API
+
+            # Send the data to the API
+            api_url = (
+                "https://gateway.opix.ai/sti-viewer/api/api/indicator-point/"
+                "664de786-2879-4b65-82c7-df5d0d30be84/bulk-persist"
             )
-            indicator_schema_file = json.dumps(indicator_schema, indent=2)
-            indicator_path = output_dir.joinpath(
-                f"{dgid}_{pvid}_{indid}_{svid}_indicator_schema.json"
-            )
-            with open(indicator_path, "w") as f:
-                f.write(indicator_schema_file)
+            headers = {
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json",
+            }
+            response = requests.post(api_url, headers=headers, json=data)
+
+            # Check if the request was successful
+            if response.status_code == 200:
+                logging.info(f"Data from {indid}_{svid} was sent successfully.")
+            else:
+                logging.error(
+                    f"Error sending data from {indid}_{svid}. "
+                    f"Status code: {response.status_code}"
+                )

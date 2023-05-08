@@ -2,7 +2,16 @@
   "functions": [
       {
           "function": "ind_caller",
-          "module": "caller.i09_func"
+          "module": "caller.i09_func",
+          "template": [
+            {"$match" :
+              {
+                "participant.country": { "$eq": "GR" },
+                "participant.is_eu_member": { "$eq": true },
+                "appln_filing_year": { "$gte": 2000 }
+              }
+            }
+          ]
       }
   ]
 }

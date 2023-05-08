@@ -18,8 +18,6 @@ def send_data_to_api(client_id, username, client_secret, password, directory):
     response = requests.post(url, data=data)
     access_token = response.json()["access_token"]
 
-    print(access_token)
-
     # Loop through the JSON files in the directory and send them to the API
     for filename in os.listdir(directory):
         if filename.endswith("_data.json"):
