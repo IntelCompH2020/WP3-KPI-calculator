@@ -16,12 +16,9 @@ def main(config_file_path):
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s [%(levelname)s] %(message)s",
-        handlers=[
-            logging.StreamHandler(),
-            logging.FileHandler(log_file)
-        ]
+        handlers=[logging.StreamHandler(), logging.FileHandler(log_file)],
     )
-    
+
     # Load configuration file
     with open(config_file_path) as config_file:
         config_data = json.load(config_file)
