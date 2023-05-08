@@ -93,7 +93,8 @@ def get_data(dgid, pvid, indid, svid, data):
 
 def produce_results(dgid, pvid, results, logging):
     # Read the configuration from the JSON file
-    with open("utils/pass.json") as file:
+    
+    with open(script_dir.joinpath("utils/ind_value_datatypes.json")) as file:
         config = json.load(file)
 
     # Extract the values from the configuration

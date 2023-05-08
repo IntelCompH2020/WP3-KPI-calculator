@@ -1,8 +1,11 @@
 import requests
 import json
+from pathlib import Path
+
+script_dir = Path(__file__).resolve().parent.parent
 
 # Read the authorization token from the file
-with open("auth_token.txt") as file:
+with open(script_dir.joinpath("utils/auth_token.txt")) as file:
     auth_token = file.read().strip()
 
 url = "https://gateway.opix.ai/sti-viewer/api/api/indicator/persist/es"
