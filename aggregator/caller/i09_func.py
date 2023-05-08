@@ -48,9 +48,9 @@ def ind_caller(pat, results, extra_aggr_param=[]):
     results["i09"]["sv03"] = uf.secondary_view_per_year(
         pat, "category", i09_aggregation_per_year, extra_aggr_param
     )
-    results["i09"]["sv06"] = uf.inner_secondary_view_per_year(
-        pat, "participant.name", i09_aggregation_per_year, extra_aggr_param
-    )
+    # results["i09"]["sv06"] = uf.inner_secondary_view_per_year(
+    #     pat, "participant.name", i09_aggregation_per_year, extra_aggr_param
+    # )
     results["i09"]["sv07"] = uf.inner_secondary_view_per_year_nace_cpc(
         pat, "nace", i09_aggregation_per_year_nace, extra_aggr_param
     )

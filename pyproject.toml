@@ -10,7 +10,6 @@ python = "^3.8"
 pandas = "^2.0.1"
 pymongo = "^4.3.3"
 requests = "^2.30.0"
-logging = "^0.4.9.6"
 
 
 [tool.poetry.group.dev.dependencies]
