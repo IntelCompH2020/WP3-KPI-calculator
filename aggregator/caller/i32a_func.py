@@ -1,24 +1,25 @@
-from utils import uf
+import pandas as pd
+
+template = [
+    {"$match": {"Patents": {"$exists": True, "$not": {"$size": 0}}}},
+    {
+        "$addFields": {
+            "total_patents": {"$size": "$Patents"},
+        }
+    },
+]
 
 
-def i32_aggregation(field, extra_aggr_param):
-    return extra_aggr_param + [
-        {"$match": {"Patents": {"$elemMatch": {"$exists": True}}}},
-        {"$group": {"_id": field, "count": {"$sum": {"$size": "$Patents"}}}},
-    ]
-
-
-def ind_caller(enco, results):
+def ind_caller(enco, results, extra_aggr_param):
     results["i32a"] = {}
-    results["i32a"]["sv00"] = uf.secondary_view_comp(enco, ["all"], i32_aggregation)
-    results["i32a"]["sv07"] = uf.secondary_view_comp_nace(
-        enco, ["$NACE 2 digits", "$NACE 2 digits label"], i32_aggregation
-    )
-    results["i32a"]["sv07b"] = uf.secondary_view_comp_nace(
-        enco, ["$NACE 4 digits", "$NACE 4 digits label"], i32_aggregation
-    )
-    results["i32a"]["sv09"] = uf.secondary_view_comp(
-        enco, ["$Country ISO code"], i32_aggregation
-    )
+
+    # # Find documents and convert to dataframe
+    documents = enco.aggregate(extra_aggr_param + template)
+    df = pd.DataFrame(list(documents))
+
+    # Sort and select the top 10 rows based on TurnoverNumeric column
+    df = df.sort_values(by=["total_patents"], ascending=False).reset_index(drop=True)
+    df = df.head(100)
+    results["i32a"]["sv00"] = {"total_patents": int(df["total_patents"].sum())}
 
     return results

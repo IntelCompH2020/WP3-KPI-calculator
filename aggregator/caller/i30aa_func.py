@@ -1,42 +1,26 @@
-from utils import uf
+import pandas as pd
 
-
-def i30aa_aggregation(field, extra_aggr_param):
-    return extra_aggr_param + [{"$group": {"_id": "$" + field, "count": {"$sum": 1}}}]
-
-
-def i30aa_aggregation_nace2(field, extra_aggr_param):
-    return extra_aggr_param + [
-        {
-            "$group": {
-                "_id": ["$NACE 2 digits", "$NACE 2 digits label"],
-                "count": {"$sum": 1},
-            }
+template = [
+    {
+        "$addFields": {
+            "NACE2dl": {"$concat": ["$NACE 2 digits", ":", "$NACE 2 digits label"]},  #
+            "NACE4dl": {"$concat": ["$NACE 4 digits", ":", "$NACE 4 digits label"]},  #
         }
-    ]
+    }
+]
 
 
-def i30aa_aggregation_nace4(field, extra_aggr_param):
-    return extra_aggr_param + [
-        {
-            "$group": {
-                "_id": ["$NACE 4 digits", "$NACE 4 digits label"],
-                "count": {"$sum": 1},
-            }
-        }
-    ]
-
-
-def ind_caller(enco, results):
+def ind_caller(enco, results, extra_aggr_param):
     results["i30aa"] = {}
-    results["i30aa"]["sv07"] = uf.inner_secondary_view_nace_cpc_companies(
-        enco, "NACE 2 digits label", i30aa_aggregation_nace2
-    )
-    results["i30aa"]["sv07b"] = uf.inner_secondary_view_nace_cpc_companies(
-        enco, "NACE 4 digits label", i30aa_aggregation_nace4
-    )
-    results["i30aa"]["sv09"] = uf.secondary_view(
-        enco, "Country ISO code", i30aa_aggregation
-    )
+
+    # Find documents and convert to dataframe
+    documents = enco.aggregate(extra_aggr_param + template)
+    df = pd.DataFrame(list(documents))
+    row_count = len(df)
+
+    results["i30aa"]["sv00"] = {"Companies": row_count}
+    results["i30aa"]["sv07"] = df.groupby("NACE2dl")["_id"].count().to_dict()
+    results["i30aa"]["sv07b"] = df.groupby("NACE4dl")["_id"].count().to_dict()
+    results["i30aa"]["sv09"] = df.groupby("Country ISO code")["_id"].count().to_dict()
 
     return results

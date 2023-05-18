@@ -5,52 +5,56 @@ template = [
     {
         "$match": {
             "ESG data": {"$exists": True},
+            "ESG data.Sub_Metric_Title": {"$exists": True},
         }
     },
     {
         "$addFields": {
-            "TurnoverNumeric": {"$ifNull": [{"$toDouble": "$Turnover"}, 0]},
             "NumberOfESGdata": {"$size": "$ESG data"},
+            "Year": "$ESG data.Year",
         }
     },
     {
         "$match": {
             "NumberOfESGdata": {"$ne": 0},
-            "Turnover": {"$ne": None},
         }
     },
 ]
 
 
-def ind_caller(enco, results):
+def ind_caller(enco, results, extra_aggr_param):
     # Initialize a new dictionary for the results
     results["i42e"] = {}
 
     # Find documents and convert to dataframe
-    documents = enco.aggregate(template)
+    documents = enco.aggregate(extra_aggr_param + template)
     df = pd.DataFrame(list(documents))
 
     # Sort and select the top 10 rows based on TurnoverNumeric column
+    df["TurnoverNumeric"] = pd.to_numeric(df["Turnover"], errors="coerce").fillna(0)
     df = df.sort_values(by=["TurnoverNumeric"], ascending=False).reset_index(drop=True)
     df = df.head(10)
 
-    # Loop through the rows and count the unique Metric_Titles for each Metric_Scope
-    companies_dict = {}
     for i in range(len(df)):
-        company = df["company_name"][i]
         df_ESG_nonvalue = pd.DataFrame(df["ESG data"][i])[
             pd.DataFrame(df["ESG data"][i])["Rank"].notna()
         ]
         numerator = df_ESG_nonvalue.pivot_table(
-            index="Metric_Scope", columns="Year", aggfunc="count"
+            index="Year", columns="Metric_Scope", aggfunc="count"
         )["Sub_Metric_Title"]
         df_ESG = pd.DataFrame(df["ESG data"][i])
         denominator = df_ESG.pivot_table(
-            index="Metric_Scope", columns="Year", aggfunc="count"
+            index="Year", columns="Metric_Scope", aggfunc="count"
         )["Sub_Metric_Title"]
-        companies_dict[company] = (100 * numerator / denominator).to_dict()
+
+        if i == 0:
+            result_df = denominator
+            result_df_nonvalue = numerator
+        else:
+            result_df = result_df.add(denominator, fill_value=0)
+            result_df_nonvalue = result_df_nonvalue.add(numerator, fill_value=0)
 
     # Add the dictionary of results to the main results dictionary
-    results["i42e"]["sv0"] = companies_dict
+    results["i42e"]["sv01"] = (100 * result_df_nonvalue.div(result_df)).to_dict()
 
     return results

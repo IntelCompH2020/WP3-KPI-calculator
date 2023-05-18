@@ -5,60 +5,56 @@ template = [
     {
         "$match": {
             "ESG data": {"$exists": True},
+            "ESG data.Sub_Metric_Title": {"$exists": True},
         }
     },
     {
         "$addFields": {
-            "TurnoverNumeric": {"$ifNull": [{"$toDouble": "$Turnover"}, 0]},
             "NumberOfESGdata": {"$size": "$ESG data"},
+            "Year": "$ESG data.Year",
         }
     },
     {
         "$match": {
             "NumberOfESGdata": {"$ne": 0},
-            "Turnover": {"$ne": None},
         }
     },
 ]
 
 
-def ind_caller(enco, results):
+def ind_caller(enco, results, extra_aggr_param):
     # Initialize a new dictionary for the results
     results["i42d"] = {}
 
     # Find documents and convert to dataframe
-    documents = enco.aggregate(template)
+    documents = enco.aggregate(extra_aggr_param + template)
     df = pd.DataFrame(list(documents))
 
     # Sort and select the top 10 rows based on TurnoverNumeric column
+    df["TurnoverNumeric"] = pd.to_numeric(df["Turnover"], errors="coerce").fillna(0)
     df = df.sort_values(by=["TurnoverNumeric"], ascending=False).reset_index(drop=True)
     df = df.head(10)
 
-    # Loop through the rows and count the unique Metric_Titles for each Metric_Scope
-    companies_dict = {}
-    for i in range(len(df)):
-        company = df["company_name"][i]
-        df_ESG_nonvalue = pd.DataFrame(df["ESG data"][i])[
-            pd.DataFrame(df["ESG data"][i])["Rank"].notna()
-        ]
-        # Create a pivot table
-        numerator = df_ESG_nonvalue.pivot_table(
-            index="Metric_Title", columns="Year", aggfunc="count"
-        )["Rank"]
-        # Calculate the sum of the columns
-        denominator = numerator.sum()
-        df_result = 100 * numerator / denominator
-        # Calculate the sum of each row
-        df_result["sum"] = df_result.sum(axis=1)
-        # Sort the DataFrame based on the sum, in descending order
-        df_sorted = (
-            df_result.sort_values(by="sum", ascending=True)
-            .head(n=10)
-            .drop(columns=["sum"])
-        )
-        companies_dict[company] = df_sorted.to_dict()
+    # Initialize an empty DataFrame to store the accumulated nonvaluecounts
+    result_df_nonvalue = pd.DataFrame()
+    # Initialize an empty DataFrame to store the accumulated counts
+    result_df = pd.DataFrame()
 
-    # Add the dictionary of results to the main results dictionary
-    results["i42d"]["sv0"] = companies_dict
+    # Iterate through each iteration of the for loop
+    for i in range(len(df)):
+        counts_nonvalue = pd.DataFrame(df["ESG data"][i])[
+            pd.DataFrame(df["ESG data"][i])["Rank"].notna()
+        ]["Metric_Title"].value_counts()
+        counts = pd.DataFrame(df["ESG data"][i])["Metric_Title"].value_counts()
+
+        if i == 0:
+            result_df = counts
+            result_df_nonvalue = counts_nonvalue
+        else:
+            result_df = result_df.add(counts, fill_value=0)
+            result_df_nonvalue = result_df_nonvalue.add(counts_nonvalue, fill_value=0)
+
+    sorted_df = (100 * result_df_nonvalue.div(result_df)).sort_values(ascending=False)
+    results["i42d"]["sv00"] = sorted_df.tail(5).to_dict()
 
     return results

@@ -64,14 +64,14 @@ def ind_caller(sci, results, extra_aggr_param=[]):
         "published_venue",
         i02_aggregation,
         uf.journal_filter + extra_aggr_param,
-        first_year=2014,
+        first_year=2000,
     )
     temp = {k: v for k, v in temp.copy().items() if k is not None and not v == "null"}
     temp = dict(sorted(temp.items()))
     results["i02"]["sv10"] = get_annual_growth_from_per_year(temp)
 
     temp = uf.secondary_view_per_year(
-        sci, "publisher", i02_aggregation, extra_aggr_param, first_year=2014
+        sci, "publisher", i02_aggregation, extra_aggr_param, first_year=2000
     )
     temp = {k: v for k, v in temp.copy().items() if k is not None and not v == "null"}
     temp = dict(sorted(temp.items()))

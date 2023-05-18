@@ -1,3 +1,6 @@
+# from caller import i09_func
+
+
 def get_3_year_average_growth(data):
     min_year = min(data.keys())
     max_year = max(data.keys())
@@ -19,6 +22,8 @@ def get_3_year_average_growth(data):
 
 
 def ind_caller(pat, results, extra_aggr_param=[]):
+    # results = i09_func.ind_caller(pat, results, extra_aggr_param)
+
     results["i10"] = {}
     results["i10"]["sv01"] = get_3_year_average_growth(results["i09"]["sv01"])
 

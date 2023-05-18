@@ -1,6 +1,5 @@
 import json
 from pathlib import Path
-import requests
 
 script_dir = Path(__file__).resolve().parent.parent
 
@@ -50,95 +49,69 @@ def get_indicator_schema(dgid, pvid, indid, svid, data):
 
 def get_data(dgid, pvid, indid, svid, data):
     output = []
-    data = {k: v for k, v in data.copy().items() if k is not None and not v == "null"}
-    for k, v in dict(sorted(data.items())).items():
-        if not isinstance(v, dict):
-            output.append(
-                {
-                    "domain": code_to_label[dgid].split(" ")[0],
-                    "country": code_to_label[dgid].split(" ")[1],
-                    "dg": code_to_label[dgid],
-                    "dgid": dgid,
-                    "pv": code_to_label[pvid],
-                    "pvId": pvid,
-                    "ind": code_to_label[indid],
-                    "indid": indid,
-                    "sv": code_to_label[svid],
-                    "svid": svid,
-                    "key": k,
-                    "value": v,
-                }
-            )
+
+    common_dict = {
+        "domain": code_to_label[dgid].split(" ")[0],
+        "country": code_to_label[dgid].split(" ")[1],
+        "dg": code_to_label[dgid],
+        "dgid": dgid,
+        "pv": code_to_label[pvid],
+        "pvId": pvid,
+        "ind": code_to_label[indid],
+        "indid": indid,
+        "sv": code_to_label[svid],
+        "svid": svid,
+    }
+
+    def process_data(k, v):
+        if isinstance(v, dict):
+            for sub_k, sub_v in dict(sorted(v.items())).items():
+                if isinstance(sub_v, dict):
+                    for sub_sub_k, sub_sub_v in dict(sorted(sub_v.items())).items():
+                        output.append(
+                            {
+                                **common_dict,
+                                "key": k,
+                                "metric_scope": sub_k,
+                                "year": sub_sub_k,
+                                "value": sub_sub_v,
+                            }
+                        )
+                else:
+                    if svid == "sv17" or svid == "sv18":
+                        output.append(
+                            {
+                                **common_dict,
+                                "key": k,
+                                "metric_scope": sub_k,
+                                "value": sub_v,
+                            }
+                        )
+                    else:
+                        output.append(
+                            {**common_dict, "key": k, "year": sub_k, "value": sub_v}
+                        )
         else:
-            for year, value in dict(sorted(v.items())).items():
-                output.append(
-                    {
-                        "domain": code_to_label[dgid].split(" ")[0],
-                        "country": code_to_label[dgid].split(" ")[1],
-                        "dg": code_to_label[dgid],
-                        "dgid": dgid,
-                        "pv": code_to_label[pvid],
-                        "pvId": pvid,
-                        "ind": code_to_label[indid],
-                        "indid": indid,
-                        "sv": code_to_label[svid],
-                        "svid": svid,
-                        "key": k,
-                        "year": year,
-                        "value": value,
-                    }
-                )
+            output.append({**common_dict, "key": k, "value": v})
+
+    data = {k: v for k, v in data.copy().items() if k is not None and v != "null"}
+    for k, v in dict(sorted(data.items())).items():
+        process_data(k, v)
+
     return output
 
 
 def produce_results(dgid, pvid, results, logging):
-    # Read the configuration from the JSON file
+    # Convert results to desired format
+    output_lake = Path("/media/datalake/stiviewer")
+    output_dir = output_lake.joinpath("output/output_done/diamantis")
 
-    with open(script_dir.joinpath("utils/pass.json")) as file:
-        config = json.load(file)
-
-    # Extract the values from the configuration
-    client_id = config["client_id"]
-    username = config["username"]
-    client_secret = config["client_secret"]
-    password = config["password"]
-
-    # Get the access token using requests
-    url = "https://gateway.opix.ai/auth/realms/default/protocol/openid-connect/token"
-    data = {
-        "client_id": client_id,
-        "grant_type": "password",
-        "client_secret": client_secret,
-        "scope": "openid",
-        "username": username,
-        "password": password,
-    }
-
-    response = requests.post(url, data=data)
-    access_token = response.json()["access_token"]
-
+    count = 0
     for indid in results.keys():
         for svid in results[indid].keys():
             data = get_data(dgid, pvid, indid, svid, results[indid][svid])
-
-            # Call the function to send the data to the API
-
-            # Send the data to the API
-            api_url = (
-                "https://gateway.opix.ai/sti-viewer/api/api/indicator-point/"
-                "664de786-2879-4b65-82c7-df5d0d30be84/bulk-persist"
-            )
-            headers = {
-                "Authorization": f"Bearer {access_token}",
-                "Content-Type": "application/json",
-            }
-            response = requests.post(api_url, headers=headers, json=data)
-
-            # Check if the request was successful
-            if response.status_code == 200:
-                logging.info(f"Data from {indid}_{svid} was sent successfully.")
-            else:
-                logging.error(
-                    f"Error sending data from {indid}_{svid}. "
-                    f"Status code: {response.status_code}"
-                )
+            data_file = json.dumps(data, indent=2)
+            count += len(data_file)
+            data_path = output_dir.joinpath(f"{dgid}_{pvid}_{indid}_{svid}_data.json")
+            with open(data_path, "w") as f:
+                f.write(data_file)

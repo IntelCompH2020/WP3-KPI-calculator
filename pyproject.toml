@@ -10,6 +10,7 @@ python = "^3.8"
 pandas = "^2.0.1"
 pymongo = "^4.3.3"
 requests = "^2.30.0"
+tqdm = "^4.65.0"
 
 
 [tool.poetry.group.dev.dependencies]

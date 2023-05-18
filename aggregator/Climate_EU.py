@@ -4,7 +4,7 @@ import importlib
 import argparse
 import logging
 import os
-from utils import output_func
+from utils import post_output
 
 
 def main(config_file_path):
@@ -26,26 +26,41 @@ def main(config_file_path):
     myclient = pymongo.MongoClient(
         "mongodb://adminuser:password123@gateway.opix.ai:27017/"
     )
-    STI_viewer_data = myclient["sti_viewer"]
-    pat = STI_viewer_data["patstat_demo_gkou"]
+    STI_viewer_data = myclient["STI_viewer_data"]
 
     results = {}
 
     # Import and call functions based on the configuration file
     for func_config in config_data["functions"]:
-        module_name = func_config["module"]
-        function_name = func_config["function"]
-        template = func_config["template"]
+        try:
+            module_name = func_config["module"]
+            function_name = func_config["function"]
+            template = config_data["templates"][0][func_config["template"]]
 
-        # Import the function dynamically
-        module = importlib.import_module(module_name)
-        function_to_call = getattr(module, function_name)
+            # Import the function dynamically
+            module = importlib.import_module(module_name)
+            function_to_call = getattr(module, function_name)
 
-        # Call the function
-        results = function_to_call(pat, results, template)
-        logging.info(f"Function {function_name} executed successfully.")
+            domain = config_data["dgpv"][0]["dg"]
+            topic = config_data["dgpv"][0]["pv"]
 
-    output_func.produce_results("dg01", "pv01", results, logging)
+            # Call the function
+            results = function_to_call(
+                STI_viewer_data[func_config["collection"]], results, template
+            )
+            logging.info(
+                f"For domain {domain} and topic {topic} Function {function_name}"
+                f"for module {module_name} executed successfully."
+            )
+        except Exception as e:
+            logging.error(
+                f"Error executing function {function_name}"
+                f"for module {module_name}: {str(e)}"
+            )
+
+    post_output.produce_results(
+        config_data["dgpv"][0]["dg"], config_data["dgpv"][0]["pv"], results, logging
+    )
 
 
 if __name__ == "__main__":

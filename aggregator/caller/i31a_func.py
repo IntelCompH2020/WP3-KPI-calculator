@@ -1,24 +1,29 @@
-from utils import uf
+import pandas as pd
+
+template = [
+    {"$match": {"Publications": {"$exists": True, "$not": {"$size": 0}}}},
+    {
+        "$addFields": {
+            "total_publications": {"$size": "$Publications"},
+        }
+    },
+]
 
 
-def i31_aggregation(field, extra_aggr_param):
-    return extra_aggr_param + [
-        {"$match": {"Publications": {"$elemMatch": {"$exists": True}}}},
-        {"$group": {"_id": field, "count": {"$sum": {"$size": "$Publications"}}}},
-    ]
-
-
-def ind_caller(enco, results):
+def ind_caller(enco, results, extra_aggr_param):
     results["i31a"] = {}
-    results["i31a"]["sv00"] = uf.secondary_view_comp(enco, ["all"], i31_aggregation)
-    results["i31a"]["sv07"] = uf.secondary_view_comp_nace(
-        enco, ["$NACE 2 digits", "$NACE 2 digits label"], i31_aggregation
+
+    # # Find documents and convert to dataframe
+    documents = enco.aggregate(extra_aggr_param + template)
+    df = pd.DataFrame(list(documents))
+
+    # Sort and select the top 10 rows based on TurnoverNumeric column
+    df = df.sort_values(by=["total_publications"], ascending=False).reset_index(
+        drop=True
     )
-    results["i31a"]["sv07b"] = uf.secondary_view_comp_nace(
-        enco, ["$NACE 4 digits", "$NACE 4 digits label"], i31_aggregation
-    )
-    results["i31a"]["sv09"] = uf.secondary_view_comp(
-        enco, ["$Country ISO code"], i31_aggregation
-    )
+    df = df.head(100)
+    results["i31a"]["sv00"] = {
+        "total_publications": int(df["total_publications"].sum())
+    }
 
     return results

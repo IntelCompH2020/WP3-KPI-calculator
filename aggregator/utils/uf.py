@@ -446,6 +446,7 @@ def top_companies(col, field, aggregation, number_of_comp, extra_aggr_param=[]):
             else:
                 result_dict[data[keys[0]]] = data[keys[1]]
                 sorted_d = dict(sorted(result_dict.items(), key=lambda x: x[1]))
+
                 # Keep only the top 10 items
                 top = dict(list(sorted_d.items())[-number_of_comp:])
         result[agg["_id"][0]] = top

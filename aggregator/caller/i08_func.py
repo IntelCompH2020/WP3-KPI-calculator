@@ -1,5 +1,7 @@
 from utils import uf
 
+# from caller import i01_func
+
 
 def i08_aggregation(field, extra_aggr_param):
     return extra_aggr_param + [
@@ -8,6 +10,8 @@ def i08_aggregation(field, extra_aggr_param):
 
 
 def ind_caller(sci, results, extra_aggr_param=[]):
+    # results = i01_func.ind_caller(sci, results, extra_aggr_param)
+
     results["i08"] = {}
     numerator = uf.secondary_view(sci, "pub_year", i08_aggregation, extra_aggr_param)
     denominator = results["i01"]["sv01"]

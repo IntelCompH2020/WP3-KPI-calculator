@@ -1,4 +1,11 @@
-def ind_caller(sci, results):
+# from caller import i01_func
+# from caller import i06_func
+
+
+def ind_caller(sci, results, extra_aggr_param=[]):
+    # results = i01_func.ind_caller(sci, results, extra_aggr_param)
+    # results = i06_func.ind_caller(sci, results, extra_aggr_param)
+
     results["i07"] = {}
     for sv in results["i06"].keys():
         if sv in results["i01"].keys():
