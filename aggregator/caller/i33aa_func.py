@@ -13,38 +13,58 @@ template = [
 ]
 
 
-def ind_caller(enco, results, extra_aggr_param):
+def ind_caller(enco, results, extra_aggr_param=[]):
     results["i33aa"] = {}
 
-    # # Find documents and convert to dataframe
     documents = enco.aggregate(extra_aggr_param + template)
     df = pd.DataFrame(list(documents))
-
-    # Sort and select the top 10 rows based on TurnoverNumeric column
     df = df.sort_values(by=["total_trademarks"], ascending=False).reset_index(drop=True)
     df = df.head(100)
 
-    total_trade = df["total_trademarks"].sum()
+    try:
+        frames = []  # list to store all dataframes
 
-    results["i33aa"]["sv00"] = {
-        "average_per_company": (
-            total_trade / len(df.set_index("company_name")["total_trademarks"])
+        for i in range(len(df)):
+            df_pub = pd.DataFrame(df["Trademarks"][i])
+            frames.append(df_pub)
+        # concatenate all the dataframes in the list
+        publications_df = pd.concat(frames, ignore_index=True)
+        results["i33aa"]["sv01"] = (
+            publications_df["registration_year"].value_counts() / len(df)
+        ).to_dict()
+    except Exception as e:
+        results["i33aa"]["sv01"] = None
+        print(f"Error calculating i33aa[sv01]: {str(e)}")
+
+    try:
+        frames = []  # list to store all dataframes
+
+        for i in range(len(df)):
+            df_pub = pd.DataFrame(df["Trademarks"][i])
+            frames.append(df_pub)
+        # concatenate all the dataframes in the list
+        publications_df = pd.concat(frames, ignore_index=True)
+        results["i33aa"]["sv21"] = (
+            publications_df["trademark_type"].value_counts() / len(df)
+        ).to_dict()
+    except Exception as e:
+        results["i33aa"]["sv21"] = None
+        print(f"Error calculating i33aa[sv21]: {str(e)}")
+
+    try:
+        results["i33aa"]["sv09"] = (
+            df.groupby("Country ISO code")["total_trademarks"].mean().to_dict()
         )
-    }
-    results["i33aa"]["sv07"] = {
-        "average_per_NACE2dl": (
-            total_trade / len(df.groupby("NACE4dl")["total_trademarks"].sum())
+    except Exception as e:
+        results["i33aa"]["sv09"] = None
+        print(f"Error calculating i33aa[sv09]: {str(e)}")
+
+    try:
+        results["i33aa"]["sv15"] = (
+            df.groupby("Number of employees")["total_trademarks"].mean().to_dict()
         )
-    }
-    results["i33aa"]["sv07b"] = {
-        "average_per_NACE4dl": (
-            total_trade / len(df.groupby("NACE2dl")["total_trademarks"].sum())
-        )
-    }
-    results["i33aa"]["sv09"] = {
-        "average_per_Country": (
-            total_trade / len(df.groupby("Country ISO code")["total_trademarks"].sum())
-        )
-    }
+    except Exception as e:
+        results["i33aa"]["sv15"] = None
+        print(f"Error calculating i33aa[sv15]: {str(e)}")
 
     return results

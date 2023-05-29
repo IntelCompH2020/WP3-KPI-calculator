@@ -17,5 +17,11 @@
     "sv15": "keyword",
     "sv16": "keyword",
     "sv17": "keyword",
-    "sv18": "keyword"
+    "sv18": "keyword",
+    "sv19": "keyword",
+    "sv20": "keyword",
+    "sv21": "keyword",
+    "sv02.01": "integer",
+    "sv17.01": "integer",
+    "sv18.01": "integer"
   }

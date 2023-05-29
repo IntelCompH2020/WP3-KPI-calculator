@@ -55,6 +55,8 @@ def ind_caller(enco, results, extra_aggr_param):
             result_df_nonvalue = result_df_nonvalue.add(numerator, fill_value=0)
 
     # Add the dictionary of results to the main results dictionary
-    results["i42e"]["sv01"] = (100 * result_df_nonvalue.div(result_df)).to_dict()
+    results["i42e"]["sv17.01"] = (
+        (100 * result_df_nonvalue.div(result_df)).fillna(0).to_dict()
+    )
 
     return results

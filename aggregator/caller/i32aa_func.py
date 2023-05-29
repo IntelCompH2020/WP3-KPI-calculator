@@ -13,40 +13,43 @@ template = [
 ]
 
 
-def ind_caller(enco, results, extra_aggr_param):
+def ind_caller(enco, results, extra_aggr_param=[]):
     results["i32aa"] = {}
 
-    # # Find documents and convert to dataframe
     documents = enco.aggregate(extra_aggr_param + template)
     df = pd.DataFrame(list(documents))
-
-    # Sort and select the top 10 rows based on TurnoverNumeric column
     df = df.sort_values(by=["total_patents"], ascending=False).reset_index(drop=True)
     df = df.head(100)
 
-    total_pats = df["total_patents"].sum()
+    try:
+        frames = []  # list to store all dataframes
 
-    results["i32aa"]["sv00"] = {
-        "average_per_company": (
-            total_pats / len(df.set_index("company_name")["total_patents"])
-        )
-    }
-    results["i32aa"]["sv07"] = {
-        "average_per_NACE2dl": (
-            total_pats / len(df.groupby("NACE4dl")["total_patents"].sum())
-        )
-    }
-    results["i32aa"]["sv07b"] = {
-        "average_per_NACE4dl": (
-            total_pats / len(df.groupby("NACE2dl")["total_patents"].sum())
-        )
-    }
-    results["i32aa"]["sv09"] = {
-        "average_per_Country": (
-            total_pats / len(df.groupby("Country ISO code")["total_patents"].sum())
-        )
-    }
+        for i in range(len(df)):
+            df_pub = pd.DataFrame(df["Patents"][i]).explode("topic")
+            frames.append(df_pub)
 
-    # print(results)
+        # concatenate all the dataframes in the list
+        publications_df = pd.concat(frames, ignore_index=True)
+        cross = pd.crosstab(publications_df["year"], publications_df["topic"])
+        results["i32aa"]["sv02.01"] = (cross / len(df)).to_dict()
+    except Exception as e:
+        results["i32aa"]["sv02.01"] = None
+        print(f"Error calculating i32aa[sv02.01]: {str(e)}")
+
+    try:
+        results["i32aa"]["sv09"] = (
+            df.groupby("Country ISO code")["total_patents"].mean().to_dict()
+        )
+    except Exception as e:
+        results["i32aa"]["sv09"] = None
+        print(f"Error calculating i32aa[sv09]: {str(e)}")
+
+    try:
+        results["i32aa"]["sv15"] = (
+            df.groupby("Number of employees")["total_patents"].mean().to_dict()
+        )
+    except Exception as e:
+        results["i32aa"]["sv15"] = None
+        print(f"Error calculating i32aa[sv15]: {str(e)}")
 
     return results

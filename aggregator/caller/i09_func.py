@@ -39,35 +39,75 @@ def i09_aggregation_per_year_cpc(field, extra_aggr_param):
 
 def ind_caller(pat, results, extra_aggr_param=[]):
     results["i09"] = {}
-    results["i09"]["sv01"] = uf.secondary_view(
-        pat, "appln_filing_year", i09_aggregation, extra_aggr_param
-    )
-    results["i09"]["sv02"] = uf.secondary_view_per_year(
-        pat, "topic", i09_aggregation_per_year, extra_aggr_param
-    )
-    results["i09"]["sv03"] = uf.secondary_view_per_year(
-        pat, "category", i09_aggregation_per_year, extra_aggr_param
-    )
-    results["i09"]["sv06"] = uf.inner_secondary_view_per_year(
-        pat, "participant.name", i09_aggregation_per_year, extra_aggr_param
-    )
-    results["i09"]["sv07"] = uf.inner_secondary_view_per_year_nace_cpc(
-        pat, "nace", i09_aggregation_per_year_nace, extra_aggr_param
-    )
-    results["i09"]["sv08"] = uf.inner_secondary_view_per_year(
-        pat, "participant.sector", i09_aggregation_per_year, extra_aggr_param
-    )
-    full_set = uf.inner_secondary_view_per_year(
-        pat, "participant.country", i09_aggregation_per_year, extra_aggr_param
-    )
-    results["i09"]["sv09"] = {}
-    for k in full_set.keys():
-        if k in uf.eu_members_code:
-            results["i09"]["sv09"][
-                uf.eu_members[uf.eu_members_code.index(k)]
-            ] = full_set[k]
-    results["i09"]["sv13"] = uf.inner_secondary_view_per_year_nace_cpc(
-        pat, "cpc", i09_aggregation_per_year_cpc, extra_aggr_param
-    )
+
+    try:
+        results["i09"]["sv01"] = uf.secondary_view(
+            pat, "appln_filing_year", i09_aggregation, extra_aggr_param
+        )
+    except Exception as e:
+        results["i09"]["sv01"] = None
+        print(f"Error calculating i09[sv01]: {str(e)}")
+
+    try:
+        results["i09"]["sv02"] = uf.secondary_view_per_year(
+            pat, "topic", i09_aggregation_per_year, extra_aggr_param
+        )
+    except Exception as e:
+        results["i09"]["sv02"] = None
+        print(f"Error calculating i09[sv02]: {str(e)}")
+
+    try:
+        results["i09"]["sv03"] = uf.secondary_view_per_year(
+            pat, "category", i09_aggregation_per_year, extra_aggr_param
+        )
+    except Exception as e:
+        results["i09"]["sv03"] = None
+        print(f"Error calculating i09[sv03]: {str(e)}")
+
+    try:
+        results["i09"]["sv06"] = uf.inner_secondary_view_per_year(
+            pat, "participant.name", i09_aggregation_per_year, extra_aggr_param
+        )
+    except Exception as e:
+        results["i09"]["sv06"] = None
+        print(f"Error calculating i09[sv06]: {str(e)}")
+
+    try:
+        results["i09"]["sv07"] = uf.inner_secondary_view_per_year_nace_cpc(
+            pat, "nace", i09_aggregation_per_year_nace, extra_aggr_param
+        )
+    except Exception as e:
+        results["i09"]["sv07"] = None
+        print(f"Error calculating i09[sv07]: {str(e)}")
+
+    try:
+        results["i09"]["sv08"] = uf.inner_secondary_view_per_year(
+            pat, "participant.sector", i09_aggregation_per_year, extra_aggr_param
+        )
+    except Exception as e:
+        results["i09"]["sv08"] = None
+        print(f"Error calculating i09[sv08]: {str(e)}")
+
+    try:
+        full_set = uf.inner_secondary_view_per_year(
+            pat, "participant.country", i09_aggregation_per_year, extra_aggr_param
+        )
+        results["i09"]["sv09"] = {}
+        for k in full_set.keys():
+            if k in uf.eu_members_code:
+                results["i09"]["sv09"][
+                    uf.eu_members[uf.eu_members_code.index(k)]
+                ] = full_set[k]
+    except Exception as e:
+        results["i09"]["sv09"] = None
+        print(f"Error calculating i09[sv09]: {str(e)}")
+
+    try:
+        results["i09"]["sv13"] = uf.inner_secondary_view_per_year_nace_cpc(
+            pat, "cpc", i09_aggregation_per_year_cpc, extra_aggr_param
+        )
+    except Exception as e:
+        results["i09"]["sv13"] = None
+        print(f"Error calculating i09[sv13]: {str(e)}")
 
     return results

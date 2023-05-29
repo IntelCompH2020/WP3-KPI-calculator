@@ -55,6 +55,6 @@ def ind_caller(enco, results, extra_aggr_param):
             result_df_nonvalue = result_df_nonvalue.add(counts_nonvalue, fill_value=0)
 
     sorted_df = (100 * result_df_nonvalue.div(result_df)).sort_values(ascending=False)
-    results["i42ca"]["sv00"] = sorted_df.head(5).to_dict()
+    results["i42ca"]["sv00"] = sorted_df.fillna(0).head(5).to_dict()
 
     return results

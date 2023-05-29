@@ -24,11 +24,27 @@ def ind_caller(enco, results, extra_aggr_param):
     df = df.sort_values(by=["total_patents"], ascending=False).reset_index(drop=True)
     df = df.head(100)
 
-    results["i32"]["sv00"] = df.set_index("company_name")["total_patents"].to_dict()
-    results["i32"]["sv07"] = df.groupby("NACE2dl")["total_patents"].sum().to_dict()
-    results["i32"]["sv07b"] = df.groupby("NACE4dl")["total_patents"].sum().to_dict()
-    results["i32"]["sv09"] = (
-        df.groupby("Country ISO code")["total_patents"].sum().to_dict()
-    )
+    try:
+        results["i32"]["sv00"] = df.set_index("company_name")["total_patents"].to_dict()
+    except Exception as e:
+        results["i32"]["sv00"] = None
+        print(f"Error calculating i32[sv00]: {str(e)}")
+    try:
+        results["i32"]["sv07"] = df.groupby("NACE2dl")["total_patents"].sum().to_dict()
+    except Exception as e:
+        results["i32"]["sv07"] = None
+        print(f"Error calculating i32[sv07]: {str(e)}")
+    try:
+        results["i32"]["sv07b"] = df.groupby("NACE4dl")["total_patents"].sum().to_dict()
+    except Exception as e:
+        results["i32"]["sv07b"] = None
+        print(f"Error calculating i32[sv07b]: {str(e)}")
+    try:
+        results["i32"]["sv09"] = (
+            df.groupby("Country ISO code")["total_patents"].sum().to_dict()
+        )
+    except Exception as e:
+        results["i32"]["sv09"] = None
+        print(f"Error calculating i32[sv09]: {str(e)}")
 
     return results

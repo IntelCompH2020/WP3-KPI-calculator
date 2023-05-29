@@ -51,7 +51,7 @@ def ind_caller(enco, results, extra_aggr_param):
         ).to_dict()
 
     # Add the dictionary of results to the main results dictionary
-    results["i43"]["sv17"] = companies_dict_sv17
-    results["i43"]["sv18"] = companies_dict_sv18
+    results["i43"]["sv17.01"] = companies_dict_sv17
+    results["i43"]["sv18.01"] = companies_dict_sv18
 
     return results

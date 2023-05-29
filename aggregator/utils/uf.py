@@ -361,7 +361,7 @@ def sdg_aggregation(sci, aggregation, extra_aggr_param=[]):
     lookup = [
         {
             "$lookup": {
-                "from": "SDGs",
+                "from": "SDGs_agrofood",
                 "localField": "doi",
                 "foreignField": "doi",
                 "as": "sdg",

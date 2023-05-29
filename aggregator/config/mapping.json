@@ -22,7 +22,9 @@
   "i10": "Average annual growth of patents to the EPO in multi- year periods (3 years) ",
   "i11": "Average backward citations: The number of citations to patent documents made by the patent",
   "i12": "Average forward citations: The number of citations received by the patent",
+  "i12a": "Patents that are adopters", 
   "i13": "Average citations to non-patent literature (NPL)",
+  "i13a": "Number of publications cited in patents (NPL)",
   "i14": "patent specialisation in <secondary view>",
   "i15": "Emerging fields (& other types)",
   "i16": "Top 25 emerging multidisciplinary fields globally per year (publication based-most citations)",
@@ -78,6 +80,14 @@
   "sv11": "publisher",
   "sv12": "funders ",
   "sv13": "IPC/CPC",
+  "sv15": "employees",
+  "sv16": "industry",
   "sv17": "ESG scope",
-  "sv18": "Metric title"
+  "sv18": "metric title",
+  "sv19": "regulation",
+  "sv20": "law",
+  "sv21": "trademark type",
+  "sv02.01": "topic x over time",
+  "sv17.01": "ESG scope x over time",
+  "sv18.01": "metric title x over time"
 }

@@ -6,47 +6,62 @@ template = [
     {
         "$addFields": {
             "total_publications": {"$size": "$Publications"},
-            "NACE4dl": {"$concat": ["$NACE 4 digits", ":", "$NACE 4 digits label"]},
-            "NACE2dl": {"$concat": ["$NACE 2 digits", ":", "$NACE 2 digits label"]},
         }
     },
 ]
 
+lookup = [
+    {
+        "$lookup": {
+            "from": "SDGs",
+            "localField": "doi",
+            "foreignField": "Publications.DOI",
+            "as": "sdg",
+        }
+    },
+    {"$set": {"sdg": {"$arrayElemAt": ["$sdg.SDGs", 0]}}},
+]
 
-def ind_caller(enco, results, extra_aggr_param):
+
+def ind_caller(enco, results, extra_aggr_param=[]):
     results["i31aa"] = {}
 
-    # # Find documents and convert to dataframe
     documents = enco.aggregate(extra_aggr_param + template)
     df = pd.DataFrame(list(documents))
-
-    # Sort and select the top 10 rows based on TurnoverNumeric column
     df = df.sort_values(by=["total_publications"], ascending=False).reset_index(
         drop=True
     )
     df = df.head(100)
 
-    total_pubs = df["total_publications"].sum()
+    try:
+        frames = []  # list to store all dataframes
 
-    results["i31aa"]["sv00"] = {
-        "average_per_company": (
-            total_pubs / len(df.set_index("company_name")["total_publications"])
+        for i in range(len(df)):
+            df_pub = pd.DataFrame(df["Publications"][i]).explode("Topics")
+            frames.append(df_pub)
+
+        # concatenate all the dataframes in the list
+        publications_df = pd.concat(frames, ignore_index=True)
+        cross = pd.crosstab(publications_df["Year"], publications_df["Topics"])
+        results["i31aa"]["sv02.01"] = (cross / len(df)).to_dict()
+    except Exception as e:
+        results["i31aa"]["sv02.01"] = None
+        print(f"Error calculating i31aa[sv02.01]: {str(e)}")
+
+    try:
+        results["i31aa"]["sv09"] = (
+            df.groupby("Country ISO code")["total_publications"].mean().to_dict()
         )
-    }
-    results["i31aa"]["sv07"] = {
-        "average_per_NACE2dl": (
-            total_pubs / len(df.groupby("NACE4dl")["total_publications"].sum())
+    except Exception as e:
+        results["i31aa"]["sv09"] = None
+        print(f"Error calculating i31aa[sv09]: {str(e)}")
+
+    try:
+        results["i31aa"]["sv15"] = (
+            df.groupby("Number of employees")["total_publications"].mean().to_dict()
         )
-    }
-    results["i31aa"]["sv07b"] = {
-        "average_per_NACE4dl": (
-            total_pubs / len(df.groupby("NACE2dl")["total_publications"].sum())
-        )
-    }
-    results["i31aa"]["sv09"] = {
-        "average_per_Country": (
-            total_pubs / len(df.groupby("Country ISO code")["total_publications"].sum())
-        )
-    }
+    except Exception as e:
+        results["i31aa"]["sv15"] = None
+        print(f"Error calculating i31aa[sv15]: {str(e)}")
 
     return results

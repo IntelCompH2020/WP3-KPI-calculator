@@ -47,6 +47,11 @@ def get_indicator_schema(dgid, pvid, indid, svid, data):
     return ind_schema
 
 
+def check_empty_dict(input_dict):
+    if not input_dict:
+        raise ValueError("Dictionary is empty")
+
+
 def get_data(dgid, pvid, indid, svid, data):
     output = []
 
@@ -94,6 +99,7 @@ def get_data(dgid, pvid, indid, svid, data):
         else:
             output.append({**common_dict, "key": k, "value": v})
 
+    check_empty_dict(data)
     data = {k: v for k, v in data.copy().items() if k is not None and v != "null"}
     for k, v in dict(sorted(data.items())).items():
         process_data(k, v)
@@ -108,10 +114,20 @@ def produce_results(dgid, pvid, results, logging):
 
     count = 0
     for indid in results.keys():
-        for svid in results[indid].keys():
-            data = get_data(dgid, pvid, indid, svid, results[indid][svid])
-            data_file = json.dumps(data, indent=2)
-            count += len(data_file)
-            data_path = output_dir.joinpath(f"{dgid}_{pvid}_{indid}_{svid}_data.json")
-            with open(data_path, "w") as f:
-                f.write(data_file)
+        try:
+            for svid in results[indid].keys():
+                data = get_data(dgid, pvid, indid, svid, results[indid][svid])
+                data_file = json.dumps(data, indent=2)
+                count += len(data_file)
+                data_path = output_dir.joinpath(
+                    f"{dgid}_{pvid}_{indid}_{svid}_data.json"
+                )
+                with open(data_path, "w") as f:
+                    f.write(data_file)
+                logging.info(
+                    f"For Indicator {indid} " f"Secondary view {svid} file created."
+                )
+        except Exception as e:
+            logging.error(
+                f"Error executing function {indid}" f"for view {svid}: {str(e)}"
+            )

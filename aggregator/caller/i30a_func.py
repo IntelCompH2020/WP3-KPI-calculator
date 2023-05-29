@@ -14,7 +14,6 @@ template = [
 def ind_caller(enco, results, extra_aggr_param=[]):
     results["i30a"] = {}
 
-    # Find documents and convert to dataframe
     documents = enco.aggregate(extra_aggr_param + template)
     df = pd.DataFrame(list(documents))
 
@@ -30,17 +29,36 @@ def ind_caller(enco, results, extra_aggr_param=[]):
     )
     df = df.head(100)
 
-    results["i30a"]["sv00"] = df.set_index("company_name")[
-        "RevenueByEmployee"
-    ].to_dict()
-    results["i30a"]["sv07"] = (
-        df.groupby("NACE2dl")["RevenueByEmployee"].count().to_dict()
-    )
-    results["i30a"]["sv07b"] = (
-        df.groupby("NACE4dl")["RevenueByEmployee"].count().to_dict()
-    )
-    results["i30a"]["sv09"] = (
-        df.groupby("Country ISO code")["RevenueByEmployee"].count().to_dict()
-    )
+    try:
+        results["i30a"]["sv00"] = df.set_index("company_name")[
+            "RevenueByEmployee"
+        ].to_dict()
+    except Exception as e:
+        results["i30a"]["sv00"] = None
+        print(f"Error calculating i30a[sv00]: {str(e)}")
+
+    try:
+        results["i30a"]["sv07"] = (
+            df.groupby("NACE2dl")["RevenueByEmployee"].count().to_dict()
+        )
+    except Exception as e:
+        results["i30a"]["sv07"] = None
+        print(f"Error calculating i30a[sv07]: {str(e)}")
+
+    try:
+        results["i30a"]["sv07b"] = (
+            df.groupby("NACE4dl")["RevenueByEmployee"].count().to_dict()
+        )
+    except Exception as e:
+        results["i30a"]["sv07b"] = None
+        print(f"Error calculating i30a[sv07b]: {str(e)}")
+
+    try:
+        results["i30a"]["sv09"] = (
+            df.groupby("Country ISO code")["RevenueByEmployee"].count().to_dict()
+        )
+    except Exception as e:
+        results["i30a"]["sv09"] = None
+        print(f"Error calculating i30a[sv09]: {str(e)}")
 
     return results

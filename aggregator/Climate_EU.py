@@ -6,6 +6,8 @@ import logging
 import os
 from utils import post_output
 
+# from utils import output_func
+
 
 def main(config_file_path):
     # Configure logging
@@ -28,10 +30,9 @@ def main(config_file_path):
     )
     STI_viewer_data = myclient["STI_viewer_data"]
 
-    results = {}
-
     # Import and call functions based on the configuration file
     for func_config in config_data["functions"]:
+        results = {}
         try:
             module_name = func_config["module"]
             function_name = func_config["function"]
@@ -49,18 +50,28 @@ def main(config_file_path):
                 STI_viewer_data[func_config["collection"]], results, template
             )
             logging.info(
-                f"For domain {domain} and topic {topic} Function {function_name}"
+                f"For domain {domain} and topic {topic} Function {function_name} "
                 f"for module {module_name} executed successfully."
             )
+
+            post_output.produce_results(
+                config_data["dgpv"][0]["dg"],
+                config_data["dgpv"][0]["pv"],
+                results,
+                logging,
+            )
+            # output_func.produce_results(
+            #     config_data["dgpv"][0]["dg"],
+            #     config_data["dgpv"][0]["pv"],
+            #     results,
+            #     logging,
+            # )
+
         except Exception as e:
             logging.error(
-                f"Error executing function {function_name}"
+                f"Error executing function {function_name} "
                 f"for module {module_name}: {str(e)}"
             )
-
-    post_output.produce_results(
-        config_data["dgpv"][0]["dg"], config_data["dgpv"][0]["pv"], results, logging
-    )
 
 
 if __name__ == "__main__":

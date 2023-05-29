@@ -24,57 +24,98 @@ def get_annual_growth_from_per_year(per_year):
 
 def ind_caller(sci, results, extra_aggr_param=[]):
     results["i02"] = {}
-    temp = uf.inner_secondary_view_per_year(
-        sci, "topic", i02_aggregation, extra_aggr_param, first_year=2014
-    )
-    temp = {k: v for k, v in temp.copy().items() if k is not None and not v == "null"}
-    temp = dict(sorted(temp.items()))
-    results["i02"]["sv02"] = get_annual_growth_from_per_year(temp)
 
-    temp = uf.secondary_view_per_year(
-        sci, "category", i02_aggregation, extra_aggr_param, first_year=2014
-    )
-    temp = {k: v for k, v in temp.copy().items() if k is not None and not v == "null"}
-    temp = dict(sorted(temp.items()))
-    results["i02"]["sv03"] = get_annual_growth_from_per_year(temp)
+    try:
+        temp = uf.inner_secondary_view_per_year(
+            sci, "topic", i02_aggregation, extra_aggr_param, first_year=2014
+        )
+        temp = {
+            k: v for k, v in temp.copy().items() if k is not None and not v == "null"
+        }
+        temp = dict(sorted(temp.items()))
+        results["i02"]["sv02"] = get_annual_growth_from_per_year(temp)
+    except Exception as e:
+        results["i02"]["sv02"] = None
+        print(f"Error calculating sv02: {str(e)}")
 
-    temp = uf.inner_secondary_view_per_year(
-        sci,
-        "affiliations.affiliation_name",
-        i02_aggregation,
-        extra_aggr_param,
-        first_year=2014,
-    )
-    temp = {k: v for k, v in temp.copy().items() if k is not None and not v == "null"}
-    temp = dict(sorted(temp.items()))
-    results["i02"]["sv06"] = get_annual_growth_from_per_year(temp)
+    try:
+        temp = uf.secondary_view_per_year(
+            sci, "category", i02_aggregation, extra_aggr_param, first_year=2014
+        )
+        temp = {
+            k: v for k, v in temp.copy().items() if k is not None and not v == "null"
+        }
+        temp = dict(sorted(temp.items()))
+        results["i02"]["sv03"] = get_annual_growth_from_per_year(temp)
+    except Exception as e:
+        results["i02"]["sv03"] = None
+        print(f"Error calculating sv03: {str(e)}")
 
-    temp = uf.inner_secondary_view_per_year(
-        sci, "affiliations.country", i02_aggregation, extra_aggr_param, first_year=2014
-    )
-    temp = {k: v for k, v in temp.copy().items() if k is not None and not v == "null"}
-    temp = dict(sorted(temp.items()))
-    full_set = get_annual_growth_from_per_year(temp)
-    results["i02"]["sv09"] = {}
-    for k in full_set.keys():
-        results["i02"]["sv09"][k] = full_set[k]
+    try:
+        temp = uf.inner_secondary_view_per_year(
+            sci,
+            "affiliations.affiliation_name",
+            i02_aggregation,
+            extra_aggr_param,
+            first_year=2014,
+        )
+        temp = {
+            k: v for k, v in temp.copy().items() if k is not None and not v == "null"
+        }
+        temp = dict(sorted(temp.items()))
+        results["i02"]["sv06"] = get_annual_growth_from_per_year(temp)
+    except Exception as e:
+        results["i02"]["sv06"] = None
+        print(f"Error calculating sv06: {str(e)}")
 
-    temp = uf.secondary_view_per_year(
-        sci,
-        "published_venue",
-        i02_aggregation,
-        uf.journal_filter + extra_aggr_param,
-        first_year=2000,
-    )
-    temp = {k: v for k, v in temp.copy().items() if k is not None and not v == "null"}
-    temp = dict(sorted(temp.items()))
-    results["i02"]["sv10"] = get_annual_growth_from_per_year(temp)
+    try:
+        temp = uf.inner_secondary_view_per_year(
+            sci,
+            "affiliations.country",
+            i02_aggregation,
+            extra_aggr_param,
+            first_year=2000,
+        )
+        temp = {
+            k: v for k, v in temp.copy().items() if k is not None and not v == "null"
+        }
+        temp = dict(sorted(temp.items()))
+        full_set = get_annual_growth_from_per_year(temp)
+        results["i02"]["sv09"] = {}
+        for k in full_set.keys():
+            results["i02"]["sv09"][k] = full_set[k]
+    except Exception as e:
+        results["i02"]["sv09"] = None
+        print(f"Error calculating sv09: {str(e)}")
 
-    temp = uf.secondary_view_per_year(
-        sci, "publisher", i02_aggregation, extra_aggr_param, first_year=2000
-    )
-    temp = {k: v for k, v in temp.copy().items() if k is not None and not v == "null"}
-    temp = dict(sorted(temp.items()))
-    results["i02"]["sv11"] = get_annual_growth_from_per_year(temp)
+    try:
+        temp = uf.secondary_view_per_year(
+            sci,
+            "published_venue",
+            i02_aggregation,
+            uf.journal_filter + extra_aggr_param,
+            first_year=2000,
+        )
+        temp = {
+            k: v for k, v in temp.copy().items() if k is not None and not v == "null"
+        }
+        temp = dict(sorted(temp.items()))
+        results["i02"]["sv10"] = get_annual_growth_from_per_year(temp)
+    except Exception as e:
+        results["i02"]["sv10"] = None
+        print(f"Error calculating sv10: {str(e)}")
+
+    try:
+        temp = uf.secondary_view_per_year(
+            sci, "publisher", i02_aggregation, extra_aggr_param, first_year=2000
+        )
+        temp = {
+            k: v for k, v in temp.copy().items() if k is not None and not v == "null"
+        }
+        temp = dict(sorted(temp.items()))
+        results["i02"]["sv11"] = get_annual_growth_from_per_year(temp)
+    except Exception as e:
+        results["i02"]["sv11"] = None
+        print(f"Error calculating sv11: {str(e)}")
 
     return results

@@ -20,6 +20,10 @@ def ind_caller(enco, results, extra_aggr_param):
     # Sort and select the top 10 rows based on TurnoverNumeric column
     df = df.sort_values(by=["total_patents"], ascending=False).reset_index(drop=True)
     df = df.head(100)
-    results["i32a"]["sv00"] = {"total_patents": int(df["total_patents"].sum())}
+    try:
+        results["i32a"]["sv00"] = {"total_patents": int(df["total_patents"].sum())}
+    except Exception as e:
+        results["i32a"]["sv00"] = None
+        print(f"Error calculating i32a[sv00]: {str(e)}")
 
     return results

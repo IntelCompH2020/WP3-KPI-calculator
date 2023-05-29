@@ -1,4 +1,4 @@
-# from caller import i09_func
+from caller import i09_func
 
 
 def get_3_year_average_growth(data):
@@ -22,16 +22,23 @@ def get_3_year_average_growth(data):
 
 
 def ind_caller(pat, results, extra_aggr_param=[]):
-    # results = i09_func.ind_caller(pat, results, extra_aggr_param)
-
+    results = i09_func.ind_caller(pat, results, extra_aggr_param)
     results["i10"] = {}
-    results["i10"]["sv01"] = get_3_year_average_growth(results["i09"]["sv01"])
 
-    for sv in results["i09"].keys():
-        if sv == "sv01":
-            continue
-    results["i10"][sv] = {}
-    for value in results["i09"][sv]:
-        results["i10"][sv][value] = get_3_year_average_growth(results["i09"][sv][value])
+    try:
+        results["i10"]["sv01"] = get_3_year_average_growth(results["i09"]["sv01"])
+
+        for sv in results["i09"].keys():
+            if sv == "sv01":
+                continue
+            results["i10"][sv] = {}
+            for value in results["i09"][sv]:
+                results["i10"][sv][value] = get_3_year_average_growth(
+                    results["i09"][sv][value]
+                )
+
+    except Exception as e:
+        results["i10"] = None
+        print(f"Error calculating i10: {str(e)}")
 
     return results
