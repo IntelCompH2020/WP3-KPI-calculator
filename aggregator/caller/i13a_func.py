@@ -1,12 +1,14 @@
 import glob
 import json
 
+# /media/datalake/patstat_2021b/output/i13a-energy/
+
 
 def ind_caller(pat, results, extra_aggr_param=[]):
     results["i13a"] = {}
 
     try:
-        path = "/media/datalake/patstat_2021b/output/i13a-agrofood/sv00-EU/"
+        path = "/media/datalake/patstat_2021b/output/i13a-energy/sv00-EU/"
         json_files = glob.glob(path + "*.json")
         data = []
         with open(json_files[0]) as f:
@@ -20,7 +22,7 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         print(f"Error calculating i13a[sv00]: {str(e)}")
 
     try:
-        path = "/media/datalake/patstat_2021b/output/i13a-agrofood/sv01-EU/"
+        path = "/media/datalake/patstat_2021b/output/i13a-energy/sv01-EU/"
         json_files = glob.glob(path + "*.json")
         data = []
         with open(json_files[0]) as f:
@@ -34,7 +36,7 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         print(f"Error calculating i13a[sv01]: {str(e)}")
 
     try:
-        path = "/media/datalake/patstat_2021b/output/i13a-agrofood/sv02-EU/"
+        path = "/media/datalake/patstat_2021b/output/i13a-energy/sv02-EU/"
         json_files = glob.glob(path + "*.json")
         data = []
         with open(json_files[0]) as f:
@@ -48,7 +50,7 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         print(f"Error calculating i13a[sv02]: {str(e)}")
 
     try:
-        path = "/media/datalake/patstat_2021b/output/i13a-agrofood/sv05-EU/"
+        path = "/media/datalake/patstat_2021b/output/i13a-energy/sv05-EU/"
         json_files = glob.glob(path + "*.json")
         data = []
         with open(json_files[0]) as f:

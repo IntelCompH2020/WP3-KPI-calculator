@@ -27,7 +27,7 @@ def ind_caller(pat, results, extra_aggr_param=[]):
             for i in res[topic].keys():
                 if total[i] == 0:
                     total[i] = 1
-                    res[topic][i] /= total[i]
+                res[topic][i] /= total[i]
 
         results["i09b"]["sv02"] = res
 

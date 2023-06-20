@@ -61,7 +61,7 @@ def ind_caller(enco, results, extra_aggr_param=[]):
 
     try:
         results["i33aa"]["sv15"] = (
-            df.groupby("Number of employees")["total_trademarks"].mean().to_dict()
+            df.groupby("CompanySize")["total_trademarks"].mean().to_dict()
         )
     except Exception as e:
         results["i33aa"]["sv15"] = None

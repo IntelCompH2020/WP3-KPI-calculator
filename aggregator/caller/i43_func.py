@@ -43,12 +43,26 @@ def ind_caller(enco, results, extra_aggr_param):
         df_ESG = pd.DataFrame(df["ESG data"][i])[
             pd.DataFrame(df["ESG data"][i])["Rank"].notna()
         ]
-        companies_dict_sv17[company] = df_ESG.pivot_table(
-            index="Year", columns="Metric_Scope", values="Weighted_Rank", aggfunc="mean"
-        ).to_dict()
-        companies_dict_sv18[company] = df_ESG.pivot_table(
-            index="Year", columns="Metric_Title", values="Weighted_Rank", aggfunc="mean"
-        ).to_dict()
+        companies_dict_sv17[company] = (
+            df_ESG.pivot_table(
+                index="Year",
+                columns="Metric_Scope",
+                values="Weighted_Rank",
+                aggfunc="mean",
+            )
+            .fillna(0)
+            .to_dict()
+        )
+        companies_dict_sv18[company] = (
+            df_ESG.pivot_table(
+                index="Year",
+                columns="Metric_Title",
+                values="Weighted_Rank",
+                aggfunc="mean",
+            )
+            .fillna(0)
+            .to_dict()
+        )
 
     # Add the dictionary of results to the main results dictionary
     results["i43"]["sv17.01"] = companies_dict_sv17

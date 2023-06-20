@@ -92,6 +92,24 @@ def get_data(dgid, pvid, indid, svid, data):
                                 "value": sub_v,
                             }
                         )
+                    elif indid == "i12a" and not (svid == "sv01" or svid == "sv00"):
+                        output.append(
+                            {
+                                **common_dict,
+                                "tag": k,
+                                "key": sub_k,
+                                "value": sub_v,
+                            }
+                        )
+                    elif indid == "i12a" and (svid == "sv01" or svid == "sv00"):
+                        output.append(
+                            {
+                                **common_dict,
+                                "tag": k,
+                                "year": sub_k,
+                                "value": sub_v,
+                            }
+                        )
                     else:
                         output.append(
                             {**common_dict, "key": k, "year": sub_k, "value": sub_v}

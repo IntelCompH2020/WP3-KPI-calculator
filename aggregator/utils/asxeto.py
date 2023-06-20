@@ -22,7 +22,6 @@ def send_data_to_api(client_id, username, client_secret, password, directory):
     for filename in os.listdir(directory):
         if filename.endswith("_data.json"):
             file_path = os.path.join(directory, filename)
-            print(file_path)
 
             # Read the JSON content of the file
             with open(file_path) as file:

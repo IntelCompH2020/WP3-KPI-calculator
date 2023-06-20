@@ -2,11 +2,25 @@ from utils import uf
 
 
 def i01_aggregation(field, extra_aggr_param):
-    return extra_aggr_param + [{"$group": {"_id": "$" + field, "count": {"$sum": 1}}}]
+    if field == "all":
+        return extra_aggr_param + [{"$group": {"_id": None, "count": {"$sum": 1}}}]
+    else:
+        return extra_aggr_param + [
+            {"$group": {"_id": "$" + field, "count": {"$sum": 1}}}
+        ]
 
 
 def ind_caller(sci, results, extra_aggr_param=[]):
     results["i01"] = {}
+
+    try:
+        results["i01"]["sv00"] = uf.secondary_view(
+            sci, "all", i01_aggregation, extra_aggr_param
+        )
+        results["i01"]["sv00"]["total_publications"] = results["i01"]["sv00"].pop(None)
+    except Exception as e:
+        results["i01"]["sv01"] = None
+        print(f"Error calculating sv01: {str(e)}")
 
     try:
         results["i01"]["sv01"] = uf.secondary_view(

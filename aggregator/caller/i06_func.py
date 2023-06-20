@@ -2,18 +2,37 @@ from utils import uf
 
 
 def i06_aggregation(field, extra_aggr_param):
-    return extra_aggr_param + [
-        {
-            "$match": {
-                "nr_citations": {"$gt": 0},
-            }
-        },
-        {"$group": {"_id": "$" + field, "count": {"$sum": "$nr_citations"}}},
-    ]
+    if field == "all":
+        return extra_aggr_param + [
+            {
+                "$match": {
+                    "nr_citations": {"$gt": 0},
+                }
+            },
+            {"$group": {"_id": None, "count": {"$sum": "$nr_citations"}}},
+        ]
+    else:
+        return extra_aggr_param + [
+            {
+                "$match": {
+                    "nr_citations": {"$gt": 0},
+                }
+            },
+            {"$group": {"_id": "$" + field, "count": {"$sum": "$nr_citations"}}},
+        ]
 
 
 def ind_caller(sci, results, extra_aggr_param=[]):
     results["i06"] = {}
+
+    try:
+        results["i06"]["sv00"] = uf.secondary_view(
+            sci, "all", i06_aggregation, extra_aggr_param
+        )
+        results["i06"]["sv00"]["total_publications"] = results["i06"]["sv00"].pop(None)
+    except Exception as e:
+        results["i06"]["sv01"] = None
+        print(f"Error calculating sv01: {str(e)}")
 
     try:
         results["i06"]["sv01"] = uf.secondary_view(

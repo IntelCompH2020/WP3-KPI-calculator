@@ -55,6 +55,8 @@ def main(config_file_path):
             )
 
             post_output.produce_results(
+                config_data["job_id"],
+                config_data["user_id"],
                 config_data["dgpv"][0]["dg"],
                 config_data["dgpv"][0]["pv"],
                 results,

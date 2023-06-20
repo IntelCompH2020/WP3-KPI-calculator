@@ -48,7 +48,7 @@ def get_indicator_schema(dgid, pvid, indid, svid, data):
     return ind_schema
 
 
-def get_data(dgid, pvid, indid, svid, data):
+def get_data(job_id, user_id, dgid, pvid, indid, svid, data):
     output = []
 
     common_dict = {
@@ -62,6 +62,8 @@ def get_data(dgid, pvid, indid, svid, data):
         "indid": indid,
         "sv": code_to_label[svid],
         "svid": svid,
+        "analysis_id": job_id,
+        "user_id": user_id,
     }
 
     def process_data(k, v):
@@ -74,7 +76,7 @@ def get_data(dgid, pvid, indid, svid, data):
                                 **common_dict,
                                 "key": k,
                                 "metric_scope": sub_k,
-                                "year": sub_sub_k,
+                                "year": str(sub_sub_k),
                                 "value": sub_sub_v,
                             }
                         )
@@ -90,10 +92,18 @@ def get_data(dgid, pvid, indid, svid, data):
                         )
                     else:
                         output.append(
-                            {**common_dict, "key": k, "year": sub_k, "value": sub_v}
+                            {
+                                **common_dict,
+                                "key": k,
+                                "year": str(sub_k),
+                                "value": sub_v,
+                            }
                         )
         else:
-            output.append({**common_dict, "key": k, "value": v})
+            if svid == "sv01":
+                output.append({**common_dict, "key": str(k), "value": v})
+            else:
+                output.append({**common_dict, "key": k, "value": v})
 
     data = {k: v for k, v in data.copy().items() if k is not None and v != "null"}
     for k, v in dict(sorted(data.items())).items():
@@ -102,7 +112,7 @@ def get_data(dgid, pvid, indid, svid, data):
     return output
 
 
-def produce_results(dgid, pvid, results, logging):
+def produce_results(job_id, user_id, dgid, pvid, results, logging):
     # Read the configuration from the JSON file
     with open(script_dir.joinpath("utils/pass.json")) as file:
         config = json.load(file)
@@ -129,7 +139,9 @@ def produce_results(dgid, pvid, results, logging):
 
     for indid in results.keys():
         for svid in results[indid].keys():
-            data = get_data(dgid, pvid, indid, svid, results[indid][svid])
+            data = get_data(
+                job_id, user_id, dgid, pvid, indid, svid, results[indid][svid]
+            )
 
             # Call the function to send the data to the API
             # Send the data to the API
@@ -147,6 +159,7 @@ def produce_results(dgid, pvid, results, logging):
             if response.status_code == 200:
                 logging.info(f"Data from {indid}_{svid} was sent successfully.")
             else:
+                # logging.info(f"{data}")
                 logging.error(
                     f"Error sending data from {indid}_{svid}. "
                     f"Status code: {response.status_code}"

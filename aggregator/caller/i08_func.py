@@ -3,14 +3,33 @@ from caller import i01_func
 
 
 def i08_aggregation(field, extra_aggr_param):
-    return extra_aggr_param + [
-        {"$group": {"_id": "$" + field, "count": {"$sum": "$fwci_score"}}}
-    ]
+    if field == "all":
+        return extra_aggr_param + [
+            {"$group": {"_id": None, "count": {"$sum": "$fwci_score"}}}
+        ]
+    else:
+        return extra_aggr_param + [
+            {"$group": {"_id": "$" + field, "count": {"$sum": "$fwci_score"}}}
+        ]
 
 
 def ind_caller(sci, results, extra_aggr_param=[]):
     results = i01_func.ind_caller(sci, results, extra_aggr_param)
     results["i08"] = {}
+
+    try:
+        numerator = uf.secondary_view(sci, "all", i08_aggregation, extra_aggr_param)
+        numerator["total_publications"] = numerator.pop(None)
+        denominator = results["i01"]["sv00"]
+        results["i08"]["sv00"] = {}
+        for k in numerator.keys():
+            if denominator[k] == 0:
+                denominator[k] = 1
+            results["i08"]["sv00"][k] = numerator[k] / denominator[k]
+    except Exception as e:
+        results["i08"]["sv00"] = None
+        print(f"Error calculating i08[sv00]: {str(e)}")
+
     try:
         numerator = uf.secondary_view(
             sci, "pub_year", i08_aggregation, extra_aggr_param

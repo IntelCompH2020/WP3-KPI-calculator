@@ -1,6 +1,6 @@
 {
     "sv00": "keyword",
-    "sv01": "integer",
+    "sv01": "keyword",
     "sv02": "keyword",
     "sv03": "keyword",
     "sv05": "keyword",
@@ -21,7 +21,7 @@
     "sv19": "keyword",
     "sv20": "keyword",
     "sv21": "keyword",
-    "sv02.01": "integer",
-    "sv17.01": "integer",
-    "sv18.01": "integer"
+    "sv02.01": "keyword",
+    "sv17.01": "keyword",
+    "sv18.01": "keyword"
   }
