@@ -139,28 +139,32 @@ def produce_results(job_id, user_id, dgid, pvid, results, logging):
 
     for indid in results.keys():
         for svid in results[indid].keys():
-            data = get_data(
-                job_id, user_id, dgid, pvid, indid, svid, results[indid][svid]
-            )
+            try:
+                data = get_data(
+                    job_id, user_id, dgid, pvid, indid, svid, results[indid][svid]
+                )
+                # Call the function to send the data to the API
+                # Send the data to the API
+                api_url = (
+                    "https://gateway.opix.ai/sti-viewer/api/api/indicator-point/"
+                    "664de786-2879-4b65-82c7-df5d0d30be84/bulk-persist"
+                )
+                headers = {
+                    "Authorization": f"Bearer {access_token}",
+                    "Content-Type": "application/json",
+                }
+                response = requests.post(api_url, headers=headers, json=data)
 
-            # Call the function to send the data to the API
-            # Send the data to the API
-            api_url = (
-                "https://gateway.opix.ai/sti-viewer/api/api/indicator-point/"
-                "664de786-2879-4b65-82c7-df5d0d30be84/bulk-persist"
-            )
-            headers = {
-                "Authorization": f"Bearer {access_token}",
-                "Content-Type": "application/json",
-            }
-            response = requests.post(api_url, headers=headers, json=data)
-
-            # Check if the request was successful
-            if response.status_code == 200:
-                logging.info(f"Data from {indid}_{svid} was sent successfully.")
-            else:
-                # logging.info(f"{data}")
+                # Check if the request was successful
+                if response.status_code == 200:
+                    logging.info(f"Data from {indid}_{svid} was sent successfully.")
+                else:
+                    # logging.info(f"{data}")
+                    logging.error(
+                        f"Error sending data from {indid}_{svid}. "
+                        f"Status code: {response.status_code}"
+                    )
+            except Exception as e:
                 logging.error(
-                    f"Error sending data from {indid}_{svid}. "
-                    f"Status code: {response.status_code}"
+                    f"Error executing function {indid}" f"for view {svid}: {str(e)}"
                 )

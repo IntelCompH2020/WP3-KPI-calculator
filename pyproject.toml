@@ -12,6 +12,7 @@ pymongo = "^4.3.3"
 requests = "^2.30.0"
 tqdm = "^4.65.0"
 ijson = "^3.2.0.post0"
+toml = "^0.10.2"
 
 
 [tool.poetry.group.dev.dependencies]

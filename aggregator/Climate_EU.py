@@ -28,7 +28,8 @@ def main(config_file_path):
     myclient = pymongo.MongoClient(
         "mongodb://adminuser:password123@gateway.opix.ai:27017/"
     )
-    STI_viewer_data = myclient["STI_viewer_data"]
+    # STI_viewer_data = myclient["STI_viewer_data"]
+    STI_viewer_data = myclient["testdb"]
 
     # Import and call functions based on the configuration file
     for func_config in config_data["functions"]:
@@ -46,19 +47,26 @@ def main(config_file_path):
             topic = config_data["dgpv"][0]["pv"]
 
             # Call the function
-            results = function_to_call(
-                STI_viewer_data[func_config["collection"]], results, template
-            )
+            # results = function_to_call(
+            #     STI_viewer_data[func_config["collection"]], results, template
+            # )
+            collection = "jobid"
+            results = function_to_call(STI_viewer_data[collection], results, template)
             logging.info(
                 f"For domain {domain} and topic {topic} Function {function_name} "
                 f"for module {module_name} executed successfully."
             )
 
+            dg = "dg01"
+            pv = "pv01"
+
             post_output.produce_results(
                 config_data["job_id"],
                 config_data["user_id"],
-                config_data["dgpv"][0]["dg"],
-                config_data["dgpv"][0]["pv"],
+                dg,
+                pv,
+                # config_data["dgpv"][0]["dg"],
+                # config_data["dgpv"][0]["pv"],
                 results,
                 logging,
             )
