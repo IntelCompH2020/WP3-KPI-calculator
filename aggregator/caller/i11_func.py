@@ -7,12 +7,13 @@ def i11_aggregation(field, extra_aggr_param):
 
 def i11_aggregation_nace(field, extra_aggr_param):
     return extra_aggr_param + [
+        {"$match": {"nace": {"$exists": True, "$not": {"$size": 0}}}},
         {
             "$group": {
                 "_id": ["$nace.nace2_code", "$nace.description"],
                 "count": {"$sum": 1},
             }
-        }
+        },
     ]
 
 
@@ -35,12 +36,13 @@ def i11_aggregation_backward(field, extra_aggr_param):
 
 def i11_aggregation_backward_nace(field, extra_aggr_param):
     return extra_aggr_param + [
+        {"$match": {"nace": {"$exists": True, "$not": {"$size": 0}}}},
         {
             "$group": {
                 "_id": ["$nace.nace2_code", "$nace.description"],
                 "count": {"$sum": "$citations.backward"},
             }
-        }
+        },
     ]
 
 

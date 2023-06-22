@@ -13,17 +13,19 @@ def i09_aggregation_per_year(field, extra_aggr_param):
 
 def i09_aggregation_per_year_nace(field, extra_aggr_param):
     return extra_aggr_param + [
+        {"$match": {"nace": {"$exists": True, "$not": {"$size": 0}}}},
         {
             "$group": {
                 "_id": ["$appln_filing_year", "$nace.nace2_code", "$nace.description"],
                 "count": {"$sum": 1},
             }
-        }
+        },
     ]
 
 
 def i09_aggregation_per_year_cpc(field, extra_aggr_param):
     return extra_aggr_param + [
+        {"$match": {"nace": {"$exists": True, "$not": {"$size": 0}}}},
         {
             "$group": {
                 "_id": [
@@ -33,7 +35,7 @@ def i09_aggregation_per_year_cpc(field, extra_aggr_param):
                 ],
                 "count": {"$sum": 1},
             }
-        }
+        },
     ]
 
 

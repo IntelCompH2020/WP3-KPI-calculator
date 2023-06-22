@@ -7,12 +7,13 @@ def i13_aggregation(field, extra_aggr_param):
 
 def i13_aggregation_nace(field, extra_aggr_param):
     return extra_aggr_param + [
+        {"$match": {"nace": {"$exists": True, "$not": {"$size": 0}}}},
         {
             "$group": {
                 "_id": ["$nace.nace2_code", "$nace.description"],
                 "count": {"$sum": 1},
             }
-        }
+        },
     ]
 
 
@@ -40,12 +41,13 @@ def i13_aggregation_npl(field, extra_aggr_param):
 
 def i13_aggregation_npl_nace(field, extra_aggr_param):
     return extra_aggr_param + [
+        {"$match": {"nace": {"$exists": True, "$not": {"$size": 0}}}},
         {
             "$group": {
                 "_id": ["$nace.nace2_code", "$nace.description"],
                 "count": {"$sum": "$citations.non_patent_literature"},
             }
-        }
+        },
     ]
 
 
