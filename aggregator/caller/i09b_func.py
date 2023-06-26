@@ -14,22 +14,24 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         res = uf.inner_secondary_view_per_year(
             pat, "topic", i09b_aggregation_per_year, extra_aggr_param
         )
+        new_res = {}
+        for key, sub_dict in res.items():
+            new_sub_dict = {k: v for k, v in sub_dict.items() if v != 0}
+            new_res[key] = new_sub_dict
 
         total = {}
-        for topic in res.keys():
-            for i in res[topic].keys():
+        for topic in new_res.keys():
+            for i in new_res[topic].keys():
                 if i not in total.keys():
-                    total[i] = res[topic][i]
+                    total[i] = new_res[topic][i]
                 else:
-                    total[i] += res[topic][i]
+                    total[i] += new_res[topic][i]
 
-        for topic in res.keys():
-            for i in res[topic].keys():
-                if total[i] == 0:
-                    total[i] = 1
-                res[topic][i] /= total[i]
+        for topic in new_res.keys():
+            for i in new_res[topic].keys():
+                new_res[topic][i] /= total[i]
 
-        results["i09b"]["sv02"] = res
+        results["i09b"]["sv02"] = new_res
 
     except Exception as e:
         results["i09b"]["sv02"] = None
