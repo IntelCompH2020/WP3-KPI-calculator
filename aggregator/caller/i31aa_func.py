@@ -1,5 +1,5 @@
 import pandas as pd
-
+from utils import uf
 
 template = [
     {"$match": {"Publications": {"$exists": True, "$not": {"$size": 0}}}},
@@ -10,20 +10,34 @@ template = [
     },
 ]
 
-lookup = [
-    {
-        "$lookup": {
-            "from": "SDGs_companies",
-            "localField": "doi",
-            "foreignField": "Publications.DOI",
-            "as": "sdg",
-        }
-    },
-    {"$set": {"sdg": {"$arrayElemAt": ["$sdg.SDGs", 0]}}},
-]
 
+def ind_caller(enco, results, extra_aggr_param=[], working_path=""):
+    pv = uf.pv
+    if pv == "pv01":
+        lookup = [
+            {
+                "$lookup": {
+                    "from": "SDGs_companies",
+                    "localField": "doi",
+                    "foreignField": "Publications.DOI",
+                    "as": "sdg",
+                }
+            },
+            {"$set": {"sdg": {"$arrayElemAt": ["$sdg.SDGs", 0]}}},
+        ]
+    elif pv == "pv02":
+        lookup = [
+            {
+                "$lookup": {
+                    "from": "SDGs_agrofood",
+                    "localField": "doi",
+                    "foreignField": "Publications.DOI",
+                    "as": "sdg",
+                }
+            },
+            {"$set": {"sdg": {"$arrayElemAt": ["$sdg.SDGs", 0]}}},
+        ]
 
-def ind_caller(enco, results, extra_aggr_param=[], spark_output=""):
     results["i31aa"] = {}
 
     documents = enco.aggregate(extra_aggr_param + template)

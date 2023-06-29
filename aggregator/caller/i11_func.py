@@ -57,7 +57,7 @@ def i11_aggregation_backward_ipc(field, extra_aggr_param):
     ]
 
 
-def ind_caller(pat, results, extra_aggr_param=[], spark_output=""):
+def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
     results["i11"] = {}
 
     try:

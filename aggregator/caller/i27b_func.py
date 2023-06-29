@@ -13,7 +13,7 @@ def i27b_aggregation(field, extra_aggr_param):
     ]
 
 
-def ind_caller(sci, results, extra_aggr_param=[], spark_output=""):
+def ind_caller(sci, results, extra_aggr_param=[], working_path=""):
     results["i27b"] = {}
 
     try:

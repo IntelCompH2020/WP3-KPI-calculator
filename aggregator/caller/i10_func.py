@@ -21,7 +21,7 @@ def get_3_year_average_growth(data):
     return res
 
 
-def ind_caller(pat, results, extra_aggr_param=[], spark_output=""):
+def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
     results = i09_func.ind_caller(pat, results, extra_aggr_param)
     results["i10"] = {}
 

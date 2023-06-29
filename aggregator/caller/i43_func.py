@@ -22,7 +22,7 @@ template = [
 ]
 
 
-def ind_caller(enco, results, extra_aggr_param=[], spark_output=""):
+def ind_caller(enco, results, extra_aggr_param=[], working_path=""):
     # Initialize a new dictionary for the results
     results["i43"] = {}
 

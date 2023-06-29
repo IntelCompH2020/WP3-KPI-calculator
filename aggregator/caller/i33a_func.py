@@ -12,7 +12,7 @@ template = [
 ]
 
 
-def ind_caller(enco, results, extra_aggr_param=[], spark_output=""):
+def ind_caller(enco, results, extra_aggr_param=[], working_path=""):
     results["i33a"] = {}
 
     # # Find documents and convert to dataframe

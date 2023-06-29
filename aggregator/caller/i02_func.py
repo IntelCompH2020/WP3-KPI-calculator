@@ -22,7 +22,7 @@ def get_annual_growth_from_per_year(per_year):
     return per_year
 
 
-def ind_caller(sci, results, extra_aggr_param=[], spark_output=""):
+def ind_caller(sci, results, extra_aggr_param=[], working_path=""):
     results["i02"] = {}
 
     try:

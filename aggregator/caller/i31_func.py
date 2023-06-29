@@ -13,7 +13,7 @@ template = [
 ]
 
 
-def ind_caller(enco, results, extra_aggr_param=[], spark_output=""):
+def ind_caller(enco, results, extra_aggr_param=[], working_path=""):
     results["i31"] = {}
 
     documents = enco.aggregate(extra_aggr_param + template)

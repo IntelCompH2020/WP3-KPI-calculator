@@ -15,7 +15,7 @@ def main(config_file_path):
         config_data = json.load(config_file)
 
     # Configure logging
-    log_dir = "/workdir/patent-workflow/" + config_data["job_id"] + "logs"
+    log_dir = config_data["working_path"] + "logs"
     os.makedirs(log_dir, exist_ok=True)
     log_file = os.path.join(log_dir, "output.log")
     logging.basicConfig(
@@ -54,7 +54,7 @@ def main(config_file_path):
             pv = uf.pv
             # HARD CODED
 
-            spark_output = config_data["spark_output"]
+            working_path = config_data["working_path"]
 
             # Call the function
             if config_data["job_id"] == "intelcompt":
@@ -63,7 +63,7 @@ def main(config_file_path):
                     STI_viewer_data[func_config["collection"]],
                     results,
                     template,
-                    spark_output,
+                    working_path,
                 )
                 output_func.produce_results(
                     # config_data["dgpv"][0]["dg"],

@@ -5,27 +5,27 @@ from utils import uf
 # /media/datalake/patstat_2021b/output/i13a-energy/
 
 
-def ind_caller(pat, results, extra_aggr_param=[], spark_output=""):
+def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
     results["i13a"] = {}
 
     dg = uf.dg
     pv = uf.pv
     if dg == "dg01" and pv == "pv01":
         path = "/media/datalake/patstat_2022b/output/i13a-Energy/"
-        space = "EU"
+        space = "EU/"
     elif dg == "dg02" and pv == "pv01":
         path = "/media/datalake/patstat_2022b/output/i13a-Energy/"
-        space = "GR"
+        space = "GR/"
     elif dg == "dg01" and pv == "pv02":
         path = "/media/datalake/patstat_2022b/output/i13a-Agrifood/"
-        space = "EU"
+        space = "EU/"
     elif dg == "dg02" and pv == "pv02":
         path = "/media/datalake/patstat_2022b/output/i13a-Agrifood/"
-        space = "GR"
+        space = "GR/"
 
     try:
-        path = path + "sv00-" + space
-        json_files = glob.glob(path + "*.json")
+        sv_path = path + "sv00-" + space
+        json_files = glob.glob(sv_path + "*.json")
         data = []
         with open(json_files[0]) as f:
             for line in f:
@@ -38,8 +38,8 @@ def ind_caller(pat, results, extra_aggr_param=[], spark_output=""):
         print(f"Error calculating i13a[sv00]: {str(e)}")
 
     try:
-        path = path + "sv01-" + space
-        json_files = glob.glob(path + "*.json")
+        sv_path = path + "sv01-" + space
+        json_files = glob.glob(sv_path + "*.json")
         data = []
         with open(json_files[0]) as f:
             for line in f:
@@ -52,8 +52,8 @@ def ind_caller(pat, results, extra_aggr_param=[], spark_output=""):
         print(f"Error calculating i13a[sv01]: {str(e)}")
 
     try:
-        path = path + "sv02-" + space
-        json_files = glob.glob(path + "*.json")
+        sv_path = path + "sv02-" + space
+        json_files = glob.glob(sv_path + "*.json")
         data = []
         with open(json_files[0]) as f:
             for line in f:
@@ -66,8 +66,8 @@ def ind_caller(pat, results, extra_aggr_param=[], spark_output=""):
         print(f"Error calculating i13a[sv02]: {str(e)}")
 
     try:
-        path = path + "sv05-" + space
-        json_files = glob.glob(path + "*.json")
+        sv_path = path + "sv05-" + space
+        json_files = glob.glob(sv_path + "*.json")
         data = []
         with open(json_files[0]) as f:
             for line in f:
@@ -80,8 +80,8 @@ def ind_caller(pat, results, extra_aggr_param=[], spark_output=""):
         print(f"Error calculating i13a[sv05]: {str(e)}")
 
     try:
-        path = path + "sv09-" + space
-        json_files = glob.glob(path + "*.json")
+        sv_path = path + "sv09-" + space
+        json_files = glob.glob(sv_path + "*.json")
         data = []
         with open(json_files[0]) as f:
             for line in f:
@@ -96,8 +96,8 @@ def ind_caller(pat, results, extra_aggr_param=[], spark_output=""):
         print(f"Error calculating i13a[sv09]: {str(e)}")
 
     try:
-        path = path + "sv10-" + space
-        json_files = glob.glob(path + "*.json")
+        sv_path = path + "sv10-" + space
+        json_files = glob.glob(sv_path + "*.json")
         data = []
         with open(json_files[0]) as f:
             for line in f:

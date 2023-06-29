@@ -57,7 +57,7 @@ def i12_aggregation_forward_cpc(field, extra_aggr_param):
     ]
 
 
-def ind_caller(pat, results, extra_aggr_param=[], spark_output=""):
+def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
     results["i12"] = {}
 
     try:
