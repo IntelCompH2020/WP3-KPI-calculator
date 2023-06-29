@@ -57,7 +57,7 @@ def i11_aggregation_backward_ipc(field, extra_aggr_param):
     ]
 
 
-def ind_caller(pat, results, extra_aggr_param=[]):
+def ind_caller(pat, results, extra_aggr_param=[], spark_output=""):
     results["i11"] = {}
 
     try:
@@ -67,10 +67,13 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         denominator = uf.secondary_view(
             pat, "appln_filing_year", i11_aggregation, extra_aggr_param
         )
+        # Remove keys where the denominator is zero
+        denominator = {k: v for k, v in denominator.items() if v != 0}
         results["i11"]["sv01"] = {}
         for k in numerator.keys():
-            if denominator[k] == 0:
-                denominator[k] = 1
+            # If key is not present in the denominator, skip the calculation
+            if k not in denominator:
+                continue
             results["i11"]["sv01"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i11"]["sv01"] = None
@@ -81,10 +84,13 @@ def ind_caller(pat, results, extra_aggr_param=[]):
             pat, "topic", i11_aggregation_backward, extra_aggr_param
         )
         denominator = uf.secondary_view(pat, "topic", i11_aggregation, extra_aggr_param)
+        # Remove keys where the denominator is zero
+        denominator = {k: v for k, v in denominator.items() if v != 0}
         results["i11"]["sv02"] = {}
         for k in numerator.keys():
-            if denominator[k] == 0:
-                denominator[k] = 1
+            # If key is not present in the denominator, skip the calculation
+            if k not in denominator:
+                continue
             results["i11"]["sv02"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i11"]["sv02"] = None
@@ -97,10 +103,13 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         denominator = uf.secondary_view(
             pat, "category", i11_aggregation, extra_aggr_param
         )
+        # Remove keys where the denominator is zero
+        denominator = {k: v for k, v in denominator.items() if v != 0}
         results["i11"]["sv03"] = {}
         for k in numerator.keys():
-            if denominator[k] == 0:
-                denominator[k] = 1
+            # If key is not present in the denominator, skip the calculation
+            if k not in denominator:
+                continue
             results["i11"]["sv03"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i11"]["sv03"] = None
@@ -113,10 +122,13 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         denominator = uf.inner_secondary_view(
             pat, "participant.name", i11_aggregation, extra_aggr_param
         )
+        # Remove keys where the denominator is zero
+        denominator = {k: v for k, v in denominator.items() if v != 0}
         results["i11"]["sv06"] = {}
         for k in numerator.keys():
-            if denominator[k] == 0:
-                denominator[k] = 1
+            # If key is not present in the denominator, skip the calculation
+            if k not in denominator:
+                continue
             results["i11"]["sv06"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i11"]["sv06"] = None
@@ -129,10 +141,13 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         denominator = uf.inner_secondary_view_nace_cpc(
             pat, "nace.nace2_code", i11_aggregation_nace, extra_aggr_param
         )
+        # Remove keys where the denominator is zero
+        denominator = {k: v for k, v in denominator.items() if v != 0}
         results["i11"]["sv07"] = {}
         for k in numerator.keys():
-            if denominator[k] == 0:
-                denominator[k] = 1
+            # If key is not present in the denominator, skip the calculation
+            if k not in denominator:
+                continue
             results["i11"]["sv07"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i11"]["sv07"] = None
@@ -145,10 +160,13 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         denominator = uf.inner_secondary_view(
             pat, "participant.sector", i11_aggregation, extra_aggr_param
         )
+        # Remove keys where the denominator is zero
+        denominator = {k: v for k, v in denominator.items() if v != 0}
         results["i11"]["sv08"] = {}
         for k in numerator.keys():
-            if denominator[k] == 0:
-                denominator[k] = 1
+            # If key is not present in the denominator, skip the calculation
+            if k not in denominator:
+                continue
             results["i11"]["sv08"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i11"]["sv08"] = None
@@ -161,18 +179,14 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         denominator = uf.inner_secondary_view(
             pat, "participant.country", i11_aggregation, extra_aggr_param
         )
-        full_set = {}
-        for k in numerator.keys():
-            if denominator[k] == 0:
-                denominator[k] = 1
-            full_set[k] = numerator[k] / denominator[k]
-
+        # Remove keys where the denominator is zero
+        denominator = {k: v for k, v in denominator.items() if v != 0}
         results["i11"]["sv09"] = {}
-        for k in full_set.keys():
-            if k in uf.eu_members_code:
-                results["i11"]["sv09"][
-                    uf.eu_members[uf.eu_members_code.index(k)]
-                ] = full_set[k]
+        for k in numerator.keys():
+            # If key is not present in the denominator, skip the calculation
+            if k not in denominator:
+                continue
+            results["i11"]["sv09"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i11"]["sv09"] = None
         print(f"Error calculating i11[sv09]: {str(e)}")
@@ -184,10 +198,13 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         denominator = uf.inner_secondary_view_nace_cpc(
             pat, "ipc.ipc_class", i11_aggregation_ipc, extra_aggr_param
         )
+        # Remove keys where the denominator is zero
+        denominator = {k: v for k, v in denominator.items() if v != 0}
         results["i11"]["sv13"] = {}
         for k in numerator.keys():
-            if denominator[k] == 0:
-                denominator[k] = 1
+            # If key is not present in the denominator, skip the calculation
+            if k not in denominator:
+                continue
             results["i11"]["sv13"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i11"]["sv13"] = None

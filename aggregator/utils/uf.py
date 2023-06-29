@@ -58,6 +58,12 @@ eu_members_code = [
     "SE",
 ]
 
+
+# HARD CODED
+dg = "dg01"
+pv = "pv01"
+# HARD CODED
+
 journal_filter = [{"$match": {"pub_type": {"$eq": "Journal"}}}]
 
 pat_organisations = [
@@ -358,21 +364,19 @@ def inner_secondary_view_nace_cpc_companies(
 
 
 def sdg_aggregation(sci, aggregation, extra_aggr_param=[]):
-    lookup = [
-        {
-            "$lookup": {
-                "from": "SDGs_agrofood",
-                "localField": "doi",
-                "foreignField": "doi",
-                "as": "sdg",
-            }
-        },
-        {"$set": {"sdg": {"$arrayElemAt": ["$sdg.SDGs", 0]}}},
-    ]
+    # lookup = [
+    #     {
+    #         "$lookup": {
+    #             "from": "SDGs_scientific",
+    #             "localField": "doi",
+    #             "foreignField": "doi",
+    #             "as": "sdg",
+    #         }
+    #     },
+    #     {"$set": {"sdg": {"$arrayElemAt": ["$sdg.SDGs", 0]}}},
+    # ]
 
-    agg = sci.aggregate(
-        aggregation("sdg", lookup + extra_aggr_param), allowDiskUse=True
-    )
+    agg = sci.aggregate(aggregation("sdg", extra_aggr_param), allowDiskUse=True)
 
     result = {}
     sv_values = set()

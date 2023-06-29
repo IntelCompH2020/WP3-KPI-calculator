@@ -39,10 +39,9 @@ def i09_aggregation_per_year_cpc(field, extra_aggr_param):
     ]
 
 
-def ind_caller(pat, results, extra_aggr_param=[]):
+def ind_caller(pat, results, extra_aggr_param=[], spark_output=""):
     results["i09"] = {}
 
-    print(extra_aggr_param)
     try:
         results["i09"]["sv01"] = uf.secondary_view(
             pat, "appln_filing_year", i09_aggregation, extra_aggr_param

@@ -1,12 +1,28 @@
 import glob
 import json
+from utils import uf
 
 
-def ind_caller(pat, results, extra_aggr_param=[]):
+def ind_caller(pat, results, extra_aggr_param=[], spark_output=""):
     results["i12a"] = {}
 
+    dg = uf.dg
+    pv = uf.pv
+    if dg == "dg01" and pv == "pv01":
+        path = "/media/datalake/patstat_2022b/output/i12a-Energy/"
+        space = "EU"
+    elif dg == "dg02" and pv == "pv01":
+        path = "/media/datalake/patstat_2022b/output/i12a-Energy/"
+        space = "GR"
+    elif dg == "dg01" and pv == "pv02":
+        path = "/media/datalake/patstat_2022b/output/i12a-Agrifood/"
+        space = "EU"
+    elif dg == "dg02" and pv == "pv02":
+        path = "/media/datalake/patstat_2022b/output/i12a-Agrifood/"
+        space = "GR"
+
     try:
-        path = "/media/datalake/patstat_2021b/output/i12a-Energy/sv00-EU/"
+        path = path + "sv00-" + space
         # path = "/media/datalake/stiviewer/temp/i12a/sv00-EU/"
         json_files = glob.glob(path + "*.json")
         data = []
@@ -23,7 +39,7 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         print(f"Error calculating i12a[sv00]: {str(e)}")
 
     try:
-        path = "/media/datalake/patstat_2021b/output/i12a-Energy/sv01-EU/"
+        path = path + "sv01-" + space
         # path = "/media/datalake/stiviewer/temp/i12a/sv01-EU/"
         json_files = glob.glob(path + "*.json")
         data = []
@@ -40,7 +56,7 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         print(f"Error calculating i12a[sv01]: {str(e)}")
 
     try:
-        path = "/media/datalake/patstat_2021b/output/i12a-Energy/sv02-EU/"
+        path = path + "sv02-" + space
         # path = "/media/datalake/stiviewer/temp/i12a/sv02-EU/"
         json_files = glob.glob(path + "*.json")
         data = []
@@ -57,7 +73,7 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         print(f"Error calculating i12a[sv02]: {str(e)}")
 
     try:
-        path = "/media/datalake/patstat_2021b/output/i12a-Energy/sv06-EU/"
+        path = path + "sv06-" + space
         # path = "/media/datalake/stiviewer/temp/i12a/sv06-EU/"
         json_files = glob.glob(path + "*.json")
         data = []
@@ -68,13 +84,13 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         for d in data:
             if d["tag"] not in results["i12a"]["sv06"]:
                 results["i12a"]["sv06"][d["tag"]] = {}
-            results["i12a"]["sv06"][d["name"]] = d["count"]
+            results["i12a"]["sv06"][d["tag"]][d["name"]] = d["count"]
     except Exception as e:
         results["i12a"]["sv06"] = None
         print(f"Error calculating i12a[sv06]: {str(e)}")
 
     try:
-        path = "/media/datalake/patstat_2021b/output/i12a-Energy/sv07-EU/"
+        path = path + "sv07-" + space
         # path = "/media/datalake/stiviewer/temp/i12a/sv07-EU/"
         json_files = glob.glob(path + "*.json")
         data = []
@@ -85,31 +101,33 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         for d in data:
             if d["tag"] not in results["i12a"]["sv07"]:
                 results["i12a"]["sv07"][d["tag"]] = {}
-            results["i12a"]["sv07"][d["nace"]] = d["count"]
-            print(results["i12a"]["sv07"])
+            results["i12a"]["sv07"][d["tag"]][d["nace"]] = d["count"]
     except Exception as e:
         results["i12a"]["sv07"] = None
         print(f"Error calculating i12a[sv07]: {str(e)}")
 
-    # try:
-    #     path = "/media/datalake/patstat_2021b/output/i12a-Energy/sv08-EU/"
-    #     # path = "/media/datalake/stiviewer/temp/i12a/sv08-EU/"
-    #     json_files = glob.glob(path + "*.json")
-    #     data = []
-    #     with open(json_files[0]) as f:
-    #         for line in f:
-    #             data.append(json.loads(line))
-    #     results["i12a"]["sv08"] = {}
-    #     for d in data:
-    #         if d["tag"] not in results["i12a"]["sv08"]:
-    #             results["i12a"]["sv08"][d["tag"]] = {}
-    #         results["i12a"]["sv08"][d["sector"]] = d["count"]
-    # except Exception as e:
-    #     results["i12a"]["sv08"] = None
-    #     print(f"Error calculating i12a[sv08]: {str(e)}")
+    try:
+        path = path + "sv08-" + space
+        # path = "/media/datalake/stiviewer/temp/i12a/sv08-EU/"
+        json_files = glob.glob(path + "*.json")
+        data = []
+        with open(json_files[0]) as f:
+            for line in f:
+                data.append(json.loads(line))
+        results["i12a"]["sv08"] = {}
+        for d in data:
+            if d["tag"] not in results["i12a"]["sv08"]:
+                results["i12a"]["sv08"][d["tag"]] = {}
+            try:
+                results["i12a"]["sv08"][d["tag"]][d["sector"]] = d["count"]
+            except Exception as e:
+                print(f"Error calculating i12a[sv08]: {str(e)}")
+    except Exception as e:
+        results["i12a"]["sv08"] = None
+        print(f"Error calculating i12a[sv08]: {str(e)}")
 
     try:
-        path = "/media/datalake/patstat_2021b/output/i12a-Energy/sv09-EU/"
+        path = path + "sv09-" + space
         # path = "/media/datalake/stiviewer/temp/i12a/sv09-EU/"
         json_files = glob.glob(path + "*.json")
         data = []
@@ -120,13 +138,13 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         for d in data:
             if d["tag"] not in results["i12a"]["sv09"]:
                 results["i12a"]["sv09"][d["tag"]] = {}
-            results["i12a"]["sv09"][d["country"]] = d["count"]
+            results["i12a"]["sv09"][d["tag"]][d["country"]] = d["count"]
     except Exception as e:
         results["i12a"]["sv09"] = None
         print(f"Error calculating i12a[sv09]: {str(e)}")
 
     try:
-        path = "/media/datalake/patstat_2021b/output/i12a-Energy/sv13-EU/"
+        path = path + "sv13-" + space
         # path = "/media/datalake/stiviewer/temp/i12a/sv13-EU/"
         json_files = glob.glob(path + "*.json")
         data = []
@@ -137,7 +155,7 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         for d in data:
             if d["tag"] not in results["i12a"]["sv13"]:
                 results["i12a"]["sv13"][d["tag"]] = {}
-            results["i12a"]["sv13"][d["classification"]] = d["count"]
+            results["i12a"]["sv13"][d["tag"]][d["classification"]] = d["count"]
     except Exception as e:
         results["i12a"]["sv13"] = None
         print(f"Error calculating i12a[sv13]: {str(e)}")

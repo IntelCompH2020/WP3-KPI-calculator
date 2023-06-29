@@ -2,7 +2,7 @@ from caller import i01_func
 from caller import i20_func
 
 
-def ind_caller(sci, results, extra_aggr_param=[]):
+def ind_caller(sci, results, extra_aggr_param=[], spark_output=""):
     results = i01_func.ind_caller(sci, results, extra_aggr_param)
     results = i20_func.ind_caller(sci, results, extra_aggr_param)
 
@@ -11,7 +11,6 @@ def ind_caller(sci, results, extra_aggr_param=[]):
     results["i20"] = {k: v for k, v in results["i20"].items() if v}
 
     results["i21"] = {}
-
     try:
         for sv in results["i20"].keys():
             if sv in results["i01"].keys():

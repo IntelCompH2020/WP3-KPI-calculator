@@ -5,6 +5,11 @@ import requests
 script_dir = Path(__file__).resolve().parent.parent
 
 
+def check_empty_dict(input_dict):
+    if not input_dict:
+        raise ValueError("Dictionary is empty")
+
+
 def get_data(job_id, user_id, dgid, pvid, indid, svid, data):
     output = []
 
@@ -52,6 +57,24 @@ def get_data(job_id, user_id, dgid, pvid, indid, svid, data):
                                 "value": sub_v,
                             }
                         )
+                    elif indid == "i12a" and not (svid == "sv01" or svid == "sv00"):
+                        output.append(
+                            {
+                                **common_dict,
+                                "tag": k,
+                                "key": sub_k,
+                                "value": sub_v,
+                            }
+                        )
+                    elif indid == "i12a" and (svid == "sv01" or svid == "sv00"):
+                        output.append(
+                            {
+                                **common_dict,
+                                "tag": k,
+                                "year": str(sub_k),
+                                "value": sub_v,
+                            }
+                        )
                     else:
                         output.append(
                             {
@@ -67,6 +90,7 @@ def get_data(job_id, user_id, dgid, pvid, indid, svid, data):
             else:
                 output.append({**common_dict, "key": k, "value": v})
 
+    check_empty_dict(data)
     data = {k: v for k, v in data.copy().items() if k is not None and v != "null"}
     for k, v in dict(sorted(data.items())).items():
         process_data(k, v)
@@ -105,6 +129,9 @@ def produce_results(job_id, user_id, dgid, pvid, results, logging):
                 data = get_data(
                     job_id, user_id, dgid, pvid, indid, svid, results[indid][svid]
                 )
+                # Drop zero values
+                new_data = [item for item in data if item["value"] != 0]
+                # print(new_data[0])
                 # Call the function to send the data to the API
                 # Send the data to the API
                 api_url = (
@@ -115,7 +142,7 @@ def produce_results(job_id, user_id, dgid, pvid, results, logging):
                     "Authorization": f"Bearer {access_token}",
                     "Content-Type": "application/json",
                 }
-                response = requests.post(api_url, headers=headers, json=data)
+                response = requests.post(api_url, headers=headers, json=new_data)
                 # Check if the request was successful
                 if response.status_code == 200:
                     logging.info(f"Data from {indid}_{svid} was sent successfully.")

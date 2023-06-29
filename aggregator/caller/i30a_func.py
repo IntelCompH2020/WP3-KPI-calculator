@@ -11,7 +11,7 @@ template = [
 ]
 
 
-def ind_caller(enco, results, extra_aggr_param=[]):
+def ind_caller(enco, results, extra_aggr_param=[], spark_output=""):
     results["i30a"] = {}
 
     documents = enco.aggregate(extra_aggr_param + template)
@@ -38,25 +38,47 @@ def ind_caller(enco, results, extra_aggr_param=[]):
         print(f"Error calculating i30a[sv00]: {str(e)}")
 
     try:
-        results["i30a"]["sv07"] = (
-            df.groupby("NACE2dl")["RevenueByEmployee"].count().to_dict()
+        # Convert DataFrame to dictionary
+        df_dict = (
+            df.groupby("company_name")[["NACE2dl", "RevenueByEmployee"]]
+            .sum()
+            .to_dict(orient="index")
         )
+        # Post-processing to get desired format
+        results["i30a"]["sv07"] = {
+            k: {v["NACE2dl"]: v["RevenueByEmployee"]} for k, v in df_dict.items()
+        }
     except Exception as e:
         results["i30a"]["sv07"] = None
         print(f"Error calculating i30a[sv07]: {str(e)}")
 
     try:
-        results["i30a"]["sv07b"] = (
-            df.groupby("NACE4dl")["RevenueByEmployee"].count().to_dict()
+        # Convert DataFrame to dictionary
+        df_dict = (
+            df.groupby("company_name")[["NACE4dl", "RevenueByEmployee"]]
+            .sum()
+            .to_dict(orient="index")
         )
+        # Post-processing to get desired format
+        results["i30a"]["sv07b"] = {
+            k: {v["NACE4dl"]: v["RevenueByEmployee"]} for k, v in df_dict.items()
+        }
     except Exception as e:
         results["i30a"]["sv07b"] = None
         print(f"Error calculating i30a[sv07b]: {str(e)}")
 
     try:
-        results["i30a"]["sv09"] = (
-            df.groupby("Country ISO code")["RevenueByEmployee"].count().to_dict()
+        # Convert DataFrame to dictionary
+        df_dict = (
+            df.groupby("company_name")[["Country ISO code", "RevenueByEmployee"]]
+            .sum()
+            .to_dict(orient="index")
         )
+        # Post-processing to get desired format
+        results["i30a"]["sv09"] = {
+            k: {v["Country ISO code"]: v["RevenueByEmployee"]}
+            for k, v in df_dict.items()
+        }
     except Exception as e:
         results["i30a"]["sv09"] = None
         print(f"Error calculating i30a[sv09]: {str(e)}")

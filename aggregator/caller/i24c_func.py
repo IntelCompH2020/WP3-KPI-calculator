@@ -1,4 +1,5 @@
 from utils import uf
+from caller import i24b_func
 
 
 def i24c_aggregation(field, extra_aggr_param):
@@ -15,7 +16,8 @@ def i24c_aggregation(field, extra_aggr_param):
     ]
 
 
-def ind_caller(sci, results, extra_aggr_param=[]):
+def ind_caller(sci, results, extra_aggr_param=[], spark_output=""):
+    results = i24b_func.ind_caller(sci, results, extra_aggr_param)
     results["i24c"] = {}
 
     try:
@@ -23,10 +25,13 @@ def ind_caller(sci, results, extra_aggr_param=[]):
             sci, "pub_year", i24c_aggregation, extra_aggr_param
         )
         denominator = results["i24b"]["sv01"]
+        # Remove keys where the denominator is zero
+        denominator = {k: v for k, v in denominator.items() if v != 0}
         results["i24c"]["sv01"] = {}
         for k in numerator.keys():
-            if denominator[k] == 0:
-                denominator[k] = 1
+            # If key is not present in the denominator, skip the calculation
+            if k not in denominator:
+                continue
             results["i24c"]["sv01"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i24c"]["sv01"] = None
@@ -37,10 +42,13 @@ def ind_caller(sci, results, extra_aggr_param=[]):
             sci, "topic", i24c_aggregation, extra_aggr_param
         )
         denominator = results["i24b"]["sv02"]
+        # Remove keys where the denominator is zero
+        denominator = {k: v for k, v in denominator.items() if v != 0}
         results["i24c"]["sv02"] = {}
         for k in numerator.keys():
-            if denominator[k] == 0:
-                denominator[k] = 1
+            # If key is not present in the denominator, skip the calculation
+            if k not in denominator:
+                continue
             results["i24c"]["sv02"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i24c"]["sv02"] = None
@@ -51,10 +59,13 @@ def ind_caller(sci, results, extra_aggr_param=[]):
             sci, "category", i24c_aggregation, extra_aggr_param
         )
         denominator = results["i24b"]["sv03"]
+        # Remove keys where the denominator is zero
+        denominator = {k: v for k, v in denominator.items() if v != 0}
         results["i24c"]["sv03"] = {}
         for k in numerator.keys():
-            if denominator[k] == 0:
-                denominator[k] = 1
+            # If key is not present in the denominator, skip the calculation
+            if k not in denominator:
+                continue
             results["i24c"]["sv03"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i24c"]["sv03"] = None
@@ -63,10 +74,13 @@ def ind_caller(sci, results, extra_aggr_param=[]):
     try:
         numerator = uf.sdg_aggregation(sci, i24c_aggregation, extra_aggr_param)
         denominator = results["i24b"]["sv05"]
+        # Remove keys where the denominator is zero
+        denominator = {k: v for k, v in denominator.items() if v != 0}
         results["i24c"]["sv05"] = {}
         for k in numerator.keys():
-            if denominator[k] == 0:
-                denominator[k] = 1
+            # If key is not present in the denominator, skip the calculation
+            if k not in denominator:
+                continue
             results["i24c"]["sv05"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i24c"]["sv05"] = None
@@ -77,10 +91,13 @@ def ind_caller(sci, results, extra_aggr_param=[]):
             sci, "affiliations.affiliation_name", i24c_aggregation, extra_aggr_param
         )
         denominator = results["i24b"]["sv06"]
+        # Remove keys where the denominator is zero
+        denominator = {k: v for k, v in denominator.items() if v != 0}
         results["i24c"]["sv06"] = {}
         for k in numerator.keys():
-            if denominator[k] == 0:
-                denominator[k] = 1
+            # If key is not present in the denominator, skip the calculation
+            if k not in denominator:
+                continue
             results["i24c"]["sv06"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i24c"]["sv06"] = None
@@ -91,12 +108,12 @@ def ind_caller(sci, results, extra_aggr_param=[]):
             sci, "affiliations.country", i24c_aggregation, extra_aggr_param
         )
         denominator = results["i24b"]["sv09"]
+        # Remove keys where the denominator is zero
+        denominator = {k: v for k, v in denominator.items() if v != 0}
         results["i24c"]["sv09"] = {}
         for k in numerator.keys():
             if k not in denominator:
                 continue
-            if denominator[k] == 0:
-                denominator[k] = 1
             results["i24c"]["sv09"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i24c"]["sv09"] = None
@@ -110,12 +127,13 @@ def ind_caller(sci, results, extra_aggr_param=[]):
             uf.journal_filter + extra_aggr_param,
         )
         denominator = results["i24b"]["sv10"]
+        # Remove keys where the denominator is zero
+        denominator = {k: v for k, v in denominator.items() if v != 0}
         results["i24c"]["sv10"] = {}
         for k in numerator.keys():
+            # If key is not present in the denominator, skip the calculation
             if k not in denominator:
                 continue
-            if denominator[k] == 0:
-                denominator[k] = 1
             results["i24c"]["sv10"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i24c"]["sv10"] = None
@@ -124,12 +142,13 @@ def ind_caller(sci, results, extra_aggr_param=[]):
     try:
         numerator = uf.secondary_view(sci, "publisher", i24c_aggregation)
         denominator = results["i24b"]["sv11"]
+        # Remove keys where the denominator is zero
+        denominator = {k: v for k, v in denominator.items() if v != 0}
         results["i24c"]["sv11"] = {}
         for k in numerator.keys():
+            # If key is not present in the denominator, skip the calculation
             if k not in denominator:
                 continue
-            if denominator[k] == 0:
-                denominator[k] = 1
             results["i24c"]["sv11"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i24c"]["sv11"] = None
@@ -140,10 +159,13 @@ def ind_caller(sci, results, extra_aggr_param=[]):
             sci, "funders.funder", i24c_aggregation, extra_aggr_param
         )
         denominator = results["i24b"]["sv12"]
+        # Remove keys where the denominator is zero
+        denominator = {k: v for k, v in denominator.items() if v != 0}
         results["i24c"]["sv12"] = {}
         for k in numerator.keys():
-            if denominator[k] == 0:
-                denominator[k] = 1
+            # If key is not present in the denominator, skip the calculation
+            if k not in denominator:
+                continue
             results["i24c"]["sv12"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i24c"]["sv12"] = None

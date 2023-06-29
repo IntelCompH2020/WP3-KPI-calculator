@@ -13,7 +13,7 @@ template = [
 ]
 
 
-def ind_caller(enco, results, extra_aggr_param):
+def ind_caller(enco, results, extra_aggr_param=[], spark_output=""):
     results["i33"] = {}
 
     # # Find documents and convert to dataframe
@@ -31,24 +31,49 @@ def ind_caller(enco, results, extra_aggr_param):
     except Exception as e:
         results["i33"]["sv00"] = None
         print(f"Error calculating i33[sv00]: {str(e)}")
+
     try:
-        results["i33"]["sv07"] = (
-            df.groupby("NACE2dl")["total_trademarks"].sum().to_dict()
+        # Convert DataFrame to dictionary
+        df_dict = (
+            df.groupby("company_name")[["NACE2dl", "total_trademarks"]]
+            .sum()
+            .to_dict(orient="index")
         )
+        # Post-processing to get desired format
+        results["i33"]["sv07"] = {
+            k: {v["NACE2dl"]: v["total_trademarks"]} for k, v in df_dict.items()
+        }
     except Exception as e:
         results["i33"]["sv07"] = None
         print(f"Error calculating i33[sv07]: {str(e)}")
+
     try:
-        results["i33"]["sv07b"] = (
-            df.groupby("NACE4dl")["total_trademarks"].sum().to_dict()
+        # Convert DataFrame to dictionary
+        df_dict = (
+            df.groupby("company_name")[["NACE4dl", "total_trademarks"]]
+            .sum()
+            .to_dict(orient="index")
         )
+        # Post-processing to get desired format
+        results["i33"]["sv07b"] = {
+            k: {v["NACE4dl"]: v["total_trademarks"]} for k, v in df_dict.items()
+        }
     except Exception as e:
         results["i33"]["sv07b"] = None
         print(f"Error calculating i33[sv07b]: {str(e)}")
+
     try:
-        results["i33"]["sv09"] = (
-            df.groupby("Country ISO code")["total_trademarks"].sum().to_dict()
+        # Convert DataFrame to dictionary
+        df_dict = (
+            df.groupby("company_name")[["Country ISO code", "total_trademarks"]]
+            .sum()
+            .to_dict(orient="index")
         )
+        # Post-processing to get desired format
+        results["i33"]["sv09"] = {
+            k: {v["Country ISO code"]: v["total_trademarks"]}
+            for k, v in df_dict.items()
+        }
     except Exception as e:
         results["i33"]["sv09"] = None
         print(f"Error calculating i33[sv09]: {str(e)}")

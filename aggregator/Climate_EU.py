@@ -5,13 +5,17 @@ import argparse
 import logging
 import os
 from utils import post_output
-
-# from utils import output_func
+from utils import output_func
+from utils import uf
 
 
 def main(config_file_path):
+    # Load configuration file
+    with open(config_file_path) as config_file:
+        config_data = json.load(config_file)
+
     # Configure logging
-    log_dir = "/media/datalake/stiviewer/logs"
+    log_dir = "/workdir/patent-workflow/" + config_data["job_id"] + "logs"
     os.makedirs(log_dir, exist_ok=True)
     log_file = os.path.join(log_dir, "output.log")
     logging.basicConfig(
@@ -20,19 +24,10 @@ def main(config_file_path):
         handlers=[logging.StreamHandler(), logging.FileHandler(log_file)],
     )
 
-    # Load configuration file
-    with open(config_file_path) as config_file:
-        config_data = json.load(config_file)
-
     # Connect to MongoDB
     myclient = pymongo.MongoClient(
         "mongodb://adminuser:password123@gateway.opix.ai:27017/"
     )
-
-    # HARD CODED
-    # STI_viewer_data = myclient["STI_viewer_data"]
-    STI_viewer_data = myclient["testdb"]
-    # HARD CODED
 
     # Import and call functions based on the configuration file
     for func_config in config_data["functions"]:
@@ -49,40 +44,55 @@ def main(config_file_path):
             domain = config_data["dgpv"][0]["dg"]
             topic = config_data["dgpv"][0]["pv"]
 
+            # {
+            #   "dg": "Climate Change",
+            #   "pv": "Energy"
+            # }
+
+            # HARD CODED
+            dg = uf.dg
+            pv = uf.pv
+            # HARD CODED
+
+            spark_output = config_data["spark_output"]
+
             # Call the function
-            # results = function_to_call(
-            #     STI_viewer_data[func_config["collection"]], results, template
-            # )
-            collection = config_data["job_id"]
-            print(collection)
-            # collection = "jobid"
-            results = function_to_call(STI_viewer_data[collection], results, template)
-            logging.info(
-                f"For domain {domain} and topic {topic} Function {function_name} "
-                f"for module {module_name} executed successfully."
-            )
-
-            # HARD CODED
-            dg = "dg01"
-            pv = "pv01"
-            # HARD CODED
-
-            post_output.produce_results(
-                config_data["job_id"],
-                config_data["user_id"],
-                dg,
-                pv,
-                # config_data["dgpv"][0]["dg"],
-                # config_data["dgpv"][0]["pv"],
-                results,
-                logging,
-            )
-            # output_func.produce_results(
-            #     config_data["dgpv"][0]["dg"],
-            #     config_data["dgpv"][0]["pv"],
-            #     results,
-            #     logging,
-            # )
+            if config_data["job_id"] == "intelcompt":
+                STI_viewer_data = myclient["STI_viewer_data"]
+                results = function_to_call(
+                    STI_viewer_data[func_config["collection"]],
+                    results,
+                    template,
+                    spark_output,
+                )
+                output_func.produce_results(
+                    # config_data["dgpv"][0]["dg"],
+                    # config_data["dgpv"][0]["pv"],
+                    dg,
+                    pv,
+                    results,
+                    logging,
+                )
+            else:
+                STI_viewer_data = myclient["testdb"]
+                collection = config_data["job_id"]
+                results = function_to_call(
+                    STI_viewer_data[collection], results, template
+                )
+                logging.info(
+                    f"For domain {domain} and topic {topic} Function {function_name} "
+                    f"for module {module_name} executed successfully."
+                )
+                post_output.produce_results(
+                    config_data["job_id"],
+                    config_data["user_id"],
+                    dg,
+                    pv,
+                    # config_data["dgpv"][0]["dg"],
+                    # config_data["dgpv"][0]["pv"],
+                    results,
+                    logging,
+                )
 
         except Exception as e:
             logging.error(

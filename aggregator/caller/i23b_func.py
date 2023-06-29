@@ -3,12 +3,17 @@ from utils import uf
 
 def i23b_aggregation(field, extra_aggr_param):
     return extra_aggr_param + [
-        {"$match": {"is_open_access": {"$eq": True}, "pub_type": {"$eq": "Journal"}}},
+        {
+            "$match": {
+                "is_published_open_access": {"$eq": True},
+                "pub_type": {"$eq": "Journal"},
+            }
+        },
         {"$group": {"_id": "$" + field, "count": {"$sum": 1}}},
     ]
 
 
-def ind_caller(sci, results, extra_aggr_param=[]):
+def ind_caller(sci, results, extra_aggr_param=[], spark_output=""):
     results["i23b"] = {}
 
     try:

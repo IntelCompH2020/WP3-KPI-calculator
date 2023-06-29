@@ -1,14 +1,30 @@
 import glob
 import json
+from utils import uf
 
 # /media/datalake/patstat_2021b/output/i13a-energy/
 
 
-def ind_caller(pat, results, extra_aggr_param=[]):
+def ind_caller(pat, results, extra_aggr_param=[], spark_output=""):
     results["i13a"] = {}
 
+    dg = uf.dg
+    pv = uf.pv
+    if dg == "dg01" and pv == "pv01":
+        path = "/media/datalake/patstat_2022b/output/i13a-Energy/"
+        space = "EU"
+    elif dg == "dg02" and pv == "pv01":
+        path = "/media/datalake/patstat_2022b/output/i13a-Energy/"
+        space = "GR"
+    elif dg == "dg01" and pv == "pv02":
+        path = "/media/datalake/patstat_2022b/output/i13a-Agrifood/"
+        space = "EU"
+    elif dg == "dg02" and pv == "pv02":
+        path = "/media/datalake/patstat_2022b/output/i13a-Agrifood/"
+        space = "GR"
+
     try:
-        path = "/media/datalake/patstat_2021b/output/i13a-energy/sv00-EU/"
+        path = path + "sv00-" + space
         json_files = glob.glob(path + "*.json")
         data = []
         with open(json_files[0]) as f:
@@ -22,7 +38,7 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         print(f"Error calculating i13a[sv00]: {str(e)}")
 
     try:
-        path = "/media/datalake/patstat_2021b/output/i13a-energy/sv01-EU/"
+        path = path + "sv01-" + space
         json_files = glob.glob(path + "*.json")
         data = []
         with open(json_files[0]) as f:
@@ -36,7 +52,7 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         print(f"Error calculating i13a[sv01]: {str(e)}")
 
     try:
-        path = "/media/datalake/patstat_2021b/output/i13a-energy/sv02-EU/"
+        path = path + "sv02-" + space
         json_files = glob.glob(path + "*.json")
         data = []
         with open(json_files[0]) as f:
@@ -50,7 +66,7 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         print(f"Error calculating i13a[sv02]: {str(e)}")
 
     try:
-        path = "/media/datalake/patstat_2021b/output/i13a-energy/sv05-EU/"
+        path = path + "sv05-" + space
         json_files = glob.glob(path + "*.json")
         data = []
         with open(json_files[0]) as f:
@@ -63,34 +79,34 @@ def ind_caller(pat, results, extra_aggr_param=[]):
         results["i13a"]["sv05"] = None
         print(f"Error calculating i13a[sv05]: {str(e)}")
 
-    # try:
-    #     path = '/media/datalake/patstat_2021b/output/i13a-Agrofood/sv09-EU/'
-    #     json_files = glob.glob(path + '*.json')
-    #     data = []
-    #     with open(json_files[0], 'r') as f:
-    #         for line in f:
-    #             data.append(json.loads(line))
-    #     results["i13a"]["sv09"] = {}
-    #     print(data[0])
-    #     for d in data:
-    #         results['i13a']['sv09'][d['country']] = d['patents_citing']
-    # except Exception as e:
-    #     results["i13a"]["sv09"] = None
-    #     print(f"Error calculating i13a[sv09]: {str(e)}")
+    try:
+        path = path + "sv09-" + space
+        json_files = glob.glob(path + "*.json")
+        data = []
+        with open(json_files[0]) as f:
+            for line in f:
+                data.append(json.loads(line))
+        results["i13a"]["sv09"] = {}
+        for d in data:
+            results["i13a"]["sv09"][d["affiliation_country_iso_code"]] = d[
+                "patents_citing"
+            ]
+    except Exception as e:
+        results["i13a"]["sv09"] = None
+        print(f"Error calculating i13a[sv09]: {str(e)}")
 
-    # try:
-    #     path = '/media/datalake/patstat_2021b/output/i13a-Agrofood/sv10-EU/'
-    #     json_files = glob.glob(path + '*.json')
-    #     data = []
-    #     with open(json_files[0], 'r') as f:
-    #         for line in f:
-    #             data.append(json.loads(line))
-    #     results["i13a"]["sv10"] = {}
-    #     print(data[0])
-    #     for d in data:
-    #         results['i13a']['sv10'][d['cpc']] = d['patents_citing']
-    # except Exception as e:
-    #     results["i13a"]["sv10"] = None
-    #     print(f"Error calculating i13a[sv10]: {str(e)}")
+    try:
+        path = path + "sv10-" + space
+        json_files = glob.glob(path + "*.json")
+        data = []
+        with open(json_files[0]) as f:
+            for line in f:
+                data.append(json.loads(line))
+        results["i13a"]["sv10"] = {}
+        for d in data:
+            results["i13a"]["sv10"][d["published_venue"]] = d["patents_citing"]
+    except Exception as e:
+        results["i13a"]["sv10"] = None
+        print(f"Error calculating i13a[sv10]: {str(e)}")
 
     return results

@@ -12,7 +12,7 @@ def i23_aggregation(field, extra_aggr_param):
     ]
 
 
-def ind_caller(sci, results, extra_aggr_param=[]):
+def ind_caller(sci, results, extra_aggr_param=[], spark_output=""):
     results["i23"] = {}
 
     try:

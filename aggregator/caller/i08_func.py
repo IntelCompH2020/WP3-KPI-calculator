@@ -13,8 +13,8 @@ def i08_aggregation(field, extra_aggr_param):
         ]
 
 
-def ind_caller(sci, results, extra_aggr_param=[]):
-    results = i01_func.ind_caller(sci, results, extra_aggr_param)
+def ind_caller(sci, results, extra_aggr_param=[], spark_output=""):
+    results = i01_func.ind_caller(sci, results, extra_aggr_param, spark_output)
     results["i08"] = {}
 
     try:
@@ -148,10 +148,13 @@ def ind_caller(sci, results, extra_aggr_param=[]):
             sci, "funders.funder", i08_aggregation, extra_aggr_param
         )
         denominator = results["i01"]["sv12"]
+        # Remove keys where the denominator is zero
+        denominator = {k: v for k, v in denominator.items() if v != 0}
         results["i08"]["sv12"] = {}
         for k in numerator.keys():
-            if denominator[k] == 0:
-                denominator[k] = 1
+            # If key is not present in the denominator, skip the calculation
+            if k not in denominator:
+                continue
             results["i08"]["sv12"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i08"]["sv12"] = None

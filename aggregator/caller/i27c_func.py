@@ -2,7 +2,7 @@ from caller import i27a_func
 from caller import i27b_func
 
 
-def ind_caller(sci, results, extra_aggr_param=[]):
+def ind_caller(sci, results, extra_aggr_param=[], spark_output=""):
     results = i27a_func.ind_caller(sci, results, extra_aggr_param)
     results = i27b_func.ind_caller(sci, results, extra_aggr_param)
 

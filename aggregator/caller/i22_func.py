@@ -2,7 +2,7 @@ from caller import i19_func
 from caller import i20_func
 
 
-def ind_caller(sci, results, extra_aggr_param=[]):
+def ind_caller(sci, results, extra_aggr_param=[], spark_output=""):
     results = i19_func.ind_caller(sci, results, extra_aggr_param)
     results = i20_func.ind_caller(sci, results, extra_aggr_param)
 
