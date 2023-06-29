@@ -1,28 +1,32 @@
 import glob
 import json
-from utils import uf
+
+# from utils import uf
 
 
 def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
     results["i12a"] = {}
 
-    dg = uf.dg
-    pv = uf.pv
-    if dg == "dg01" and pv == "pv01":
-        path = "/media/datalake/patstat_2022b/output/i12a-Energy/"
-        space = "EU/"
-    elif dg == "dg02" and pv == "pv01":
-        path = "/media/datalake/patstat_2022b/output/i12a-Energy/"
-        space = "GR/"
-    elif dg == "dg01" and pv == "pv02":
-        path = "/media/datalake/patstat_2022b/output/i12a-Agrifood/"
-        space = "EU/"
-    elif dg == "dg02" and pv == "pv02":
-        path = "/media/datalake/patstat_2022b/output/i12a-Agrifood/"
-        space = "GR/"
+    # dg = uf.dg
+    # pv = uf.pv
+    # if dg == "dg01" and pv == "pv01":
+    #     path = "/media/datalake/patstat_2022b/output/i12a-Energy/"
+    #     space = "-EU/"
+    # elif dg == "dg02" and pv == "pv01":
+    #     path = "/media/datalake/patstat_2022b/output/i12a-Energy/"
+    #     space = "-GR/"
+    # elif dg == "dg01" and pv == "pv02":
+    #     path = "/media/datalake/patstat_2022b/output/i12a-Agrifood/"
+    #     space = "-EU/"
+    # elif dg == "dg02" and pv == "pv02":
+    #     path = "/media/datalake/patstat_2022b/output/i12a-Agrifood/"
+    #     space = "-GR/"
+
+    path = working_path + "i12a/"
+    space = ""
 
     try:
-        sv_path = path + "sv00-" + space
+        sv_path = path + "sv00" + space
         # path = "/media/datalake/stiviewer/temp/i12a/sv00-EU/"
         json_files = glob.glob(sv_path + "*.json")
         data = []
@@ -39,7 +43,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
         print(f"Error calculating i12a[sv00]: {str(e)}")
 
     try:
-        sv_path = path + "sv01-" + space
+        sv_path = path + "sv01" + space
         # path = "/media/datalake/stiviewer/temp/i12a/sv01-EU/"
         json_files = glob.glob(sv_path + "*.json")
         data = []
@@ -56,7 +60,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
         print(f"Error calculating i12a[sv01]: {str(e)}")
 
     try:
-        sv_path = path + "sv02-" + space
+        sv_path = path + "sv02" + space
         # path = "/media/datalake/stiviewer/temp/i12a/sv02-EU/"
         json_files = glob.glob(sv_path + "*.json")
         data = []
@@ -73,7 +77,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
         print(f"Error calculating i12a[sv02]: {str(e)}")
 
     try:
-        sv_path = path + "sv06-" + space
+        sv_path = path + "sv06" + space
         # path = "/media/datalake/stiviewer/temp/i12a/sv06-EU/"
         json_files = glob.glob(sv_path + "*.json")
         data = []
@@ -90,7 +94,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
         print(f"Error calculating i12a[sv06]: {str(e)}")
 
     try:
-        sv_path = path + "sv07-" + space
+        sv_path = path + "sv07" + space
         # path = "/media/datalake/stiviewer/temp/i12a/sv07-EU/"
         json_files = glob.glob(sv_path + "*.json")
         data = []
@@ -107,7 +111,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
         print(f"Error calculating i12a[sv07]: {str(e)}")
 
     try:
-        sv_path = path + "sv08-" + space
+        sv_path = path + "sv08" + space
         # path = "/media/datalake/stiviewer/temp/i12a/sv08-EU/"
         json_files = glob.glob(sv_path + "*.json")
         data = []
@@ -127,7 +131,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
         print(f"Error calculating i12a[sv08]: {str(e)}")
 
     try:
-        sv_path = path + "sv09-" + space
+        sv_path = path + "sv09" + space
         # path = "/media/datalake/stiviewer/temp/i12a/sv09-EU/"
         json_files = glob.glob(sv_path + "*.json")
         data = []
@@ -144,7 +148,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
         print(f"Error calculating i12a[sv09]: {str(e)}")
 
     try:
-        sv_path = path + "sv13-" + space
+        sv_path = path + "sv13" + space
         # path = "/media/datalake/stiviewer/temp/i12a/sv13-EU/"
         json_files = glob.glob(sv_path + "*.json")
         data = []

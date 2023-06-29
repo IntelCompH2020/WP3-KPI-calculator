@@ -60,7 +60,7 @@ eu_members_code = [
 
 
 # HARD CODED
-dg = "dg01"
+dg = "dg02"
 pv = "pv02"
 # HARD CODED
 

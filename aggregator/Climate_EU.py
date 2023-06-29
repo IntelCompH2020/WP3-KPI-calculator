@@ -15,7 +15,8 @@ def main(config_file_path):
         config_data = json.load(config_file)
 
     # Configure logging
-    log_dir = config_data["working_path"] + "logs"
+    log_dir = config_data["working_path"] + "logs/"
+    print(log_dir)
     os.makedirs(log_dir, exist_ok=True)
     log_file = os.path.join(log_dir, "output.log")
     logging.basicConfig(

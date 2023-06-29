@@ -98,13 +98,11 @@ def produce_results(dgid, pvid, results, logging):
     output_lake = Path("/media/datalake/stiviewer")
     output_dir = output_lake.joinpath("output/output_done/diamantis")
 
-    count = 0
     for indid in results.keys():
         try:
             for svid in results[indid].keys():
                 data = get_data(dgid, pvid, indid, svid, results[indid][svid])
                 data_file = json.dumps(data, indent=2)
-                count += len(data_file)
                 data_path = output_dir.joinpath(
                     f"{dgid}_{pvid}_{indid}_{svid}_data.json"
                 )
