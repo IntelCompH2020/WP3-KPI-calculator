@@ -60,8 +60,8 @@ eu_members_code = [
 
 
 # HARD CODED
-dg = "dg02"
-pv = "pv02"
+dg = "dg01"
+pv = "pv01"
 # HARD CODED
 
 journal_filter = [{"$match": {"pub_type": {"$eq": "Journal"}}}]
