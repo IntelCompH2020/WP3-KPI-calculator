@@ -5,6 +5,12 @@ import requests
 script_dir = Path(__file__).resolve().parent.parent
 
 
+def chunks(lst, n):
+    """Yield successive n-sized chunks from lst."""
+    for i in range(0, len(lst), n):
+        yield lst[i : i + n]
+
+
 def check_empty_dict(input_dict):
     if not input_dict:
         raise ValueError("Dictionary is empty")
@@ -123,6 +129,9 @@ def produce_results(job_id, user_id, dgid, pvid, results, logging):
     response = requests.post(url, data=access)
     access_token = response.json()["access_token"]
 
+    # Batch size for elk
+    BATCH_SIZE = 100
+
     for indid in results.keys():
         for svid in results[indid].keys():
             try:
@@ -132,25 +141,28 @@ def produce_results(job_id, user_id, dgid, pvid, results, logging):
                 # Drop zero values
                 new_data = [item for item in data if item["value"] != 0]
                 # print(new_data[0])
-                # Call the function to send the data to the API
-                # Send the data to the API
-                api_url = (
-                    "https://gateway.opix.ai/sti-viewer/api/api/indicator-point/"
-                    "664de786-2879-4b65-82c7-df5d0d30be84/bulk-persist"
-                )
-                headers = {
-                    "Authorization": f"Bearer {access_token}",
-                    "Content-Type": "application/json",
-                }
-                response = requests.post(api_url, headers=headers, json=new_data)
-                # Check if the request was successful
-                if response.status_code == 200:
-                    logging.info(f"Data from {indid}_{svid} was sent successfully.")
-                else:
-                    logging.error(
-                        f"Error sending data from {indid}_{svid}. "
-                        f"Status code: {response.status_code}"
+
+                total_batches = (len(new_data) + BATCH_SIZE - 1) // BATCH_SIZE
+                for i, batch in enumerate(chunks(new_data, BATCH_SIZE), start=1):
+                    # Call the function to send the data to the API
+                    # Send the data to the API
+                    api_url = (
+                        "https://gateway.opix.ai/sti-viewer/api/api/indicator-point/"
+                        "664de786-2879-4b65-82c7-df5d0d30be84/bulk-persist"
                     )
+                    headers = {
+                        "Authorization": f"Bearer {access_token}",
+                        "Content-Type": "application/json",
+                    }
+                    response = requests.post(api_url, headers=headers, json=batch)
+                    # Check if the request was successful
+                    if response.status_code != 200:
+                        raise Exception(
+                            f"Error sending batch of data from {indid}_{svid}. "
+                            f"Status code: {response.status_code}"
+                        )
+                    if i == total_batches:
+                        logging.info(f"Data from {indid}_{svid} was sent successfully.")
             except Exception as e:
                 logging.error(
                     f"Error executing function {indid}" f"for view {svid}: {str(e)}"
