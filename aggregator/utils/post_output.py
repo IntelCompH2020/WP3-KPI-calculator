@@ -104,7 +104,7 @@ def get_data(job_id, user_id, dgid, pvid, indid, svid, data):
     return output
 
 
-def produce_results(job_id, user_id, dgid, pvid, results, logging):
+def produce_results(job_id, user_id, dgid, pvid, results, logging, errors):
     # Read the configuration from the JSON file
     with open(script_dir.joinpath("utils/pass.json")) as file:
         config = json.load(file)
@@ -130,8 +130,7 @@ def produce_results(job_id, user_id, dgid, pvid, results, logging):
     access_token = response.json()["access_token"]
 
     # Batch size for elk
-    BATCH_SIZE = 100
-
+    BATCH_SIZE = 1
     for indid in results.keys():
         for svid in results[indid].keys():
             try:
@@ -141,7 +140,6 @@ def produce_results(job_id, user_id, dgid, pvid, results, logging):
                 # Drop zero values
                 new_data = [item for item in data if item["value"] != 0]
                 # print(new_data[0])
-
                 total_batches = (len(new_data) + BATCH_SIZE - 1) // BATCH_SIZE
                 for i, batch in enumerate(chunks(new_data, BATCH_SIZE), start=1):
                     # Call the function to send the data to the API
@@ -164,6 +162,9 @@ def produce_results(job_id, user_id, dgid, pvid, results, logging):
                     if i == total_batches:
                         logging.info(f"Data from {indid}_{svid} was sent successfully.")
             except Exception as e:
-                logging.error(
-                    f"Error executing function {indid}" f"for view {svid}: {str(e)}"
+                error_message = (
+                    f"Error executing function {indid} for view {svid}: {str(e)}"
                 )
+                errors.append(error_message)
+                logging.error(error_message)
+    return errors

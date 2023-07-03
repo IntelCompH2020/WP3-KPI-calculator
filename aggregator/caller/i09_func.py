@@ -25,7 +25,7 @@ def i09_aggregation_per_year_nace(field, extra_aggr_param):
 
 def i09_aggregation_per_year_cpc(field, extra_aggr_param):
     return extra_aggr_param + [
-        {"$match": {"nace": {"$exists": True, "$not": {"$size": 0}}}},
+        {"$match": {"cpc_labels": {"$exists": True, "$not": {"$size": 0}}}},
         {
             "$group": {
                 "_id": [

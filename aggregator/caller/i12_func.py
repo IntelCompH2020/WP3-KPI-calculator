@@ -30,13 +30,19 @@ def i12_aggregation_cpc(field, extra_aggr_param):
 
 def i12_aggregation_forward(field, extra_aggr_param):
     return extra_aggr_param + [
-        {"$group": {"_id": "$" + field, "count": {"$sum": "$citations.forward"}}}
+        {"$match": {"citations": {"$exists": True, "$not": {"$size": 0}}}},
+        {"$group": {"_id": "$" + field, "count": {"$sum": "$citations.forward"}}},
     ]
 
 
 def i12_aggregation_forward_nace(field, extra_aggr_param):
     return extra_aggr_param + [
-        {"$match": {"nace": {"$exists": True, "$not": {"$size": 0}}}},
+        {
+            "$match": {
+                "nace": {"$exists": True, "$not": {"$size": 0}},
+                "citations": {"$exists": True, "$not": {"$size": 0}},
+            }
+        },
         {
             "$group": {
                 "_id": ["$nace.nace2_code", "$nace.description"],
@@ -49,11 +55,17 @@ def i12_aggregation_forward_nace(field, extra_aggr_param):
 def i12_aggregation_forward_cpc(field, extra_aggr_param):
     return extra_aggr_param + [
         {
+            "$match": {
+                "cpc_labels": {"$exists": True, "$not": {"$size": 0}},
+                "citations": {"$exists": True, "$not": {"$size": 0}},
+            }
+        },
+        {
             "$group": {
                 "_id": ["$cpc_labels.code", "$cpc_labels.description"],
                 "count": {"$sum": "$citations.forward"},
             }
-        }
+        },
     ]
 
 

@@ -30,53 +30,54 @@ def main(config_file_path):
         "mongodb://adminuser:password123@gateway.opix.ai:27017/"
     )
 
+    errors = []
     # Import and call functions based on the configuration file
     for func_config in config_data["functions"]:
         results = {}
-        try:
-            module_name = func_config["module"]
-            function_name = func_config["function"]
-            template = config_data["templates"][0][func_config["template"]]
+        module_name = func_config["module"]
+        function_name = func_config["function"]
+        template = config_data["templates"][0][func_config["template"]]
 
-            # Import the function dynamically
-            module = importlib.import_module(module_name)
-            function_to_call = getattr(module, function_name)
+        # Import the function dynamically
+        module = importlib.import_module(module_name)
+        function_to_call = getattr(module, function_name)
 
-            domain = config_data["dgpv"][0]["dg"]
-            topic = config_data["dgpv"][0]["pv"]
+        domain = config_data["dgpv"][0]["dg"]
+        topic = config_data["dgpv"][0]["pv"]
 
-            # {
-            #   "dg": "Climate Change",
-            #   "pv": "Energy"
-            # }
+        # {
+        #   "dg": "Climate Change",
+        #   "pv": "Energy"
+        # }
 
-            # HARD CODED
-            dg = uf.dg
-            pv = uf.pv
-            # HARD CODED
+        # HARD CODED
+        dg = uf.dg
+        pv = uf.pv
+        # HARD CODED
 
-            working_path = config_data["working_path"]
+        working_path = config_data["working_path"]
 
-            # Call the function
-            if config_data["job_id"] == "intelcompt":
-                STI_viewer_data = myclient["STI_viewer_data"]
-                results = function_to_call(
-                    STI_viewer_data[func_config["collection"]],
-                    results,
-                    template,
-                    working_path,
-                )
-                output_func.produce_results(
-                    # config_data["dgpv"][0]["dg"],
-                    # config_data["dgpv"][0]["pv"],
-                    dg,
-                    pv,
-                    results,
-                    logging,
-                )
-            else:
-                STI_viewer_data = myclient["testdb"]
-                collection = config_data["job_id"]
+        # Call the function
+        if config_data["job_id"] == "intelcompt":
+            STI_viewer_data = myclient["STI_viewer_data"]
+            results = function_to_call(
+                STI_viewer_data[func_config["collection"]],
+                results,
+                template,
+                working_path,
+            )
+            output_func.produce_results(
+                # config_data["dgpv"][0]["dg"],
+                # config_data["dgpv"][0]["pv"],
+                dg,
+                pv,
+                results,
+                logging,
+            )
+        else:
+            STI_viewer_data = myclient["testdb"]
+            collection = config_data["job_id"]
+            try:
                 results = function_to_call(
                     STI_viewer_data[collection], results, template
                 )
@@ -84,22 +85,24 @@ def main(config_file_path):
                     f"For domain {domain} and topic {topic} Function {function_name} "
                     f"for module {module_name} executed successfully."
                 )
-                post_output.produce_results(
-                    config_data["job_id"],
-                    config_data["user_id"],
-                    dg,
-                    pv,
-                    # config_data["dgpv"][0]["dg"],
-                    # config_data["dgpv"][0]["pv"],
-                    results,
-                    logging,
+            except Exception as e:
+                logging.error(
+                    f"For domain {domain} and topic {topic} Function Error"
+                    f" executing function {function_name} "
+                    f"for module {module_name}: {str(e)}"
                 )
-
-        except Exception as e:
-            logging.error(
-                f"Error executing function {function_name} "
-                f"for module {module_name}: {str(e)}"
+            errors = post_output.produce_results(
+                config_data["job_id"],
+                config_data["user_id"],
+                dg,
+                pv,
+                # config_data["dgpv"][0]["dg"],
+                # config_data["dgpv"][0]["pv"],
+                results,
+                logging,
+                errors,
             )
+            print(errors)
 
 
 if __name__ == "__main__":

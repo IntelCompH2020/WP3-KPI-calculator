@@ -25,10 +25,9 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
     #     space = "-GR/"
 
     path = working_path + "i13a/"
-    space = ""
 
     try:
-        sv_path = path + "sv00" + space
+        sv_path = path + "sv00/"
         json_files = glob.glob(sv_path + "*.json")
         data = []
         with open(json_files[0]) as f:
@@ -42,7 +41,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
         print(f"Error calculating i13a[sv00]: {str(e)}")
 
     try:
-        sv_path = path + "sv01" + space
+        sv_path = path + "sv01/"
         json_files = glob.glob(sv_path + "*.json")
         data = []
         with open(json_files[0]) as f:
@@ -56,7 +55,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
         print(f"Error calculating i13a[sv01]: {str(e)}")
 
     try:
-        sv_path = path + "sv02" + space
+        sv_path = path + "sv02/"
         json_files = glob.glob(sv_path + "*.json")
         data = []
         with open(json_files[0]) as f:
@@ -70,7 +69,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
         print(f"Error calculating i13a[sv02]: {str(e)}")
 
     try:
-        sv_path = path + "sv05" + space
+        sv_path = path + "sv05/"
         json_files = glob.glob(sv_path + "*.json")
         data = []
         with open(json_files[0]) as f:
@@ -84,7 +83,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
         print(f"Error calculating i13a[sv05]: {str(e)}")
 
     try:
-        sv_path = path + "sv09" + space
+        sv_path = path + "sv09/"
         json_files = glob.glob(sv_path + "*.json")
         data = []
         with open(json_files[0]) as f:
@@ -100,7 +99,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
         print(f"Error calculating i13a[sv09]: {str(e)}")
 
     try:
-        sv_path = path + "sv10" + space
+        sv_path = path + "sv10/"
         json_files = glob.glob(sv_path + "*.json")
         data = []
         with open(json_files[0]) as f:

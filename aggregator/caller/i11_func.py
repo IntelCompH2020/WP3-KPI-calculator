@@ -30,13 +30,19 @@ def i11_aggregation_ipc(field, extra_aggr_param):
 
 def i11_aggregation_backward(field, extra_aggr_param):
     return extra_aggr_param + [
-        {"$group": {"_id": "$" + field, "count": {"$sum": "$citations.backward"}}}
+        {"$match": {"citations": {"$exists": True, "$not": {"$size": 0}}}},
+        {"$group": {"_id": "$" + field, "count": {"$sum": "$citations.backward"}}},
     ]
 
 
 def i11_aggregation_backward_nace(field, extra_aggr_param):
     return extra_aggr_param + [
-        {"$match": {"nace": {"$exists": True, "$not": {"$size": 0}}}},
+        {
+            "$match": {
+                "nace": {"$exists": True, "$not": {"$size": 0}},
+                "citations": {"$exists": True, "$not": {"$size": 0}},
+            }
+        },
         {
             "$group": {
                 "_id": ["$nace.nace2_code", "$nace.description"],
@@ -49,11 +55,17 @@ def i11_aggregation_backward_nace(field, extra_aggr_param):
 def i11_aggregation_backward_ipc(field, extra_aggr_param):
     return extra_aggr_param + [
         {
+            "$match": {
+                "cpc_labels": {"$exists": True, "$not": {"$size": 0}},
+                "citations": {"$exists": True, "$not": {"$size": 0}},
+            }
+        },
+        {
             "$group": {
                 "_id": ["$cpc_labels.code", "$cpc_labels.description"],
                 "count": {"$sum": "$citations.backward"},
             }
-        }
+        },
     ]
 
 
