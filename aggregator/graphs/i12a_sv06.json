@@ -62,19 +62,19 @@
                 "type": "Sum",
                 "field": "value"
             }
-        ]
-    },
-    "rawDataRequest": {
-        "keyField": "key",
-        "valueField": "value",
-        "order": {
-            "items": [
-                "-value"
-            ]
-        },
-        "page": {
-            "offset": 0,
-            "size": 100
+        ],
+        "bucketSort": {
+            "sortFields": [
+                {
+                    "field": "value",
+                    "metricAggregateType": "Sum",
+                    "order": "DESC"
+                }
+            ],
+            "paging": {
+                "offset": 0,
+                "size": 100
+            }
         }
     },
     "series": [
