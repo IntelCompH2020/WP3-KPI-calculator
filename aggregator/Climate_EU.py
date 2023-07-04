@@ -61,7 +61,7 @@ def main(config_file_path):
         working_path = config_data["working_path"]
 
         # Call the function
-        if config_data["job_id"] != "intelcompt":
+        if config_data["job_id"] == "intelcompt":
             STI_viewer_data = myclient["STI_viewer_data"]
             results = function_to_call(
                 STI_viewer_data[func_config["collection"]],
@@ -116,7 +116,7 @@ def main(config_file_path):
 
     job = "patents"
 
-    if config_data["job_id"] != "intelcompt":
+    if config_data["job_id"] == "intelcompt":
         pass
     else:
         template = Dashboard_creator.create_json(config_data["job_id"], job, completed)
