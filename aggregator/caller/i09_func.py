@@ -39,7 +39,7 @@ def i09_aggregation_per_year_cpc(field, extra_aggr_param):
     ]
 
 
-def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
+def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
     results["i09"] = {}
 
     try:
@@ -48,7 +48,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
         )
     except Exception as e:
         results["i09"]["sv01"] = None
-        print(f"Error calculating i09[sv01]: {str(e)}")
+        logging.error(f"Error calculating i09[sv01]: {str(e)}")
 
     try:
         results["i09"]["sv02"] = uf.secondary_view_per_year(
@@ -56,7 +56,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
         )
     except Exception as e:
         results["i09"]["sv02"] = None
-        print(f"Error calculating i09[sv02]: {str(e)}")
+        logging.error(f"Error calculating i09[sv02]: {str(e)}")
 
     try:
         results["i09"]["sv03"] = uf.secondary_view_per_year(
@@ -64,7 +64,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
         )
     except Exception as e:
         results["i09"]["sv03"] = None
-        print(f"Error calculating i09[sv03]: {str(e)}")
+        logging.error(f"Error calculating i09[sv03]: {str(e)}")
 
     try:
         results["i09"]["sv06"] = uf.inner_secondary_view_per_year(
@@ -72,7 +72,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
         )
     except Exception as e:
         results["i09"]["sv06"] = None
-        print(f"Error calculating i09[sv06]: {str(e)}")
+        logging.error(f"Error calculating i09[sv06]: {str(e)}")
 
     try:
         results["i09"]["sv07"] = uf.inner_secondary_view_per_year_nace_cpc(
@@ -80,7 +80,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
         )
     except Exception as e:
         results["i09"]["sv07"] = None
-        print(f"Error calculating i09[sv07]: {str(e)}")
+        logging.error(f"Error calculating i09[sv07]: {str(e)}")
 
     try:
         results["i09"]["sv08"] = uf.inner_secondary_view_per_year(
@@ -88,21 +88,21 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
         )
     except Exception as e:
         results["i09"]["sv08"] = None
-        print(f"Error calculating i09[sv08]: {str(e)}")
+        logging.error(f"Error calculating i09[sv08]: {str(e)}")
 
     try:
-        full_set = uf.inner_secondary_view_per_year(
+        results["i09"]["sv09"] = uf.inner_secondary_view_per_year(
             pat, "participant.country", i09_aggregation_per_year, extra_aggr_param
         )
-        results["i09"]["sv09"] = {}
-        for k in full_set.keys():
-            if k in uf.eu_members_code:
-                results["i09"]["sv09"][
-                    uf.eu_members[uf.eu_members_code.index(k)]
-                ] = full_set[k]
+        # results["i09"]["sv09"] = {}
+        # for k in full_set.keys():
+        #     if k in uf.eu_members_code:
+        #         results["i09"]["sv09"][
+        #             uf.eu_members[uf.eu_members_code.index(k)]
+        #         ] = full_set[k]
     except Exception as e:
         results["i09"]["sv09"] = None
-        print(f"Error calculating i09[sv09]: {str(e)}")
+        logging.error(f"Error calculating i09[sv09]: {str(e)}")
 
     try:
         results["i09"]["sv13"] = uf.inner_secondary_view_per_year_nace_cpc(
@@ -110,5 +110,5 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
         )
     except Exception as e:
         results["i09"]["sv13"] = None
-        print(f"Error calculating i09[sv13]: {str(e)}")
+        logging.error(f"Error calculating i09[sv13]: {str(e)}")
     return results

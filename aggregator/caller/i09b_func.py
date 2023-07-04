@@ -7,7 +7,7 @@ def i09b_aggregation_per_year(field, extra_aggr_param):
     ]
 
 
-def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
+def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
     results["i09b"] = {}
 
     try:
@@ -35,6 +35,6 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
 
     except Exception as e:
         results["i09b"]["sv02"] = None
-        print(f"Error calculating i09b[sv02]: {str(e)}")
+        logging.error(f"Error calculating i09b[sv02]: {str(e)}")
 
     return results

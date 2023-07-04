@@ -1,0 +1,118 @@
+{
+    "indicatorId": "664de786-2879-4b65-82c7-df5d0d30be84",
+    "type": "line",
+    "dataZoom": {
+        "inside": true
+    },
+    "legend": {},
+    "name": "",
+    "chartName": "Patent citations over time",
+    "xAxis": {
+        "name": "year"
+    },
+    "yAxis": {
+        "name": "average citations"
+    },
+    "labelSortKey": "key",
+    "description": "The graph shows the average number of backward and forward citations to other patents for patents in the Energy domain, granted by the EPO and still valid in 2021-Q2. <i>Data Source</i>: <a href=\"https://www.epo.org/searching-for-patents/business/patstat.html\" target=\"_blank\">Patstat - EPO dataset</a>.",
+    "chartDownloadData": {},
+    "chartDownloadImage": {},
+    "bucket": {
+        "type": "Composite",
+        "field": "key",
+        "sources": [
+            {
+                "field": "key"
+            },
+            {
+                "field": "indid"
+            },
+            {
+                "field": "svid"
+            }
+        ],
+        "metrics": [
+            {
+                "type": "Sum",
+                "field": "value"
+            }
+        ]
+    },
+    "staticFilters": {
+        "keywordsFilters": [
+            {
+                "field": "pvid",
+                "value": [
+                    "pv01"
+                ]
+            },
+            {
+                "field": "svid",
+                "value": [
+                    "sv01"
+                ]
+            },
+            {
+                "field": "indid",
+                "value": [
+                    "i11",
+                    "i12"
+                ]
+            }
+        ]
+    },
+    "series": [
+        {
+            "label": {
+                "name": "Average backward citations",
+                "labelKey": "key"
+            },
+            "values": {
+                "formatter": {
+                    "type": "number",
+                    "decimalAccuracy": 3
+                },
+                "valueKey": "value",
+                "tests": [
+                    {
+                        "aggregateType": "Sum"
+                    },
+                    {
+                        "field": "value"
+                    }
+                ],
+                "groupTests": [
+                    {
+                        "indid": "i11"
+                    }
+                ]
+            }
+        },
+        {
+            "label": {
+                "name": "Average forward citations",
+                "labelKey": "key"
+            },
+            "values": {
+                "formatter": {
+                    "type": "number",
+                    "decimalAccuracy": 3
+                },
+                "valueKey": "value",
+                "tests": [
+                    {
+                        "aggregateType": "Sum"
+                    },
+                    {
+                        "field": "value"
+                    }
+                ],
+                "groupTests": [
+                    {
+                        "indid": "i12"
+                    }
+                ]
+            }
+        }
+    ]
+}

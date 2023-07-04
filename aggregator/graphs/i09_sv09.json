@@ -1,0 +1,73 @@
+{
+        "indicatorId": "664de786-2879-4b65-82c7-df5d0d30be84",
+        "type": "map",
+        "name": "",
+        "chartName": "Patents by country",
+        "description": "The graph shows the number of patents granted by the EPO and still valid in 2021-Q2 by the country of the applicant . <i>Data Source<i/>: <a href=\"https://www.epo.org/searching-for-patents/business/patstat.html\" target=\"_blank\">Patstat - EPO dataset</a>",
+        "chartDownloadData": {},
+        "chartDownloadImage": {},
+        "mapChartConfig": {
+            "high": {
+                "text": "High",
+                "color": "#42c39a"
+            }
+        },
+        "countryNameMapping": {
+            "Italy": "Italy"
+        },
+        "bucket": {
+            "type": "Terms",
+            "field": "key",
+            "metrics": [
+                {
+                    "type": "Sum",
+                    "field": "value"
+                }
+            ]
+        },
+        "staticFilters": {
+            "keywordsFilters": [
+                {
+                    "field": "pvid",
+                    "value": [
+                        "pv01"
+                    ]
+                },
+                {
+                    "field": "svid",
+                    "value": [
+                        "sv09"
+                    ]
+                },
+                {
+                    "field": "indid",
+                    "value": [
+                        "i09"
+                    ]
+                }
+            ]
+        },
+        "series": [
+            {
+                "label": {
+                    "name": "Patents by Country",
+                    "labelKey": "key"
+                },
+                "values": {
+                    "formatter": {
+                        "type": "number",
+                        "decimalAccuracy": 3
+                    },
+                    "valueKey": "value",
+                    "tests": [
+                        {
+                            "aggregateType": "Sum"
+                        },
+                        {
+                            "field": "value"
+                        }
+                    ]
+                }
+            }
+        ]
+    }

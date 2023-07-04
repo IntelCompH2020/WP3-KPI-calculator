@@ -1,0 +1,96 @@
+{
+    "indicatorId": "664de786-2879-4b65-82c7-df5d0d30be84",
+    "type": "bar",
+    "horizontal": true,
+    "dataZoom": {
+        "inside": true,
+        "slider": true,
+        "areaZoom": {
+            "start": 0,
+            "end": 45
+        }
+    },
+    "name": "",
+    "chartName": "Patents by IPC code (top 20 codes)",
+    "description": "The graph shows the top 20 IPC (International Patent Classification) codes by the number of patents in the Energy domain granted by the EPO and still valid in 2021-Q2 by IPC. <i>Data Source</i>: <a href=\"https://www.epo.org/searching-for-patents/business/patstat.html\" target=\"_blank\">Patstat - EPO dataset</a>",
+    "xAxis": {
+        "name": "organization",
+        "axisLabel": {
+            "width": 100,
+            "rotate": 45
+        }
+    },
+    "yAxis": {
+        "name": "citations per publications"
+    },
+    "chartDownloadData": {},
+    "chartDownloadImage": {},
+    "bucket": {
+        "type": "Terms",
+        "field": "key",
+        "metrics": [
+            {
+                "type": "Sum",
+                "field": "value"
+            }
+        ],
+        "bucketSort": {
+            "sortFields": [
+                {
+                    "field": "value",
+                    "metricAggregateType": "Sum",
+                    "order": "DESC"
+                }
+            ],
+            "paging": {
+                "offset": 0,
+                "size": 20
+            }
+        }
+    },
+    "series": [
+        {
+            "label": {
+                "name": "Number of patents",
+                "labelKey": "key"
+            },
+            "values": {
+                "valueKey": "value",
+                "formatter": {
+                    "type": "number",
+                    "decimalAccuracy": 3
+                },
+                "tests": [
+                    {
+                        "aggregateType": "Sum"
+                    },
+                    {
+                        "field": "value"
+                    }
+                ]
+            }
+        }
+    ],
+    "staticFilters": {
+        "keywordsFilters": [
+            {
+                "field": "pvid",
+                "value": [
+                    "pv01"
+                ]
+            },
+            {
+                "field": "svid",
+                "value": [
+                    "sv13"
+                ]
+            },
+            {
+                "field": "indid",
+                "value": [
+                    "i09"
+                ]
+            }
+        ]
+    }
+}

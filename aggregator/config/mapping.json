@@ -19,7 +19,7 @@
   "i07": "Average number of citations per scientific publication",
   "i08": "Field weighted citation impact of scientific publications",
   "i09": "Count of patents to the EPO by priority year",
-  "i09b": "distribution by year of topics in patents to the EPO (by priority year)",
+  "i09b": "Distribution by year of topics in patents to the EPO (by priority year)",
   "i10": "Average annual growth of patents to the EPO in multi- year periods (3 years) ",
   "i11": "Average backward citations: The number of citations to patent documents made by the patent",
   "i12": "Average forward citations: The number of citations received by the patent",

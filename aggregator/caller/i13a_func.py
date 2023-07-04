@@ -6,7 +6,7 @@ import json
 # /media/datalake/patstat_2021b/output/i13a-energy/
 
 
-def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
+def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
     results["i13a"] = {}
 
     # dg = uf.dg
@@ -38,7 +38,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             results["i13a"]["sv00"][d["doi"]] = d["patents_citing"]
     except Exception as e:
         results["i13a"]["sv00"] = None
-        print(f"Error calculating i13a[sv00]: {str(e)}")
+        logging.error(f"Error calculating i13a[sv00]: {str(e)}")
 
     try:
         sv_path = path + "sv01/"
@@ -52,7 +52,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             results["i13a"]["sv01"][d["year"]] = d["patents_citing"]
     except Exception as e:
         results["i13a"]["sv01"] = None
-        print(f"Error calculating i13a[sv01]: {str(e)}")
+        logging.error(f"Error calculating i13a[sv01]: {str(e)}")
 
     try:
         sv_path = path + "sv02/"
@@ -66,7 +66,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             results["i13a"]["sv02"][d["topic"]] = d["patents_citing"]
     except Exception as e:
         results["i13a"]["sv02"] = None
-        print(f"Error calculating i13a[sv02]: {str(e)}")
+        logging.error(f"Error calculating i13a[sv02]: {str(e)}")
 
     try:
         sv_path = path + "sv05/"
@@ -80,7 +80,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             results["i13a"]["sv05"][d["sdg_prediction"]] = d["patents_citing"]
     except Exception as e:
         results["i13a"]["sv05"] = None
-        print(f"Error calculating i13a[sv05]: {str(e)}")
+        logging.error(f"Error calculating i13a[sv05]: {str(e)}")
 
     try:
         sv_path = path + "sv09/"
@@ -96,7 +96,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             ]
     except Exception as e:
         results["i13a"]["sv09"] = None
-        print(f"Error calculating i13a[sv09]: {str(e)}")
+        logging.error(f"Error calculating i13a[sv09]: {str(e)}")
 
     try:
         sv_path = path + "sv10/"
@@ -110,6 +110,6 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             results["i13a"]["sv10"][d["published_venue"]] = d["patents_citing"]
     except Exception as e:
         results["i13a"]["sv10"] = None
-        print(f"Error calculating i13a[sv10]: {str(e)}")
+        logging.error(f"Error calculating i13a[sv10]: {str(e)}")
 
     return results

@@ -21,7 +21,7 @@ def get_3_year_average_growth(data):
     return res
 
 
-def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
+def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
     results = i09_func.ind_caller(pat, results, extra_aggr_param)
     results["i10"] = {}
 
@@ -39,6 +39,6 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
 
     except Exception as e:
         results["i10"] = None
-        print(f"Error calculating i10: {str(e)}")
+        logging.error(f"Error calculating i10: {str(e)}")
 
     return results

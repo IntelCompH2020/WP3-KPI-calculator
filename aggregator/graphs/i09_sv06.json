@@ -1,0 +1,96 @@
+{
+    "indicatorId": "664de786-2879-4b65-82c7-df5d0d30be84",
+    "type": "bar",
+    "horizontal": false,
+    "dataZoom": {
+        "inside": true,
+        "slider": true,
+        "areaZoom": {
+            "start": 0,
+            "end": 20
+        }
+    },
+    "name": "",
+    "chartName": "Patents by Organization (top 100)",
+    "description": "The graph shows the top 100 organizations of patent applicants in terms of the number of patents in the Energy domain granted by the EPO and still valid in 2021-Q2.",
+    "xAxis": {
+        "name": "organization",
+        "axisLabel": {
+            "width": 100,
+            "rotate": 45
+        }
+    },
+    "yAxis": {
+        "name": "patents"
+    },
+    "chartDownloadData": {},
+    "chartDownloadImage": {},
+    "bucket": {
+        "type": "Terms",
+        "field": "key",
+        "metrics": [
+            {
+                "type": "Sum",
+                "field": "value"
+            }
+        ],
+        "bucketSort": {
+            "sortFields": [
+                {
+                    "field": "value",
+                    "metricAggregateType": "Sum",
+                    "order": "DESC"
+                }
+            ],
+            "paging": {
+                "offset": 0,
+                "size": 100
+            }
+        }
+    },
+    "series": [
+        {
+            "label": {
+                "name": "Number of patents",
+                "labelKey": "key"
+            },
+            "values": {
+                "valueKey": "value",
+                "formatter": {
+                    "type": "number",
+                    "decimalAccuracy": 3
+                },
+                "tests": [
+                    {
+                        "aggregateType": "Sum"
+                    },
+                    {
+                        "field": "value"
+                    }
+                ]
+            }
+        }
+    ],
+    "staticFilters": {
+        "keywordsFilters": [
+            {
+                "field": "pvid",
+                "value": [
+                    "pv01"
+                ]
+            },
+            {
+                "field": "svid",
+                "value": [
+                    "sv06"
+                ]
+            },
+            {
+                "field": "indid",
+                "value": [
+                    "i09"
+                ]
+            }
+        ]
+    }
+}

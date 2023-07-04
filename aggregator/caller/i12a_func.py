@@ -5,7 +5,7 @@ import os
 # from utils import uf
 
 
-def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
+def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
     results["i12a"] = {}
 
     # dg = uf.dg
@@ -43,7 +43,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             results["i12a"]["sv00"][d["tag"]][d["appln_filing_year"]] = d["count"]
     except Exception as e:
         results["i12a"]["sv00"] = None
-        print(f"Error calculating i12a[sv00]: {str(e)}")
+        logging.error(f"Error calculating i12a[sv00]: {str(e)}")
 
     try:
         results["i12a"]["sv01"] = {}
@@ -63,7 +63,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             results["i12a"]["sv01"][d["tag"]][d["appln_filing_year"]] = d["count"]
     except Exception as e:
         results["i12a"]["sv01"] = None
-        print(f"Error calculating i12a[sv01]: {str(e)}")
+        logging.error(f"Error calculating i12a[sv01]: {str(e)}")
 
     try:
         results["i12a"]["sv02"] = {}
@@ -83,7 +83,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             results["i12a"]["sv02"][d["tag"]][d["topic"]] = d["count"]
     except Exception as e:
         results["i12a"]["sv02"] = None
-        print(f"Error calculating i12a[sv02]: {str(e)}")
+        logging.error(f"Error calculating i12a[sv02]: {str(e)}")
 
     try:
         results["i12a"]["sv06"] = {}
@@ -103,7 +103,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             results["i12a"]["sv06"][d["tag"]][d["name"]] = d["count"]
     except Exception as e:
         results["i12a"]["sv06"] = None
-        print(f"Error calculating i12a[sv06]: {str(e)}")
+        logging.error(f"Error calculating i12a[sv06]: {str(e)}")
 
     try:
         results["i12a"]["sv07"] = {}
@@ -123,7 +123,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             results["i12a"]["sv07"][d["tag"]][d["nace"]] = d["count"]
     except Exception as e:
         results["i12a"]["sv07"] = None
-        print(f"Error calculating i12a[sv07]: {str(e)}")
+        logging.error(f"Error calculating i12a[sv07]: {str(e)}")
 
     try:
         results["i12a"]["sv08"] = {}
@@ -146,7 +146,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
                 print(f"Error calculating i12a[sv08]: {str(e)}")
     except Exception as e:
         results["i12a"]["sv08"] = None
-        print(f"Error calculating i12a[sv08]: {str(e)}")
+        logging.error(f"Error calculating i12a[sv08]: {str(e)}")
 
     try:
         results["i12a"]["sv09"] = {}
@@ -166,7 +166,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             results["i12a"]["sv09"][d["tag"]][d["country"]] = d["count"]
     except Exception as e:
         results["i12a"]["sv09"] = None
-        print(f"Error calculating i12a[sv09]: {str(e)}")
+        logging.error(f"Error calculating i12a[sv09]: {str(e)}")
 
     try:
         results["i12a"]["sv13"] = {}
@@ -186,6 +186,6 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             results["i12a"]["sv13"][d["tag"]][d["classification"]] = d["count"]
     except Exception as e:
         results["i12a"]["sv13"] = None
-        print(f"Error calculating i12a[sv13]: {str(e)}")
+        logging.error(f"Error calculating i12a[sv13]: {str(e)}")
 
     return results

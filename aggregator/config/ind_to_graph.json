@@ -1,0 +1,10 @@
+{
+    "i09": ["Patents by country", "Patents by IPC code (top 20 codes)", "Patents by NACE code", "Patents by Organization (top 100)", "Patents by sector", "Patents by topic", "Patents in Energy over time"],
+    "i09b": ["Share of patents in Energy topics over time"],
+    "i10": [],
+    "i11": ["Patent citations over time"],
+    "i12": ["Patent citations over time"],
+    "i12a": ["Patents by country and technological value", "Patents by IPC code (top 20 codes) and by technological value", "Patents by NACE code and by technological value", "Patents by Organization (top 100) and technological value", "Patents by sector and technological value", "Technological value of patents over time"],
+    "i13": [],
+    "i13a": ["Publications cited in patents", "Publications cited in patents by topic"]
+}

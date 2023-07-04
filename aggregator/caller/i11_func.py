@@ -69,7 +69,7 @@ def i11_aggregation_backward_ipc(field, extra_aggr_param):
     ]
 
 
-def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
+def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
     results["i11"] = {}
 
     try:
@@ -89,7 +89,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             results["i11"]["sv01"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i11"]["sv01"] = None
-        print(f"Error calculating i11[sv01]: {str(e)}")
+        logging.error(f"Error calculating i11[sv01]: {str(e)}")
 
     try:
         numerator = uf.secondary_view(
@@ -106,7 +106,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             results["i11"]["sv02"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i11"]["sv02"] = None
-        print(f"Error calculating i11[sv02]: {str(e)}")
+        logging.error(f"Error calculating i11[sv02]: {str(e)}")
 
     try:
         numerator = uf.secondary_view(
@@ -125,7 +125,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             results["i11"]["sv03"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i11"]["sv03"] = None
-        print(f"Error calculating i11[sv03]: {str(e)}")
+        logging.error(f"Error calculating i11[sv03]: {str(e)}")
 
     try:
         numerator = uf.inner_secondary_view(
@@ -144,7 +144,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             results["i11"]["sv06"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i11"]["sv06"] = None
-        print(f"Error calculating i11[sv06]: {str(e)}")
+        logging.error(f"Error calculating i11[sv06]: {str(e)}")
 
     try:
         numerator = uf.inner_secondary_view_nace_cpc(
@@ -163,7 +163,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             results["i11"]["sv07"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i11"]["sv07"] = None
-        print(f"Error calculating i11[sv07]: {str(e)}")
+        logging.error(f"Error calculating i11[sv07]: {str(e)}")
 
     try:
         numerator = uf.inner_secondary_view(
@@ -182,7 +182,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             results["i11"]["sv08"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i11"]["sv08"] = None
-        print(f"Error calculating i11[sv08]: {str(e)}")
+        logging.error(f"Error calculating i11[sv08]: {str(e)}")
 
     try:
         numerator = uf.inner_secondary_view(
@@ -201,7 +201,7 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             results["i11"]["sv09"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i11"]["sv09"] = None
-        print(f"Error calculating i11[sv09]: {str(e)}")
+        logging.error(f"Error calculating i11[sv09]: {str(e)}")
 
     try:
         numerator = uf.inner_secondary_view_nace_cpc(
@@ -220,6 +220,6 @@ def ind_caller(pat, results, extra_aggr_param=[], working_path=""):
             results["i11"]["sv13"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i11"]["sv13"] = None
-        print(f"Error calculating i11[sv13]: {str(e)}")
+        logging.error(f"Error calculating i11[sv13]: {str(e)}")
 
     return results

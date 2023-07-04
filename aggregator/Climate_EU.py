@@ -4,6 +4,8 @@ import importlib
 import argparse
 import logging
 import os
+from utils import Dashboard_creator
+from utils import Post_dashboard
 from utils import post_output
 from utils import output_func
 from utils import uf
@@ -30,7 +32,8 @@ def main(config_file_path):
         "mongodb://adminuser:password123@gateway.opix.ai:27017/"
     )
 
-    errors = []
+    errors = {}
+    completed = {}
     # Import and call functions based on the configuration file
     for func_config in config_data["functions"]:
         results = {}
@@ -58,11 +61,12 @@ def main(config_file_path):
         working_path = config_data["working_path"]
 
         # Call the function
-        if config_data["job_id"] == "intelcompt":
+        if config_data["job_id"] != "intelcompt":
             STI_viewer_data = myclient["STI_viewer_data"]
             results = function_to_call(
                 STI_viewer_data[func_config["collection"]],
                 results,
+                logging,
                 template,
                 working_path,
             )
@@ -79,7 +83,11 @@ def main(config_file_path):
             collection = config_data["job_id"]
             try:
                 results = function_to_call(
-                    STI_viewer_data[collection], results, template
+                    STI_viewer_data[collection],
+                    results,
+                    logging,
+                    template,
+                    working_path,
                 )
                 logging.info(
                     f"For domain {domain} and topic {topic} Function {function_name} "
@@ -91,7 +99,7 @@ def main(config_file_path):
                     f" executing function {function_name} "
                     f"for module {module_name}: {str(e)}"
                 )
-            errors = post_output.produce_results(
+            errors, completed = post_output.produce_results(
                 config_data["job_id"],
                 config_data["user_id"],
                 dg,
@@ -101,8 +109,18 @@ def main(config_file_path):
                 results,
                 logging,
                 errors,
+                completed,
             )
             print(errors)
+            print(completed)
+
+    job = "patents"
+
+    if config_data["job_id"] != "intelcompt":
+        pass
+    else:
+        template = Dashboard_creator.create_json(config_data["job_id"], job, completed)
+        Post_dashboard.send_data_to_api(config_data["job_id"], template)
 
 
 if __name__ == "__main__":
