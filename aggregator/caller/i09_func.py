@@ -42,12 +42,14 @@ def i09_aggregation_per_year_cpc(field, extra_aggr_param):
 def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
     results["i09"] = {}
 
+    print(extra_aggr_param)
     try:
         results["i09"]["sv01"] = uf.secondary_view(
             pat, "appln_filing_year", i09_aggregation, extra_aggr_param
         )
     except Exception as e:
         results["i09"]["sv01"] = None
+        print(f"Error calculating i09[sv01]: {str(e)}")
         logging.error(f"Error calculating i09[sv01]: {str(e)}")
 
     try:
@@ -56,6 +58,7 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
         )
     except Exception as e:
         results["i09"]["sv02"] = None
+        print(f"Error calculating i09[sv01]: {str(e)}")
         logging.error(f"Error calculating i09[sv02]: {str(e)}")
 
     try:
@@ -64,6 +67,7 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
         )
     except Exception as e:
         results["i09"]["sv03"] = None
+        print(f"Error calculating i09[sv01]: {str(e)}")
         logging.error(f"Error calculating i09[sv03]: {str(e)}")
 
     try:
@@ -72,6 +76,7 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
         )
     except Exception as e:
         results["i09"]["sv06"] = None
+        print(f"Error calculating i09[sv01]: {str(e)}")
         logging.error(f"Error calculating i09[sv06]: {str(e)}")
 
     try:
@@ -80,6 +85,7 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
         )
     except Exception as e:
         results["i09"]["sv07"] = None
+        print(f"Error calculating i09[sv01]: {str(e)}")
         logging.error(f"Error calculating i09[sv07]: {str(e)}")
 
     try:
@@ -88,6 +94,7 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
         )
     except Exception as e:
         results["i09"]["sv08"] = None
+        print(f"Error calculating i09[sv01]: {str(e)}")
         logging.error(f"Error calculating i09[sv08]: {str(e)}")
 
     try:
@@ -102,6 +109,7 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
         #         ] = full_set[k]
     except Exception as e:
         results["i09"]["sv09"] = None
+        print(f"Error calculating i09[sv01]: {str(e)}")
         logging.error(f"Error calculating i09[sv09]: {str(e)}")
 
     try:
@@ -110,5 +118,6 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
         )
     except Exception as e:
         results["i09"]["sv13"] = None
+        print(f"Error calculating i09[sv01]: {str(e)}")
         logging.error(f"Error calculating i09[sv13]: {str(e)}")
     return results

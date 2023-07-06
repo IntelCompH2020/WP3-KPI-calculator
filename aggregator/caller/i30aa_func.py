@@ -11,7 +11,7 @@ template = [
 ]
 
 
-def ind_caller(enco, results, extra_aggr_param=[], working_path=""):
+def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
     results["i30aa"] = {}
 
     documents = enco.aggregate(extra_aggr_param + template)

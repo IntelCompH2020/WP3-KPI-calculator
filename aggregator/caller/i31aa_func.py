@@ -11,7 +11,7 @@ template = [
 ]
 
 
-def ind_caller(enco, results, extra_aggr_param=[], working_path=""):
+def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
     pv = uf.pv
     if pv == "pv01":
         lookup = [

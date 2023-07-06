@@ -11,7 +11,7 @@ def i03_aggregation_per_year(field, extra_aggr_param):
     ]
 
 
-def ind_caller(sci, results, extra_aggr_param=[], working_path=""):
+def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
     results["i03"] = {}
 
     try:

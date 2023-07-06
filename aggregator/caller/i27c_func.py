@@ -2,7 +2,7 @@ from caller import i27a_func
 from caller import i27b_func
 
 
-def ind_caller(sci, results, extra_aggr_param=[], working_path=""):
+def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
     results = i27a_func.ind_caller(sci, results, extra_aggr_param)
     results = i27b_func.ind_caller(sci, results, extra_aggr_param)
 
@@ -17,13 +17,11 @@ def ind_caller(sci, results, extra_aggr_param=[], working_path=""):
             results["i27c"][sv] = {}
             for key in results["i27b"][sv].keys():
                 try:
-                    if (
-                        key in results["i27a"][sv].keys()
-                        and results["i27a"][sv][key] > 0
-                    ):
-                        results["i27c"][sv][key] = (
-                            results["i27b"][sv][key] / results["i27a"][sv][key]
-                        )
+                    if key in results["i27a"][sv].keys():
+                        if results["i27a"][sv][key] > 0:
+                            results["i27c"][sv][key] = (
+                                results["i27b"][sv][key] / results["i27a"][sv][key]
+                            )
                 except Exception as e:
                     print(f"Error calculating i27c[{sv}][{key}]: {str(e)}")
 

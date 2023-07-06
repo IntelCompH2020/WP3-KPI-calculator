@@ -16,7 +16,7 @@ def i24c_aggregation(field, extra_aggr_param):
     ]
 
 
-def ind_caller(sci, results, extra_aggr_param=[], working_path=""):
+def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
     results = i24b_func.ind_caller(sci, results, extra_aggr_param)
     results["i24c"] = {}
 

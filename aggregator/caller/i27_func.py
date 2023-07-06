@@ -13,7 +13,7 @@ def i27_aggregation(field, extra_aggr_param):
     ]
 
 
-def ind_caller(sci, results, extra_aggr_param=[], working_path=""):
+def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
     results["i27"] = {}
 
     results["i27"]["sv00"] = {}

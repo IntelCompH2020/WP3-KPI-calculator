@@ -13,7 +13,7 @@ def i08_aggregation(field, extra_aggr_param):
         ]
 
 
-def ind_caller(sci, results, extra_aggr_param=[], working_path=""):
+def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
     results = i01_func.ind_caller(sci, results, extra_aggr_param, working_path)
     results["i08"] = {}
 

@@ -2,7 +2,7 @@ from caller import i19_func
 from caller import i20_func
 
 
-def ind_caller(sci, results, extra_aggr_param=[], working_path=""):
+def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
     results = i19_func.ind_caller(sci, results, extra_aggr_param)
     results = i20_func.ind_caller(sci, results, extra_aggr_param)
 
