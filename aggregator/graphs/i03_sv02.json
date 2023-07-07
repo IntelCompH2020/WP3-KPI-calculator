@@ -1,0 +1,90 @@
+{
+    "indicatorId": "664de786-2879-4b65-82c7-df5d0d30be84",
+    "type": "line",
+    "dataZoom": {
+        "inside": true
+    },
+    "legend": {},
+    "name": "",
+    "chartName": "Share of publications in Energy topics over time",
+    "xAxis": {
+        "name": "year"
+    },
+    "yAxis": {
+        "name": "publications"
+    },
+    "labelSortKey": "year",
+    "description": "The graph shows the evolution in the share of publications in different topics in the Energy domain in the EU, over time. The ontology of topics is taken from the technical annex of the Final Report of the <a href=\"https://finance.ec.europa.eu/sustainable-finance/tools-and-standards/eu-taxonomy-sustainable-activities_en#documents\" target=\"_blank\">EU taxonomy for sustainable activities</a> (Chapter 4. \u201cElectricity, gas, steam and air conditioning supply,\u201d p. 205). Our Fields of Science (FoS) classification system uses deep learning techniques to assign a scientific publication to different FoS classes, which we subsequently map to the ontology of topics in Energy. <i>Data Source</i>: (<a href=\"https://graph.openaire.eu/\" target=\"_blank\">OpenAIRE Graph</a>)",
+    "chartDownloadData": {},
+    "chartDownloadImage": {},
+    "bucket": {
+        "type": "Composite",
+        "field": "key",
+        "sources": [
+            {
+                "field": "key"
+            },
+            {
+                "field": "year"
+            }
+        ],
+        "metrics": [
+            {
+                "type": "Sum",
+                "field": "value"
+            }
+        ]
+    },
+    "staticFilters": {
+        "keywordsFilters": [
+            {
+                "field": "pvid",
+                "value": [
+                    "pv01"
+                ]
+            },
+            {
+                "field": "svid",
+                "value": [
+                    "sv02"
+                ]
+            },
+            {
+                "field": "indid",
+                "value": [
+                    "i03"
+                ]
+            }
+        ]
+    },
+    "series": [
+        {
+            "splitSeries": [
+                {
+                    "key": "key"
+                }
+            ],
+            "label": {
+                "name": "Topic",
+                "labelKey": "year"
+            },
+            "values": {
+                "formatter": {
+                    "type": "number",
+                    "decimalAccuracy": 3
+                },
+                "valueKey": "value",
+                "tests": [
+                    {
+                        "aggregateType": "Sum"
+                    },
+                    {
+                        "field": "value"
+                    }
+                ]
+            }
+        }
+    ],
+    "areaStyle": {},
+    "stack": "x"
+}
