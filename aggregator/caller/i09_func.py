@@ -41,12 +41,12 @@ def i09_aggregation_per_year_cpc(field, extra_aggr_param):
 
 def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
     results["i09"] = {}
-
     print(extra_aggr_param)
     try:
         results["i09"]["sv01"] = uf.secondary_view(
             pat, "appln_filing_year", i09_aggregation, extra_aggr_param
         )
+        print(results)
     except Exception as e:
         results["i09"]["sv01"] = None
         print(f"Error calculating i09[sv01]: {str(e)}")

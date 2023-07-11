@@ -79,7 +79,7 @@ def main(config_file_path):
                 logging,
             )
         else:
-            STI_viewer_data = myclient["testdb"]
+            STI_viewer_data = myclient["demodb"]
             collection = config_data["job_id"]
             try:
                 results = function_to_call(
