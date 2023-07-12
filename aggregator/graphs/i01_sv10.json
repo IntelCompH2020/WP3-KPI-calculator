@@ -1,0 +1,95 @@
+{
+    "indicatorId": "664de786-2879-4b65-82c7-df5d0d30be84",
+    "type": "bar",
+    "chartName": "Top 50 Journals",
+    "description": "The graph shows top 50 journals by the number of scientific publications in Energy, with at least one author from an EU organization. <i>Data Source</i>: <a href=\"https://graph.openaire.eu/\" target=\"_blank\">OpenAIRE Graph</a>",
+    "chartDownloadData": {},
+    "chartDownloadImage": {},
+    "horizontal": false,
+    "dataZoom": {
+        "inside": true,
+        "slider": true,
+        "areaZoom": {
+            "start": 0,
+            "end": 20
+        }
+    },
+    "xAxis": {
+        "name": "journal",
+        "axisLabel": {
+            "width": 100,
+            "rotate": 45
+        }
+    },
+    "yAxis": {
+        "name": "publications"
+    },
+    "bucket": {
+        "type": "Composite",
+        "field": "key",
+        "sources": [
+            {
+                "field": "key"
+            }
+        ],
+        "metrics": [
+            {
+                "type": "Sum",
+                "field": "value"
+            }
+        ]
+    },
+    "staticFilters": {
+        "keywordsFilters": [
+            {
+                "field": "svid",
+                "value": [
+                    "sv10"
+                ]
+            },
+            {
+                "field": "indid",
+                "value": [
+                    "i01"
+                ]
+            }
+        ]
+    },
+    "labelsTransform": {},
+    "rawDataRequest": {
+        "keyField": "key",
+        "valueField": "value",
+        "order": {
+            "items": [
+                "-value"
+            ]
+        },
+        "page": {
+            "offset": 0,
+            "size": 50
+        }
+    },
+    "series": [
+        {
+            "label": {
+                "name": "Scientific publications in Energy",
+                "labelKey": "key"
+            },
+            "values": {
+                "valueKey": "value",
+                "formatter": {
+                    "type": "number",
+                    "decimalAccuracy": 3
+                },
+                "tests": [
+                    {
+                        "aggregateType": "Sum"
+                    },
+                    {
+                        "field": "value"
+                    }
+                ]
+            }
+        }
+    ]
+}

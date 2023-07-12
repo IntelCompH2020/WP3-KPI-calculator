@@ -13,6 +13,7 @@ requests = "^2.30.0"
 tqdm = "^4.65.0"
 ijson = "^3.2.0.post0"
 toml = "^0.10.2"
+psycopg2-binary = "^2.9.6"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -1,0 +1,96 @@
+{
+    "indicatorId": "664de786-2879-4b65-82c7-df5d0d30be84",
+    "type": "polar_bar",
+    "horizontal": false,
+    "dataZoom": {
+        "inside": true,
+        "slider": true,
+        "areaZoom": {
+            "start": 0,
+            "end": 20
+        }
+    },
+    "name": "",
+    "chartName": "Publications by Funder",
+    "description": "The graph shows the number of grant-supported publications in Energy with at least one author from an EU organization, by funder. <i>Data Source</i>: <a href=\"https://graph.openaire.eu/\" target=\"_blank\">OpenAIRE Graph</a>",
+    "xAxis": {
+        "name": "funder",
+        "axisLabel": {
+            "width": 100,
+            "rotate": 45
+        }
+    },
+    "yAxis": {
+        "name": "publications"
+    },
+    "chartDownloadData": {},
+    "chartDownloadImage": {},
+    "bucket": {
+        "type": "Terms",
+        "field": "key",
+        "metrics": [
+            {
+                "type": "Sum",
+                "field": "value"
+            }
+        ]
+    },
+    "rawDataRequest": {
+        "keyField": "key",
+        "valueField": "value",
+        "order": {
+            "items": [
+                "-value"
+            ]
+        },
+        "page": {
+            "offset": 0,
+            "size": 100
+        }
+    },
+    "series": [
+        {
+            "label": {
+                "name": "Citations per publication",
+                "labelKey": "key"
+            },
+            "values": {
+                "valueKey": "value",
+                "formatter": {
+                    "type": "number",
+                    "decimalAccuracy": 3
+                },
+                "tests": [
+                    {
+                        "aggregateType": "Sum"
+                    },
+                    {
+                        "field": "value"
+                    }
+                ]
+            }
+        }
+    ],
+    "staticFilters": {
+        "keywordsFilters": [
+            {
+                "field": "pvid",
+                "value": [
+                    "pv01"
+                ]
+            },
+            {
+                "field": "svid",
+                "value": [
+                    "sv12"
+                ]
+            },
+            {
+                "field": "indid",
+                "value": [
+                    "i23"
+                ]
+            }
+        ]
+    }
+}

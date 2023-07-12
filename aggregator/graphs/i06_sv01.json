@@ -1,0 +1,72 @@
+{
+    "indicatorId": "664de786-2879-4b65-82c7-df5d0d30be84",
+    "type": "line",
+    "name": "",
+    "chartName": "Total citations over time",
+    "description": "The graph shows the total number of citations for scientific publications in Energy with at least one author from an EU organization over time by the year of publication. <i>Data Source</i>: <a href=\"https://graph.openaire.eu/\" target=\"_blank\">OpenAIRE Graph</a> using the integrated <a href=\"https://opencitations.net/\" target=\"_blank\">Open Citations</a> dataset.",
+    "xAxis": {
+        "name": "year"
+    },
+    "yAxis": {
+        "name": "citations"
+    },
+    "chartDownloadData": {},
+    "chartDownloadImage": {},
+    "areaStyle": {},
+    "bucket": {
+        "type": "Terms",
+        "field": "key",
+        "metrics": [
+            {
+                "type": "Sum",
+                "field": "value"
+            }
+        ]
+    },
+    "labelSortKey": "key",
+    "series": [
+        {
+            "label": {
+                "name": "Number of scientific publications in energy domain",
+                "labelKey": "key"
+            },
+            "values": {
+                "formatter": {
+                    "type": "number",
+                    "decimalAccuracy": 3
+                },
+                "valueKey": "value",
+                "tests": [
+                    {
+                        "aggregateType": "Sum"
+                    },
+                    {
+                        "field": "value"
+                    }
+                ]
+            }
+        }
+    ],
+    "staticFilters": {
+        "keywordsFilters": [
+            {
+                "field": "pvid",
+                "value": [
+                    "pv01"
+                ]
+            },
+            {
+                "field": "svid",
+                "value": [
+                    "sv01"
+                ]
+            },
+            {
+                "field": "indid",
+                "value": [
+                    "i06"
+                ]
+            }
+        ]
+    }
+}

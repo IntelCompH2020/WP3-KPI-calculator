@@ -1,0 +1,111 @@
+{
+    "indicatorId": "664de786-2879-4b65-82c7-df5d0d30be84",
+    "type": "bar",
+    "name": "",
+    "chartName": "Publications by Organization (top 100)",
+    "description": "The graph shows the top 100 organizations in terms of the number of publications in Energy with at least one author from an EU organization. Select the filter to recreate the ranking by the number of multi-disciplinary publications, defined as belonging in more at least another FoS level 3 field, besides Energy. <i>Data Source</i>: <a href=\"https://graph.openaire.eu/\" target=\"_blank\">OpenAIRE Graph</a>",
+    "horizontal": false,
+    "dataZoom": {
+        "inside": true,
+        "slider": true,
+        "areaZoom": {
+            "start": 0,
+            "end": 20
+        }
+    },
+    "chartDownloadData": {},
+    "chartDownloadImage": {},
+    "filters": [
+        {
+            "type": "select",
+            "indicatorFilterType": "keyword",
+            "multiple": false,
+            "fieldCode": "indid",
+            "name": "Publications",
+            "valueToAssignOnInitialLoad": "i01",
+            "required": true,
+            "values": [
+                {
+                    "name": "Total",
+                    "value": "i01"
+                },
+                {
+                    "name": "Multi disciplinary",
+                    "value": "i27"
+                }
+            ]
+        }
+    ],
+    "bucket": {
+        "type": "Terms",
+        "field": "key",
+        "metrics": [
+            {
+                "type": "Sum",
+                "field": "value"
+            }
+        ]
+    },
+    "yAxis": {
+        "name": "publications"
+    },
+    "xAxis": {
+        "name": "organizations",
+        "axisLabel": {
+            "rotate": 45,
+            "width": 100
+        }
+    },
+    "rawDataRequest": {
+        "keyField": "key",
+        "valueField": "value",
+        "order": {
+            "items": [
+                "-value"
+            ]
+        },
+        "page": {
+            "offset": 0,
+            "size": 100
+        }
+    },
+    "staticFilters": {
+        "keywordsFilters": [
+            {
+                "field": "pvid",
+                "value": [
+                    "pv01"
+                ]
+            },
+            {
+                "field": "svid",
+                "value": [
+                    "sv06"
+                ]
+            }
+        ]
+    },
+    "series": [
+        {
+            "label": {
+                "name": "Energy publications per organization",
+                "labelKey": "key"
+            },
+            "values": {
+                "formatter": {
+                    "type": "number",
+                    "decimalAccuracy": 3
+                },
+                "valueKey": "value",
+                "tests": [
+                    {
+                        "aggregateType": "Sum"
+                    },
+                    {
+                        "field": "value"
+                    }
+                ]
+            }
+        }
+    ]
+}

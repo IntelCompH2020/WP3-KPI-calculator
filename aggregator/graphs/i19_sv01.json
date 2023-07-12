@@ -1,0 +1,145 @@
+{
+    "indicatorId": "664de786-2879-4b65-82c7-df5d0d30be84",
+    "type": "line",
+    "dataZoom": {
+        "inside": true
+    },
+    "legend": {},
+    "name": "",
+    "chartName": "International collaborations over time",
+    "xAxis": {
+        "name": "year"
+    },
+    "yAxis": {
+        "name": "publications"
+    },
+    "labelSortKey": "year",
+    "description": "The graph shows the evolution in the number of publications in Energy with authors affiliated to organizations in at least two different countries, one of which is in the EU. Superimposed is the number of those that are cited by at least one publication. <i>Data Source</i>: <a href=\"https://graph.openaire.eu/\" target=\"_blank\">OpenAIRE Graph</a> using the integrated <a href=\"https://opencitations.net/\" target=\"_blank\">Open Citations</a> dataset.",
+    "chartDownloadData": {},
+    "chartDownloadImage": {},
+    "bucket": {
+        "type": "Composite",
+        "field": "key",
+        "sources": [
+            {
+                "field": "key"
+            },
+            {
+                "field": "indid"
+            }
+        ],
+        "metrics": [
+            {
+                "type": "Sum",
+                "field": "value"
+            }
+        ]
+    },
+    "staticFilters": {
+        "keywordsFilters": [
+            {
+                "field": "pvid",
+                "value": [
+                    "pv01"
+                ]
+            },
+            {
+                "field": "svid",
+                "value": [
+                    "sv01"
+                ]
+            },
+            {
+                "field": "indid",
+                "value": [
+                    "i19",
+                    "i20",
+                    "i01"
+                ]
+            }
+        ]
+    },
+    "series": [
+        {
+            "nested": {
+                "type": "bar"
+            },
+            "label": {
+                "name": "Publications over time",
+                "labelKey": "key"
+            },
+            "values": {
+                "formatter": {
+                    "type": "number",
+                    "decimalAccuracy": 3
+                },
+                "valueKey": "value",
+                "tests": [
+                    {
+                        "aggregateType": "Sum"
+                    },
+                    {
+                        "field": "value"
+                    }
+                ],
+                "groupTests": [
+                    {
+                        "indid": "i01"
+                    }
+                ]
+            }
+        },
+        {
+            "label": {
+                "name": "Citable international co-publications",
+                "labelKey": "key"
+            },
+            "values": {
+                "formatter": {
+                    "type": "number",
+                    "decimalAccuracy": 3
+                },
+                "valueKey": "value",
+                "tests": [
+                    {
+                        "aggregateType": "Sum"
+                    },
+                    {
+                        "field": "value"
+                    }
+                ],
+                "groupTests": [
+                    {
+                        "indid": "i20"
+                    }
+                ]
+            }
+        },
+        {
+            "label": {
+                "name": "International co-publications",
+                "labelKey": "key"
+            },
+            "values": {
+                "formatter": {
+                    "type": "number",
+                    "decimalAccuracy": 3
+                },
+                "valueKey": "value",
+                "tests": [
+                    {
+                        "aggregateType": "Sum"
+                    },
+                    {
+                        "field": "value"
+                    }
+                ],
+                "groupTests": [
+                    {
+                        "indid": "i19"
+                    }
+                ]
+            }
+        }
+    ]
+}
