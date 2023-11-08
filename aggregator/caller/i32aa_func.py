@@ -1,3 +1,4 @@
+
 import pandas as pd
 
 
@@ -19,7 +20,7 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
     documents = enco.aggregate(extra_aggr_param + template)
     df = pd.DataFrame(list(documents))
     df = df.sort_values(by=["total_patents"], ascending=False).reset_index(drop=True)
-    df = df.head(100)
+    
 
     try:
         frames = []  # list to store all dataframes
@@ -36,18 +37,41 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
         results["i32aa"]["sv02.01"] = None
         print(f"Error calculating i32aa[sv02.01]: {str(e)}")
 
+
     try:
-        results["i32aa"]["sv09"] = (
-            df.groupby("Country ISO code")["total_patents"].mean().to_dict()
-        )
+        # Convert DataFrame to dictionary
+        df_dict = (
+            df.groupby(["Country ISO code"])["total_patents"]
+            .sum()
+        ) / len(df)
+        df_dict = df_dict.to_dict()
+        # df_dict_new = {}
+        # for k, v in df_dict.items():
+        #     company, country = k
+        #     if company not in df_dict_new:
+        #         df_dict_new[company] = {}
+        #     df_dict_new[company][country] = v
+        # # Post-processing to get desired format
+        results["i32aa"]["sv09"] = df_dict
     except Exception as e:
         results["i32aa"]["sv09"] = None
         print(f"Error calculating i32aa[sv09]: {str(e)}")
 
     try:
-        results["i32aa"]["sv15"] = (
-            df.groupby("CompanySize")["total_patents"].mean().to_dict()
-        )
+        # Convert DataFrame to dictionary
+        df_dict = (
+            df.groupby(["CompanySize"])["total_patents"]
+            .sum()
+        ) / len(df)
+        df_dict = df_dict.to_dict()
+        # df_dict_new = {}
+        # for k, v in df_dict.items():
+        #     company, country = k
+        #     if company not in df_dict_new:
+        #         df_dict_new[company] = {}
+        #     df_dict_new[company][country] = v
+        # Post-processing to get desired format
+        results["i32aa"]["sv15"] = df_dict
     except Exception as e:
         results["i32aa"]["sv15"] = None
         print(f"Error calculating i32aa[sv15]: {str(e)}")

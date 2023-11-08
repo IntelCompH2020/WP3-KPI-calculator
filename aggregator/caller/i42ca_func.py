@@ -30,11 +30,6 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
     documents = enco.aggregate(extra_aggr_param + template)
     df = pd.DataFrame(list(documents))
 
-    # Sort and select the top 10 rows based on TurnoverNumeric column
-    df["TurnoverNumeric"] = pd.to_numeric(df["Turnover"], errors="coerce").fillna(0)
-    df = df.sort_values(by=["TurnoverNumeric"], ascending=False).reset_index(drop=True)
-    df = df.head(10)
-
     # Initialize an empty DataFrame to store the accumulated nonvaluecounts
     result_df_nonvalue = pd.DataFrame()
     # Initialize an empty DataFrame to store the accumulated counts
@@ -42,19 +37,27 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
 
     # Iterate through each iteration of the for loop
     for i in range(len(df)):
-        counts_nonvalue = pd.DataFrame(df["ESG data"][i])[
-            pd.DataFrame(df["ESG data"][i])["Rank"].notna()
-        ]["Sub_Metric_Title"].value_counts()
-        counts = pd.DataFrame(df["ESG data"][i])["Sub_Metric_Title"].value_counts()
+
+        ESG = pd.DataFrame(df["ESG data"][i])
+
+        counts_nonvalue = ESG[ESG["Rank"].notna()]["Sub_Metric_Title"].value_counts()
+        counts = ESG["Sub_Metric_Title"].value_counts()
+
+        # Aligning the two Series, fill NaN in the second with 0
+        aligned_counts, aligned_nonvalue = counts.align(counts_nonvalue, fill_value=0)
 
         if i == 0:
-            result_df = counts
-            result_df_nonvalue = counts_nonvalue
+            result_df = aligned_counts
+            result_df_nonvalue = aligned_nonvalue
         else:
-            result_df = result_df.add(counts, fill_value=0)
-            result_df_nonvalue = result_df_nonvalue.add(counts_nonvalue, fill_value=0)
+            result_df = result_df.add(aligned_counts, fill_value=0)
+            result_df_nonvalue = result_df_nonvalue.add(aligned_nonvalue, fill_value=0)
 
     sorted_df = (100 * result_df_nonvalue.div(result_df)).sort_values(ascending=False)
-    results["i42ca"]["sv00"] = sorted_df.fillna(0).head(5).to_dict()
+    results["i42ca"]["sv00"] = sorted_df.fillna(0).head(20).to_dict()
 
     return results
+
+
+    # count all ESG reports. Count number of submetric titles where Rank is not null
+    # 100 * Count number of submetric titles where Rank is not null/ (count all ESG reports)

@@ -75,7 +75,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
         print(f"Error calculating sv06: {str(e)}")
 
     try:
-        full_set = uf.inner_secondary_view(sci, "affiliations.country", i06_aggregation)
+        full_set = uf.inner_secondary_view(sci, "affiliations.country", i06_aggregation, extra_aggr_param)
         results["i06"]["sv09"] = {}
         for k in full_set.keys():
             results["i06"]["sv09"][k] = full_set[k]

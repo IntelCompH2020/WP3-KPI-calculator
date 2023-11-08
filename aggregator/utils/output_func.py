@@ -8,7 +8,6 @@ def check_empty_dict(input_dict):
     if not input_dict:
         raise ValueError("Dictionary is empty")
 
-
 def get_data(dgid, pvid, indid, svid, data):
     output = []
 
@@ -43,12 +42,21 @@ def get_data(dgid, pvid, indid, svid, data):
                             }
                         )
                 else:
-                    if svid in {"sv17", "sv18", "sv07", "sv07b", "sv09"}:
+                    if svid in {"sv17", "sv18", "sv07", "sv07b", "sv09", "sv23", "sv24"}:
                         output.append(
                             {
                                 **common_dict,
                                 "key": k,
                                 "metric_scope": sub_k,
+                                "value": sub_v,
+                            }
+                        )
+                    elif svid == "sv23":
+                        output.append(
+                            {
+                                **common_dict,
+                                "tag": k,
+                                "key": sub_k,
                                 "value": sub_v,
                             }
                         )
@@ -82,6 +90,25 @@ def get_data(dgid, pvid, indid, svid, data):
         else:
             if svid == "sv01":
                 output.append({**common_dict, "key": str(k), "value": v})
+            elif (indid == "i30aa") and (svid == "sv07"):
+                output.append(
+                    {
+                        **common_dict,
+                        "key": k,
+                        "id": k[:2],
+                        "value": v,
+                    }
+                )
+            elif (indid == "i30aa") and (svid == "sv07b"):
+                output.append(
+                    {
+                        **common_dict,
+                        "key": k,
+                        "id": k[:4],
+                        "parentId": k[:2],
+                        "value": v,
+                    }
+                )
             else:
                 output.append({**common_dict, "key": k, "value": v})
 
@@ -96,13 +123,18 @@ def get_data(dgid, pvid, indid, svid, data):
 def produce_results(dgid, pvid, results, logging):
     # Convert results to desired format
     output_lake = Path("/media/datalake/stiviewer")
-    output_dir = output_lake.joinpath("output/output_done/diamantis")
+    output_dir = output_lake.joinpath("output/output_done/bugsfix")
 
     for indid in results.keys():
-        try:
-            for svid in results[indid].keys():
+        for svid in results[indid].keys():
+            try:
                 data = get_data(dgid, pvid, indid, svid, results[indid][svid])
-                data_file = json.dumps(data, indent=2)
+                if svid not in ["sv01", "sv02.01", "sv17.01","sv18.01"]:
+                    new_data = [item for item in data if item["value"] != 0]
+                else:
+                    new_data = data
+
+                data_file = json.dumps(new_data, indent=2)
                 data_path = output_dir.joinpath(
                     f"{dgid}_{pvid}_{indid}_{svid}_data.json"
                 )
@@ -111,7 +143,7 @@ def produce_results(dgid, pvid, results, logging):
                 logging.info(
                     f"For Indicator {indid} " f"Secondary view {svid} file created."
                 )
-        except Exception as e:
-            logging.error(
-                f"Error executing function {indid}" f"for view {svid}: {str(e)}"
-            )
+            except Exception as e:
+                logging.error(
+                    f"Error executing function {indid}" f"for view {svid}: {str(e)}"
+                )

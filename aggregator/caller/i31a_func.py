@@ -22,8 +22,7 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
     df = df.sort_values(by=["total_publications"], ascending=False).reset_index(
         drop=True
     )
-    df = df.head(100)
-
+    
     try:
         results["i31a"]["sv00"] = {
             "total_publications": int(df["total_publications"].sum())

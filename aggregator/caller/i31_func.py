@@ -22,7 +22,6 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
     df = df.sort_values(by=["total_publications"], ascending=False).reset_index(
         drop=True
     )
-    df = df.head(100)
 
     try:
         results["i31"]["sv00"] = df.set_index("company_name")[

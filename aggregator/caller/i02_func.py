@@ -24,7 +24,7 @@ def get_annual_growth_from_per_year(per_year):
 
 def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
     results["i02"] = {}
-
+    
     try:
         temp = uf.inner_secondary_view_per_year(
             sci, "topic", i02_aggregation, extra_aggr_param, first_year=2014
@@ -37,7 +37,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
     except Exception as e:
         results["i02"]["sv02"] = None
         print(f"Error calculating sv02: {str(e)}")
-
+    
     try:
         temp = uf.secondary_view_per_year(
             sci, "category", i02_aggregation, extra_aggr_param, first_year=2014

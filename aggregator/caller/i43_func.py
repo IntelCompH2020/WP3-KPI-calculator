@@ -30,11 +30,6 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
     documents = enco.aggregate(extra_aggr_param + template)
     df = pd.DataFrame(list(documents))
 
-    # Sort and select the top 10 rows based on TurnoverNumeric column
-    df["TurnoverNumeric"] = pd.to_numeric(df["Turnover"], errors="coerce").fillna(0)
-    df = df.sort_values(by=["TurnoverNumeric"], ascending=False).reset_index(drop=True)
-    df = df.head(10)
-
     # Loop through the rows and count the unique Metric_Titles for each Metric_Scope
     companies_dict_sv17 = {}
     companies_dict_sv18 = {}
@@ -48,7 +43,7 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
                 index="Year",
                 columns="Metric_Scope",
                 values="Weighted_Rank",
-                aggfunc="mean",
+                aggfunc="sum",
             )
             .fillna(0)
             .to_dict()
@@ -58,7 +53,7 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
                 index="Year",
                 columns="Metric_Title",
                 values="Weighted_Rank",
-                aggfunc="mean",
+                aggfunc="sum",
             )
             .fillna(0)
             .to_dict()
@@ -69,3 +64,5 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
     results["i43"]["sv18.01"] = companies_dict_sv18
 
     return results
+
+    # "sv18.01" per year per company

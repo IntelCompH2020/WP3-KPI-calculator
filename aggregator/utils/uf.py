@@ -61,7 +61,7 @@ eu_members_code = [
 
 # HARD CODED
 dg = "dg01"
-pv = "pv01"
+pv = "pv02"
 # HARD CODED
 
 journal_filter = [{"$match": {"pub_type": {"$eq": "Journal"}}}]
@@ -108,22 +108,18 @@ def inner_secondary_view_per_year_nace_cpc(
 ):
     # Get the results of the MongoDB aggregation
     agg = col.aggregate(aggregation(None, extra_aggr_param), allowDiskUse=True)
-    mongo_results = []
-    for i in agg:
-        mongo_results.append(i)
-
-    # Reformat the MongoDB results into an intermediate format
     intermediate_results = []
-    for i in mongo_results:
+    for i in agg:
+        print(i)
+        # Reformat the MongoDB results into an intermediate format
         year = i["_id"][0]
-        nace_codes = i["_id"][1]
-        nace_labels = i["_id"][2]
+        codes = i["_id"][1]
+        labels = i["_id"][2]
         count = i["count"]
-
-        for i in range(len(nace_codes)):
+        for i in range(len(codes)):
             output_dict = {
                 "year": year,
-                field: f"{nace_codes[i]}:{nace_labels[i]}",
+                field: f"{codes[i]}:{labels[i]}",
                 "count": count,
             }
             intermediate_results.append(output_dict)
@@ -218,7 +214,7 @@ def secondary_view_per_company(
 
 
 def inner_secondary_view_per_year(
-    col, field, aggregation, extra_aggr_param=[], first_year=2000, final_year=2022
+    col, field, aggregation, extra_aggr_param=[], first_year=2014, final_year=2021
 ):
     sv_values = col.distinct(field)
     # print("Distinct " + field + " values :", len(sv_values))
@@ -226,6 +222,47 @@ def inner_secondary_view_per_year(
     # print("Year Range:", len(year_range))
 
     agg = col.aggregate(aggregation(field, extra_aggr_param), allowDiskUse=True)
+
+    result = {}
+    for key in sv_values:
+        result[key] = {}
+        for year in year_range:
+            result[key][year] = 0
+
+    for i in agg:
+        year, keys = i["_id"]
+        if type(keys) == str:
+            if year >= first_year and year <= final_year and keys in sv_values:
+                result[keys][year] += i["count"]
+            continue
+        for key in set(keys):
+            # remove set() if we want each individual affiliation to count
+            # print("Year and Key:", year, " - ", key)
+            if year >= first_year and year <= final_year and key in sv_values:
+                result[key][year] += i["count"]
+
+    return result
+
+def inner_secondary_view_per_year_science(
+    col, field, aggregation, extra_aggr_param=[], first_year=2014, final_year=2021
+):
+    # Unwinding the 'field' if it's an array, else process it as a value
+    aggregation_pipeline = [
+        {'$unwind': '$' + field},
+        *aggregation(field, extra_aggr_param)
+    ]
+
+    agg = col.aggregate(aggregation_pipeline, allowDiskUse=True)
+
+    sv_values = set()  # Using set to avoid duplicate values
+    year_range = list(range(first_year, final_year + 1))
+
+    for doc in col.find({}, {field: 1}):
+        val = doc.get(field)
+        if isinstance(val, list):
+            sv_values.update(val)
+        else:
+            sv_values.add(val)
 
     result = {}
     for key in sv_values:
@@ -275,13 +312,8 @@ def inner_secondary_view_per_company(
 def inner_secondary_view_nace_cpc(col, field, aggregation, extra_aggr_param=[]):
     # Get the results of the MongoDB aggregation
     agg = col.aggregate(aggregation(None, extra_aggr_param), allowDiskUse=True)
-    mongo_results = []
-    for i in agg:
-        mongo_results.append(i)
-
-    # Reformat the MongoDB results into an intermediate format
     intermediate_results = []
-    for i in mongo_results:
+    for i in agg:
         nace_codes = i["_id"][0]
         nace_labels = i["_id"][1]
         count = i["count"]

@@ -21,7 +21,7 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
 
     # Sort and select the top 10 rows based on TurnoverNumeric column
     df = df.sort_values(by=["total_trademarks"], ascending=False).reset_index(drop=True)
-    df = df.head(100)
+
     try:
         results["i33a"]["sv00"] = {
             "total_trademarks": int(df["total_trademarks"].sum())

@@ -12,7 +12,7 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         res = uf.inner_secondary_view_per_year(
-            pat, "topic", i09b_aggregation_per_year, extra_aggr_param
+            pat, "topic", i09b_aggregation_per_year, extra_aggr_param, first_year=2000
         )
         new_res = {}
         for key, sub_dict in res.items():

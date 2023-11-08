@@ -5,8 +5,8 @@ def i24b_aggregation(field, extra_aggr_param):
     return extra_aggr_param + [
         {
             "$match": {
-                "affiliations.is_eu_member": {"$eq": True},
                 "is_open_access": {"$eq": True},
+                "pub_type": {"$eq": "Journal"},
                 "nr_citations": {"$gt": 0},
             }
         },
@@ -19,7 +19,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         results["i24b"]["sv01"] = uf.secondary_view(
-            sci, "pub_year", i24b_aggregation, uf.journal_filter + extra_aggr_param
+            sci, "pub_year", i24b_aggregation, extra_aggr_param
         )
     except Exception as e:
         results["i24b"]["sv01"] = None
@@ -27,7 +27,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         results["i24b"]["sv02"] = uf.inner_secondary_view(
-            sci, "topic", i24b_aggregation, uf.journal_filter + extra_aggr_param
+            sci, "topic", i24b_aggregation, extra_aggr_param
         )
     except Exception as e:
         results["i24b"]["sv02"] = None
@@ -35,7 +35,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         results["i24b"]["sv03"] = uf.secondary_view(
-            sci, "category", i24b_aggregation, uf.journal_filter + extra_aggr_param
+            sci, "category", i24b_aggregation, extra_aggr_param
         )
     except Exception as e:
         results["i24b"]["sv03"] = None
@@ -43,7 +43,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         results["i24b"]["sv05"] = uf.sdg_aggregation(
-            sci, i24b_aggregation, uf.journal_filter + extra_aggr_param
+            sci, i24b_aggregation, extra_aggr_param
         )
     except Exception as e:
         results["i24b"]["sv05"] = None
@@ -54,7 +54,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
             sci,
             "affiliations.affiliation_name",
             i24b_aggregation,
-            uf.journal_filter + extra_aggr_param,
+            extra_aggr_param,
         )
     except Exception as e:
         results["i24b"]["sv06"] = None
@@ -65,11 +65,11 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
             sci,
             "affiliations.country",
             i24b_aggregation,
-            uf.journal_filter + extra_aggr_param,
+            extra_aggr_param,
         )
         results["i24b"]["sv09"] = {}
         for k in full_set.keys():
-            if k in uf.eu_members:
+            # if k in uf.eu_members:
                 results["i24b"]["sv09"][k] = full_set[k]
     except Exception as e:
         results["i24b"]["sv09"] = None
@@ -80,7 +80,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
             sci,
             "published_venue",
             i24b_aggregation,
-            uf.journal_filter + extra_aggr_param,
+            extra_aggr_param,
         )
     except Exception as e:
         results["i24b"]["sv10"] = None
@@ -88,7 +88,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         results["i24b"]["sv11"] = uf.secondary_view(
-            sci, "publisher", i24b_aggregation, uf.journal_filter + extra_aggr_param
+            sci, "publisher", i24b_aggregation, extra_aggr_param
         )
     except Exception as e:
         results["i24b"]["sv11"] = None
@@ -96,7 +96,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         results["i24b"]["sv12"] = uf.inner_secondary_view(
-            sci, "funders.funder", i24b_aggregation, uf.journal_filter
+            sci, "funders.funder", i24b_aggregation, extra_aggr_param
         )
     except Exception as e:
         results["i24b"]["sv12"] = None

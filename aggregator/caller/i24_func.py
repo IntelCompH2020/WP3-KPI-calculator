@@ -64,7 +64,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
         results["i24"]["sv09"] = {}
         for k in full_set.keys():
-            if k in uf.eu_members:
+            # if k in uf.eu_members:
                 results["i24"]["sv09"][k] = full_set[k]
     except Exception as e:
         results["i24"]["sv09"] = None

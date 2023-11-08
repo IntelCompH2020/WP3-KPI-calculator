@@ -5,7 +5,6 @@ def i27a_aggregation(field, extra_aggr_param):
     return extra_aggr_param + [
         {
             "$match": {
-                "affiliations.is_eu_member": {"$eq": True},
                 "is_meso_interdisciplinary": {"$eq": True},
             }
         },

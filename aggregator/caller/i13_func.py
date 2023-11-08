@@ -2,7 +2,13 @@ from utils import uf
 
 
 def i13_aggregation(field, extra_aggr_param):
-    return extra_aggr_param + [{"$group": {"_id": "$" + field, "count": {"$sum": 1}}}]
+    if field == "all":
+        return extra_aggr_param + [{"$group": {"_id": None, "count": {"$sum": 1}}}]
+    else:
+        return extra_aggr_param + [
+            {"$group": {"_id": "$" + field, "count": {"$sum": 1}}}
+        ]
+
 
 
 def i13_aggregation_nace(field, extra_aggr_param):
@@ -19,6 +25,7 @@ def i13_aggregation_nace(field, extra_aggr_param):
 
 def i13_aggregation_cpc(field, extra_aggr_param):
     return extra_aggr_param + [
+        {"$match": {"cpc_labels": {"$exists": True, "$not": {"$size": 0}}}},
         {
             "$group": {
                 "_id": ["$cpc_labels.code", "$cpc_labels.description"],
@@ -30,6 +37,7 @@ def i13_aggregation_cpc(field, extra_aggr_param):
 
 def i13_aggregation_npl(field, extra_aggr_param):
     return extra_aggr_param + [
+        {"$match": {"citations": {"$exists": True, "$not": {"$size": 0}}}},
         {
             "$group": {
                 "_id": "$" + field,
@@ -41,7 +49,12 @@ def i13_aggregation_npl(field, extra_aggr_param):
 
 def i13_aggregation_npl_nace(field, extra_aggr_param):
     return extra_aggr_param + [
-        {"$match": {"nace": {"$exists": True, "$not": {"$size": 0}}}},
+        {
+            "$match": {
+                "nace": {"$exists": True, "$not": {"$size": 0}},
+                "citations": {"$exists": True, "$not": {"$size": 0}},
+            }
+        },
         {
             "$group": {
                 "_id": ["$nace.nace2_code", "$nace.description"],
@@ -53,6 +66,12 @@ def i13_aggregation_npl_nace(field, extra_aggr_param):
 
 def i13_aggregation_npl_cpc(field, extra_aggr_param):
     return extra_aggr_param + [
+        {
+            "$match": {
+                "cpc_labels": {"$exists": True, "$not": {"$size": 0}},
+                "citations": {"$exists": True, "$not": {"$size": 0}},
+            }
+        },
         {
             "$group": {
                 "_id": ["$cpc_labels.code", "$cpc_labels.description"],
@@ -122,9 +141,11 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         numerator = uf.inner_secondary_view(
-            pat, "participant.name", i13_aggregation_npl
+            pat, "participant.name", i13_aggregation_npl, extra_aggr_param
         )
-        denominator = uf.inner_secondary_view(pat, "participant.name", i13_aggregation)
+        denominator = uf.inner_secondary_view(
+            pat, "participant.name", i13_aggregation, extra_aggr_param
+        )
         # Remove keys where the denominator is zero
         denominator = {k: v for k, v in denominator.items() if v != 0}
         results["i13"]["sv06"] = {}
@@ -139,10 +160,10 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         numerator = uf.inner_secondary_view_nace_cpc(
-            pat, "nace.nace2_code", i13_aggregation_npl_nace
+            pat, "nace.nace2_code", i13_aggregation_npl_nace, extra_aggr_param
         )
         denominator = uf.inner_secondary_view_nace_cpc(
-            pat, "nace.nace2_code", i13_aggregation_nace
+            pat, "nace.nace2_code", i13_aggregation_nace, extra_aggr_param
         )
         # Remove keys where the denominator is zero
         denominator = {k: v for k, v in denominator.items() if v != 0}
@@ -158,10 +179,10 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         numerator = uf.inner_secondary_view(
-            pat, "participant.sector", i13_aggregation_npl
+            pat, "participant.sector", i13_aggregation_npl, extra_aggr_param
         )
         denominator = uf.inner_secondary_view(
-            pat, "participant.sector", i13_aggregation
+            pat, "participant.sector", i13_aggregation, extra_aggr_param
         )
         # Remove keys where the denominator is zero
         denominator = {k: v for k, v in denominator.items() if v != 0}
@@ -177,26 +198,19 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         numerator = uf.inner_secondary_view(
-            pat, "participant.country", i13_aggregation_npl
+            pat, "participant.country", i13_aggregation_npl, extra_aggr_param
         )
         denominator = uf.inner_secondary_view(
-            pat, "participant.country", i13_aggregation
+            pat, "participant.country", i13_aggregation, extra_aggr_param
         )
         # Remove keys where the denominator is zero
         denominator = {k: v for k, v in denominator.items() if v != 0}
-        full_set = {}
+        results["i13"]["sv09"] = {}
         for k in numerator.keys():
             # If key is not present in the denominator, skip the calculation
             if k not in denominator:
                 continue
-            full_set[k] = numerator[k] / denominator[k]
-
-        results["i13"]["sv09"] = {}
-        for k in full_set.keys():
-            if k in uf.eu_members_code:
-                results["i13"]["sv09"][
-                    uf.eu_members[uf.eu_members_code.index(k)]
-                ] = full_set[k]
+            results["i13"]["sv09"][k] = numerator[k] / denominator[k]
     except Exception as e:
         results["i13"]["sv09"] = None
         logging.error(f"Error calculating i13[sv09]: {str(e)}")

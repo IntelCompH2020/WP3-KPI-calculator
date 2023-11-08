@@ -6,8 +6,7 @@ def i24c_aggregation(field, extra_aggr_param):
     return extra_aggr_param + [
         {
             "$match": {
-                "affiliations.is_eu_member": {"$eq": True},
-                "pub_year": {"$gte": 2014},
+                "nr_citations": {"$gt": 0},
                 "pub_type": {"$eq": "Journal"},
                 "is_open_access": {"$eq": True},
             }
@@ -17,7 +16,7 @@ def i24c_aggregation(field, extra_aggr_param):
 
 
 def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
-    results = i24b_func.ind_caller(sci, results, extra_aggr_param)
+    results = i24b_func.ind_caller(sci, results, logging, extra_aggr_param, working_path)
     results["i24c"] = {}
 
     try:

@@ -2,32 +2,32 @@ import glob
 import json
 import os
 
-# from utils import uf
+from utils import uf
 
 
 def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
     results["i12a"] = {}
 
-    # dg = uf.dg
-    # pv = uf.pv
-    # if dg == "dg01" and pv == "pv01":
-    #     path = "/media/datalake/patstat_2022b/output/i12a-Energy/"
-    #     space = "-EU/"
-    # elif dg == "dg02" and pv == "pv01":
-    #     path = "/media/datalake/patstat_2022b/output/i12a-Energy/"
-    #     space = "-GR/"
-    # elif dg == "dg01" and pv == "pv02":
-    #     path = "/media/datalake/patstat_2022b/output/i12a-Agrifood/"
-    #     space = "-EU/"
-    # elif dg == "dg02" and pv == "pv02":
-    #     path = "/media/datalake/patstat_2022b/output/i12a-Agrifood/"
-    #     space = "-GR/"
+    dg = uf.dg
+    pv = uf.pv
+    if dg == "dg01" and pv == "pv01":
+        path = "/media/datalake/patstat_2022b/output/i12a-Energy/"
+        space = "-EU/"
+    elif dg == "dg02" and pv == "pv01":
+        path = "/media/datalake/patstat_2022b/output/i12a-Energy/"
+        space = "-GR/"
+    elif dg == "dg01" and pv == "pv02":
+        path = "/media/datalake/patstat_2022b/output/i12a-Agrifood/"
+        space = "-EU/"
+    elif dg == "dg02" and pv == "pv02":
+        path = "/media/datalake/patstat_2022b/output/i12a-Agrifood/"
+        space = "-GR/"
 
-    path = working_path + "i12a/"
+    # path = working_path + "i12a/"
 
     try:
         results["i12a"]["sv00"] = {}
-        sv_path = path + "sv00/"
+        sv_path = path + f"sv00{space}"
         if os.path.exists(sv_path):
             json_files = glob.glob(sv_path + "*.json")
         else:
@@ -47,7 +47,7 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         results["i12a"]["sv01"] = {}
-        sv_path = path + "sv01/"
+        sv_path = path + f"sv01{space}"
         if os.path.exists(sv_path):
             json_files = glob.glob(sv_path + "*.json")
         else:
@@ -67,7 +67,7 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         results["i12a"]["sv02"] = {}
-        sv_path = path + "sv02/"
+        sv_path = path + f"sv02{space}"
         if os.path.exists(sv_path):
             json_files = glob.glob(sv_path + "*.json")
         else:
@@ -87,7 +87,7 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         results["i12a"]["sv06"] = {}
-        sv_path = path + "sv06/"
+        sv_path = path + f"sv06{space}"
         if os.path.exists(sv_path):
             json_files = glob.glob(sv_path + "*.json")
         else:
@@ -107,7 +107,7 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         results["i12a"]["sv07"] = {}
-        sv_path = path + "sv07/"
+        sv_path = path + f"sv07{space}"
         if os.path.exists(sv_path):
             json_files = glob.glob(sv_path + "*.json")
         else:
@@ -127,12 +127,11 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         results["i12a"]["sv08"] = {}
-        sv_path = path + "sv08/"
+        sv_path = path + f"sv08{space}"
         if os.path.exists(sv_path):
             json_files = glob.glob(sv_path + "*.json")
         else:
             raise FileNotFoundError(f"Directory does not exist: {sv_path}")
-        json_files = glob.glob(sv_path + "*.json")
         data = []
         with open(json_files[0]) as f:
             for line in f:
@@ -141,16 +140,19 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
             if d["tag"] not in results["i12a"]["sv08"]:
                 results["i12a"]["sv08"][d["tag"]] = {}
             try:
-                results["i12a"]["sv08"][d["tag"]][d["sector"]] = d["count"]
-            except Exception as e:
-                print(f"Error calculating i12a[sv08]: {str(e)}")
+                # Trying to access d["sector"], if it doesn't exist, it will raise a KeyError
+                sector = d["sector"]
+            except KeyError:
+                print(f"No sector found for tag {d['tag']}, skipping...")
+                continue  # Skip to the next iteration if KeyError occurs
+            results["i12a"]["sv08"][d["tag"]][sector] = d.get("count", None)  # Using .get() to avoid KeyError if "count" doesn't exist
     except Exception as e:
         results["i12a"]["sv08"] = None
         logging.error(f"Error calculating i12a[sv08]: {str(e)}")
 
     try:
         results["i12a"]["sv09"] = {}
-        sv_path = path + "sv09/"
+        sv_path = path + f"sv09{space}"
         if os.path.exists(sv_path):
             json_files = glob.glob(sv_path + "*.json")
         else:
@@ -170,7 +172,7 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         results["i12a"]["sv13"] = {}
-        sv_path = path + "sv13/"
+        sv_path = path + f"sv13{space}"
         if os.path.exists(sv_path):
             json_files = glob.glob(sv_path + "*.json")
         else:
@@ -189,3 +191,5 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
         logging.error(f"Error calculating i12a[sv13]: {str(e)}")
 
     return results
+
+

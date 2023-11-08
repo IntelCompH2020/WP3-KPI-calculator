@@ -29,21 +29,15 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
     # Find documents and convert to dataframe
     documents = enco.aggregate(extra_aggr_param + template)
     df = pd.DataFrame(list(documents))
-
-    # Sort and select the top 10 rows based on TurnoverNumeric column
-    df["TurnoverNumeric"] = pd.to_numeric(df["Turnover"], errors="coerce").fillna(0)
-    df = df.sort_values(by=["TurnoverNumeric"], ascending=False).reset_index(drop=True)
-    df = df.head(10)
-
     for i in range(len(df)):
-        df_ESG_nonvalue = pd.DataFrame(df["ESG data"][i])[
-            pd.DataFrame(df["ESG data"][i])["Rank"].notna()
-        ]
+
+        ESG = pd.DataFrame(df["ESG data"][i])
+        df_ESG_nonvalue = ESG[ESG["Rank"].notna()]
+
         numerator = df_ESG_nonvalue.pivot_table(
             index="Year", columns="Metric_Scope", aggfunc="count"
         )["Sub_Metric_Title"]
-        df_ESG = pd.DataFrame(df["ESG data"][i])
-        denominator = df_ESG.pivot_table(
+        denominator = ESG.pivot_table(
             index="Year", columns="Metric_Scope", aggfunc="count"
         )["Sub_Metric_Title"]
 
@@ -53,10 +47,17 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
         else:
             result_df = result_df.add(denominator, fill_value=0)
             result_df_nonvalue = result_df_nonvalue.add(numerator, fill_value=0)
-
+            
     # Add the dictionary of results to the main results dictionary
     results["i42e"]["sv17.01"] = (
         (100 * result_df_nonvalue.div(result_df)).fillna(0).to_dict()
     )
 
     return results
+
+
+    # Count distinct submetric. Count not null submetric per year and (Company ID).
+    # Count not null submetric per year and (Company ID). / Count distinct submetric
+    # average share (%) of non-null metrics per report = 
+    # average (100* number of sub_metric_title with non-null values/total number of sub_metrics) per report
+    

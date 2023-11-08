@@ -26,6 +26,7 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         results["i30aa"]["sv07"] = df.groupby("NACE2dl")["_id"].count().to_dict()
+        print(results["i30aa"]["sv07"])
     except Exception as e:
         results["i30aa"]["sv07"] = None
         print(f"Error calculating i30aa[sv07]: {str(e)}")

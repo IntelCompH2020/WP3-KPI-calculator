@@ -15,14 +15,14 @@ def i28_aggregation(field, extra_aggr_param):
 
 def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
     results["i28"] = {}
-    results["i28"]["sv00"] = {}
+    results["i28"]["sv06"] = {}
 
     temp = uf.inner_secondary_view(
         sci, "affiliations.affiliation_name", i28_aggregation
     )
     for key in temp.keys():
         if temp[key] != 0:
-            results["i28"]["sv00"][key] = temp[key]
-        results["i28"]["sv00"]
+            results["i28"]["sv06"][key] = temp[key]
+        results["i28"]["sv06"]
 
     return results

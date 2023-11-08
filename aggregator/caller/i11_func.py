@@ -19,6 +19,7 @@ def i11_aggregation_nace(field, extra_aggr_param):
 
 def i11_aggregation_ipc(field, extra_aggr_param):
     return extra_aggr_param + [
+        {"$match": {"cpc_labels": {"$exists": True, "$not": {"$size": 0}}}},
         {
             "$group": {
                 "_id": ["$cpc_labels.code", "$cpc_labels.description"],
@@ -146,6 +147,7 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
         results["i11"]["sv06"] = None
         logging.error(f"Error calculating i11[sv06]: {str(e)}")
 
+
     try:
         numerator = uf.inner_secondary_view_nace_cpc(
             pat, "nace.nace2_code", i11_aggregation_backward_nace, extra_aggr_param
@@ -164,6 +166,7 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
     except Exception as e:
         results["i11"]["sv07"] = None
         logging.error(f"Error calculating i11[sv07]: {str(e)}")
+
 
     try:
         numerator = uf.inner_secondary_view(
@@ -184,6 +187,7 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
         results["i11"]["sv08"] = None
         logging.error(f"Error calculating i11[sv08]: {str(e)}")
 
+
     try:
         numerator = uf.inner_secondary_view(
             pat, "participant.country", i11_aggregation_backward, extra_aggr_param
@@ -203,6 +207,7 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
         results["i11"]["sv09"] = None
         logging.error(f"Error calculating i11[sv09]: {str(e)}")
 
+
     try:
         numerator = uf.inner_secondary_view_nace_cpc(
             pat, "ipc.ipc_class", i11_aggregation_backward_ipc, extra_aggr_param
@@ -221,5 +226,6 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
     except Exception as e:
         results["i11"]["sv13"] = None
         logging.error(f"Error calculating i11[sv13]: {str(e)}")
+
 
     return results

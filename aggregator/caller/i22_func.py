@@ -3,8 +3,8 @@ from caller import i20_func
 
 
 def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
-    results = i19_func.ind_caller(sci, results, extra_aggr_param)
-    results = i20_func.ind_caller(sci, results, extra_aggr_param)
+    results = i19_func.ind_caller(sci, results, logging, extra_aggr_param, working_path)
+    results = i20_func.ind_caller(sci, results, logging, extra_aggr_param, working_path)
 
     # Remove empty dictionaries from results
     results["i19"] = {k: v for k, v in results["i19"].items() if v}
