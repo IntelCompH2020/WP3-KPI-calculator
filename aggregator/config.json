@@ -78,6 +78,6 @@
   "job_id": "intelcomp",
   "user_id": "demo_user",
   "job": "intelcomp",
-  "working_path": "/home/gkou/dev/aggregator/aggregator/output/",
-  "mongo_path": "mongodb://adminuser:password123@gateway.opix.ai:27017/"
+  "working_path": "aggregator/output/",
+  "mongo_path": "valid_mongo_path"
 }
