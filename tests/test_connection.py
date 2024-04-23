@@ -1,8 +1,6 @@
-import pandas as pd
-
+import numpy as np
 
 def test_something():
-    # Test code goes here
-    # Use pytest assertions to check the behavior of your code
-    df = pd.DataFrame([1, 2, 3])
-    assert len(df) == 3
+    # Test code using numpy
+    arr = np.array([1, 2, 3])
+    assert len(arr) == 3
