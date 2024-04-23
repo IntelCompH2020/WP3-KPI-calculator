@@ -1,5 +1,6 @@
 {
   "i01": "integer",
+  "i01a": "integer",
   "i02": "double",
   "i03": "double",
   "i05": "integer",
@@ -28,6 +29,7 @@
   "i27b": "double",
   "i27c": "double",
   "i28": "integer",
+  "i29": "integer",
   "i30a": "integer",
   "i30aa": "integer",
   "i31": "integer",
@@ -47,5 +49,6 @@
   "i42d": "double",
   "i42da": "double",
   "i42e": "double",
-  "i43": "double"
+  "i43": "double",
+  "i43a": "double"
 }

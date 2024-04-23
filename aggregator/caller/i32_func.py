@@ -74,4 +74,5 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
         results["i32"]["sv09"] = None
         print(f"Error calculating i32[sv09]: {str(e)}")
 
+
     return results

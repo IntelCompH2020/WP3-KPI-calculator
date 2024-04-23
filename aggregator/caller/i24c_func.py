@@ -1,6 +1,8 @@
 from utils import uf
 from caller import i24b_func
 
+import copy
+
 
 def i24c_aggregation(field, extra_aggr_param):
     return extra_aggr_param + [
@@ -16,12 +18,12 @@ def i24c_aggregation(field, extra_aggr_param):
 
 
 def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
-    results = i24b_func.ind_caller(sci, results, logging, extra_aggr_param, working_path)
+    results = i24b_func.ind_caller(sci, results, logging, copy.deepcopy(extra_aggr_param), working_path)
     results["i24c"] = {}
 
     try:
         numerator = uf.secondary_view(
-            sci, "pub_year", i24c_aggregation, extra_aggr_param
+            sci, "pub_year", i24c_aggregation, copy.deepcopy(extra_aggr_param)
         )
         denominator = results["i24b"]["sv01"]
         # Remove keys where the denominator is zero
@@ -38,7 +40,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         numerator = uf.inner_secondary_view(
-            sci, "topic", i24c_aggregation, extra_aggr_param
+            sci, "topic", i24c_aggregation, copy.deepcopy(extra_aggr_param)
         )
         denominator = results["i24b"]["sv02"]
         # Remove keys where the denominator is zero
@@ -55,7 +57,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         numerator = uf.secondary_view(
-            sci, "category", i24c_aggregation, extra_aggr_param
+            sci, "category", i24c_aggregation, copy.deepcopy(extra_aggr_param)
         )
         denominator = results["i24b"]["sv03"]
         # Remove keys where the denominator is zero
@@ -71,7 +73,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
         print(f"Error calculating i24c[sv03]: {str(e)}")
 
     try:
-        numerator = uf.sdg_aggregation(sci, i24c_aggregation, extra_aggr_param)
+        numerator = uf.sdg_aggregation(sci, i24c_aggregation, copy.deepcopy(extra_aggr_param))
         denominator = results["i24b"]["sv05"]
         # Remove keys where the denominator is zero
         denominator = {k: v for k, v in denominator.items() if v != 0}
@@ -87,7 +89,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         numerator = uf.inner_secondary_view(
-            sci, "affiliations.affiliation_name", i24c_aggregation, extra_aggr_param
+            sci, "affiliations.affiliation_name", i24c_aggregation, copy.deepcopy(extra_aggr_param)
         )
         denominator = results["i24b"]["sv06"]
         # Remove keys where the denominator is zero
@@ -104,7 +106,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         numerator = uf.inner_secondary_view(
-            sci, "affiliations.country", i24c_aggregation, extra_aggr_param
+            sci, "affiliations.country", i24c_aggregation, copy.deepcopy(extra_aggr_param)
         )
         denominator = results["i24b"]["sv09"]
         # Remove keys where the denominator is zero
@@ -123,7 +125,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
             sci,
             "published_venue",
             i24c_aggregation,
-            uf.journal_filter + extra_aggr_param,
+            uf.journal_filter + copy.deepcopy(extra_aggr_param),
         )
         denominator = results["i24b"]["sv10"]
         # Remove keys where the denominator is zero
@@ -155,7 +157,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         numerator = uf.inner_secondary_view(
-            sci, "funders.funder", i24c_aggregation, extra_aggr_param
+            sci, "funders.funder", i24c_aggregation, copy.deepcopy(extra_aggr_param)
         )
         denominator = results["i24b"]["sv12"]
         # Remove keys where the denominator is zero

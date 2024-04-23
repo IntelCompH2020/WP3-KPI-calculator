@@ -1,4 +1,5 @@
 from utils import uf
+import copy
 
 
 def i02_aggregation(field, extra_aggr_param):
@@ -27,20 +28,22 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
     
     try:
         temp = uf.inner_secondary_view_per_year(
-            sci, "topic", i02_aggregation, extra_aggr_param, first_year=2014
+            sci, "topic", i02_aggregation, copy.deepcopy(extra_aggr_param), first_year=2000
         )
         temp = {
             k: v for k, v in temp.copy().items() if k is not None and not v == "null"
         }
         temp = dict(sorted(temp.items()))
+        print(temp)
         results["i02"]["sv02"] = get_annual_growth_from_per_year(temp)
+        print(results["i02"]["sv02"])
     except Exception as e:
         results["i02"]["sv02"] = None
         print(f"Error calculating sv02: {str(e)}")
     
     try:
         temp = uf.secondary_view_per_year(
-            sci, "category", i02_aggregation, extra_aggr_param, first_year=2014
+            sci, "category", i02_aggregation, copy.deepcopy(extra_aggr_param), first_year=2000
         )
         temp = {
             k: v for k, v in temp.copy().items() if k is not None and not v == "null"
@@ -56,8 +59,8 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
             sci,
             "affiliations.affiliation_name",
             i02_aggregation,
-            extra_aggr_param,
-            first_year=2014,
+            copy.deepcopy(extra_aggr_param),
+            first_year=2000,
         )
         temp = {
             k: v for k, v in temp.copy().items() if k is not None and not v == "null"
@@ -73,7 +76,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
             sci,
             "affiliations.country",
             i02_aggregation,
-            extra_aggr_param,
+            copy.deepcopy(extra_aggr_param),
             first_year=2000,
         )
         temp = {
@@ -93,7 +96,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
             sci,
             "published_venue",
             i02_aggregation,
-            uf.journal_filter + extra_aggr_param,
+            uf.journal_filter + copy.deepcopy(extra_aggr_param),
             first_year=2000,
         )
         temp = {
@@ -107,7 +110,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         temp = uf.secondary_view_per_year(
-            sci, "publisher", i02_aggregation, extra_aggr_param, first_year=2000
+            sci, "publisher", i02_aggregation, copy.deepcopy(extra_aggr_param), first_year=2000
         )
         temp = {
             k: v for k, v in temp.copy().items() if k is not None and not v == "null"

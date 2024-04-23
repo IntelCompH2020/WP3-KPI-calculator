@@ -1,10 +1,11 @@
 from caller import i01_func
 from caller import i20_func
 
+import copy
 
 def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
-    results = i01_func.ind_caller(sci, results, logging, extra_aggr_param, working_path)
-    results = i20_func.ind_caller(sci, results, logging, extra_aggr_param, working_path)
+    results = i01_func.ind_caller(sci, results, logging, copy.deepcopy(extra_aggr_param), working_path)
+    results = i20_func.ind_caller(sci, results, logging, copy.deepcopy(extra_aggr_param), working_path)
 
     # Remove empty dictionaries from results
     results["i01"] = {k: v for k, v in results["i01"].items() if v}

@@ -1,4 +1,5 @@
 from utils import uf
+import copy
 
 
 def i13_aggregation(field, extra_aggr_param):

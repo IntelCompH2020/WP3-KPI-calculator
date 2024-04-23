@@ -1,4 +1,5 @@
 from utils import uf
+import copy
 
 
 def i27_aggregation(field, extra_aggr_param):
@@ -19,7 +20,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
     results["i27"]["sv06"] = {}
 
     temp = uf.inner_secondary_view(
-        sci, "affiliations.affiliation_name", i27_aggregation, extra_aggr_param
+        sci, "affiliations.affiliation_name", i27_aggregation, copy.deepcopy(extra_aggr_param)
     )
     for key in temp.keys():
         if temp[key] != 0:

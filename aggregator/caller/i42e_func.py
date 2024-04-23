@@ -54,10 +54,3 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
     )
 
     return results
-
-
-    # Count distinct submetric. Count not null submetric per year and (Company ID).
-    # Count not null submetric per year and (Company ID). / Count distinct submetric
-    # average share (%) of non-null metrics per report = 
-    # average (100* number of sub_metric_title with non-null values/total number of sub_metrics) per report
-    

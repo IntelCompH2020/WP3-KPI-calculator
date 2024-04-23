@@ -18,7 +18,7 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
 
     documents = enco.aggregate(extra_aggr_param + template)
     df = pd.DataFrame(list(documents))
-
+    print(df)
     df = df.sort_values(by=["total_publications"], ascending=False).reset_index(
         drop=True
     )

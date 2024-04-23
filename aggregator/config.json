@@ -1,0 +1,83 @@
+{
+  "functions": [
+    {
+      "function": "ind_caller",
+      "module": "caller.i01_func",
+      "template": "template_scientific-2000-2023",
+      "collection": "scientific-2000-2023"
+    }
+  ],
+  "templates": [
+    {
+      "template_patstat": [
+        {
+          "$match": {
+            "participant.is_eu_member": {
+              "$eq": true
+            },
+            "appln_filing_year": {
+              "$gte": 2000,
+              "$lte": 2022
+            },
+            "category": "Energy"
+          }
+        }
+      ],
+      "template_scientific": [
+        {
+          "$match": {
+            "affiliations.is_eu_member": {
+              "$eq": true
+            },
+            "pub_year": {
+              "$gte": 2014,
+              "$lte": 2021
+            },
+            "category": "Energy"
+          }
+        }
+      ],
+      "template_companies": [
+        {
+          "$match": {
+            "category": "Energy"
+          }
+        }
+      ],
+      "template_rarediseases_companies_dataset": [
+        {
+          "$match": {
+            "category": "Energy"
+          }
+        }
+      ],
+      "template_regulations": [],
+      "template_greenskills": [],
+      "template_scientific-2000-2023": [
+        {
+          "$match": {
+            "affiliations.is_eu_member": {
+              "$eq": true
+            },
+            "pub_year": {
+              "$gte": 2000,
+              "$lte": 2023
+            },
+            "category": "Energy"
+          }
+        }
+      ]
+    }
+  ],
+  "dgpv": [
+    {
+      "dg": "Climate Change",
+      "pv": "Energy"
+    }
+  ],
+  "job_id": "intelcomp",
+  "user_id": "demo_user",
+  "job": "intelcomp",
+  "working_path": "/home/gkou/dev/aggregator/aggregator/output/",
+  "mongo_path": "mongodb://adminuser:password123@gateway.opix.ai:27017/"
+}

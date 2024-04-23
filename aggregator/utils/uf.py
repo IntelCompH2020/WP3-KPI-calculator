@@ -1,3 +1,7 @@
+
+import pandas as pd
+from collections import Counter
+
 eu_members = [
     "Austria",
     "Belgium",
@@ -58,10 +62,9 @@ eu_members_code = [
     "SE",
 ]
 
-
 # HARD CODED
 dg = "dg01"
-pv = "pv02"
+pv = "pv01"
 # HARD CODED
 
 journal_filter = [{"$match": {"pub_type": {"$eq": "Journal"}}}]
@@ -69,7 +72,6 @@ journal_filter = [{"$match": {"pub_type": {"$eq": "Journal"}}}]
 pat_organisations = [
     {"$match": {"participant.sector": {"$nin": ["", "INDIVIDUAL", "UNKNOWN"]}}}
 ]
-
 
 def secondary_view(col, field, aggregation, extra_aggr_param=[]):
     agg = col.aggregate(aggregation(field, extra_aggr_param), allowDiskUse=True)
@@ -104,52 +106,88 @@ def secondary_view_comp_nace(col, field, aggregation, extra_aggr_param=[]):
 
 
 def inner_secondary_view_per_year_nace_cpc(
-    col, field, aggregation, extra_aggr_param=[]
+    col, field, aggregation, extra_aggr_param=[], first_year=2014, final_year=2021
 ):
-    # Get the results of the MongoDB aggregation
-    agg = col.aggregate(aggregation(None, extra_aggr_param), allowDiskUse=True)
-    intermediate_results = []
+    
+    codes = col.distinct(field[0])
+    descriptions = col.distinct(field[1])
+
+    sv_values = []
+    code_dict = {}
+    for code, description in zip(codes, descriptions):
+        code_dict[code] = description
+        sv_values.append(f"{code}: {description}")
+    # print("Distinct " + field + " values :", len(sv_values))
+    year_range = list(range(first_year, final_year + 1))  # sci.distinct("pub_year")
+    # print("Year Range:", len(year_range))
+
+    agg = col.aggregate(aggregation(field, extra_aggr_param), allowDiskUse=True)
+
+    result = {}
+    for key in sv_values:
+        result[key] = {}
+        for year in year_range:
+            result[key][year] = 0
+
     for i in agg:
-        print(i)
-        # Reformat the MongoDB results into an intermediate format
-        year = i["_id"][0]
-        codes = i["_id"][1]
-        labels = i["_id"][2]
-        count = i["count"]
-        for i in range(len(codes)):
-            output_dict = {
-                "year": year,
-                field: f"{codes[i]}:{labels[i]}",
-                "count": count,
-            }
-            intermediate_results.append(output_dict)
+        year, keys = i["_id"]
+        if type(keys) == str:
+            if year >= first_year and year <= final_year and keys in codes:
+                result[f"{keys}: {code_dict[keys]}"][year] += i["count"]
+            continue
+        for key in set(keys):
+            # remove set() if we want each individual affiliation to count
+            # print("Year and Key:", year, " - ", key)
+            if year >= first_year and year <= final_year and key in codes:
+                result[f"{key}: {code_dict[key]}"][year] += i["count"]
 
-    # Group the intermediate results by year and NACE/CPC code
-    output_dict = {}
-    for item in intermediate_results:
-        key = f"{item['year']}-{item[field]}"
-        if key not in output_dict:
-            output_dict[key] = {
-                "year": item["year"],
-                field: item[field],
-                "count": item["count"],
-            }
-        else:
-            output_dict[key]["count"] += count
-    intermediate_results = list(output_dict.values())
+    return result
 
-    # Reformat the intermediate results into the desired output format
-    temp = {}
-    for result in intermediate_results:
-        if result[field] not in temp:
-            temp[result[field]] = {}
-        temp[result[field]][result["year"]] = result["count"]
-    intermediate_results = temp
 
-    return intermediate_results
+def inner_secondary_view_per_year(
+    col, field, aggregation, extra_aggr_param=[], first_year=2014, final_year=2021
+):
+    
+    codes = col.distinct(field[0])
+    descriptions = col.distinct(field[1])
+
+    sv_values = []
+    code_dict = {}
+    for code, description in zip(codes, descriptions):
+        code_dict[code] = description
+        sv_values.append(f"{code}: {description}")
+    # print("Distinct " + field + " values :", len(sv_values))
+    year_range = list(range(first_year, final_year + 1))  # sci.distinct("pub_year")
+    # print("Year Range:", len(year_range))
+
+    agg = col.aggregate(aggregation(field, extra_aggr_param), allowDiskUse=True)
+
+    result = {}
+    for key in sv_values:
+        result[key] = {}
+        for year in year_range:
+            result[key][year] = 0
+
+    for i in agg:
+        year, keys = i["_id"]
+        if type(keys) == str:
+            if year >= first_year and year <= final_year and keys in codes:
+                result[f"{keys}: {code_dict[keys]}"][year] += i["count"]
+            continue
+        for key in set(keys):
+            # remove set() if we want each individual affiliation to count
+            # print("Year and Key:", year, " - ", key)
+            if year >= first_year and year <= final_year and key in codes:
+                result[f"{key}: {code_dict[key]}"][year] += i["count"]
+
+    return result
 
 
 def inner_secondary_view(col, field, aggregation, extra_aggr_param=[]):
+
+    first_part = field.split('.')[0]
+    extra_aggr_param[0]['$match'][first_part] = {"$exists": True, "$not": {"$size": 0}}
+    
     sv_values = col.distinct(field)
 
     agg = col.aggregate(aggregation(field, extra_aggr_param), allowDiskUse=True)
@@ -166,6 +204,57 @@ def inner_secondary_view(col, field, aggregation, extra_aggr_param=[]):
 
     return result
 
+def extract_values(row, field):
+    """Extract values from a list of dictionaries based on a given field."""
+    _values = []
+    for item in row:
+        if field in item:
+            _values.append(item[field])
+    return _values
+
+
+def inner_secondary_view_pd(col, field, aggregation, extra_aggr_param=[]):
+
+    first_part = field.split('.')[0]
+    
+    sv_values = col.distinct(field)
+    agg = col.aggregate(aggregation(field, extra_aggr_param), allowDiskUse=True)
+
+    df = pd.DataFrame(list(agg))
+    df[field] = df['fos_prediction'].apply(lambda row: extract_values(row, first_part))
+    lists = df[field].tolist()
+    flattened_list = [item for sublist in lists for item in sublist if item is not None]
+    # Count the occurrences of each value
+    value_counts = Counter(flattened_list)
+
+    result = {}
+    for x in value_counts:
+        result[x] = value_counts[x]
+    return result
+
+def inner_secondary_view_nace(col, field, aggregation, extra_aggr_param=[]):
+    
+    codes = col.distinct(field[0])
+    descriptions = col.distinct(field[1])
+
+    sv_values = []
+    code_dict = {}
+    for code, description in zip(codes, descriptions):
+        code_dict[code] = description
+        sv_values.append(f"{code}: {description}")
+    agg = col.aggregate(aggregation(field[0], extra_aggr_param), allowDiskUse=True)
+
+    result = {}
+    for x in sv_values:
+        result[x] = 0
+    for i in agg:
+        for x in set(
+            i["_id"]
+        ):  # remove set() if we want each individual affiliation to count
+            if x in codes:
+                result[f"{x}: {code_dict[x]}"] += i["count"]
+
+    return result
 
 def secondary_view_per_year(
     col, field, aggregation, extra_aggr_param=[], first_year=2000, final_year=2021
@@ -212,36 +301,36 @@ def secondary_view_per_company(
 
     return result
 
+# Function to flatten a list of lists and count unique values, excluding None
+def count_unique_values_exclude_none(list_of_lists):
+    # Flatten the list of lists and exclude None
+    flattened = [item for sublist in list_of_lists for item in sublist if item is not None]
+    # Count unique values
+    return dict(Counter(flattened))
 
-def inner_secondary_view_per_year(
+
+def inner_secondary_view_pd_per_year(
     col, field, aggregation, extra_aggr_param=[], first_year=2014, final_year=2021
 ):
     sv_values = col.distinct(field)
     # print("Distinct " + field + " values :", len(sv_values))
     year_range = list(range(first_year, final_year + 1))  # sci.distinct("pub_year")
     # print("Year Range:", len(year_range))
+    
+    first_part = field.split('.')[0]
 
     agg = col.aggregate(aggregation(field, extra_aggr_param), allowDiskUse=True)
 
-    result = {}
-    for key in sv_values:
-        result[key] = {}
-        for year in year_range:
-            result[key][year] = 0
+    df = pd.DataFrame(list(agg))
 
-    for i in agg:
-        year, keys = i["_id"]
-        if type(keys) == str:
-            if year >= first_year and year <= final_year and keys in sv_values:
-                result[keys][year] += i["count"]
-            continue
-        for key in set(keys):
-            # remove set() if we want each individual affiliation to count
-            # print("Year and Key:", year, " - ", key)
-            if year >= first_year and year <= final_year and key in sv_values:
-                result[key][year] += i["count"]
+    df[field] = df['fos_prediction'].apply(lambda row: extract_values(row, first_part))
 
-    return result
+    grouped = df.groupby('pub_year')[field].apply(list).to_dict()
+
+    # Apply the function to each key in the grouped dictionary
+    counted_values_per_year = {year: count_unique_values_exclude_none(values) for year, values in grouped.items()}
+
+    return counted_values_per_year
 
 def inner_secondary_view_per_year_science(
     col, field, aggregation, extra_aggr_param=[], first_year=2014, final_year=2021

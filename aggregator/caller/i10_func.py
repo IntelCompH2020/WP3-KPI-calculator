@@ -1,4 +1,5 @@
 from caller import i09_func
+import copy
 
 
 def get_3_year_average_growth(data):

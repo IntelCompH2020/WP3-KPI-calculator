@@ -45,13 +45,6 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
             .sum()
         ) / len(df)
         df_dict = df_dict.to_dict()
-        # df_dict_new = {}
-        # for k, v in df_dict.items():
-        #     company, country = k
-        #     if company not in df_dict_new:
-        #         df_dict_new[company] = {}
-        #     df_dict_new[company][country] = v
-        # # Post-processing to get desired format
         results["i32aa"]["sv09"] = df_dict
     except Exception as e:
         results["i32aa"]["sv09"] = None
@@ -64,12 +57,6 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
             .sum()
         ) / len(df)
         df_dict = df_dict.to_dict()
-        # df_dict_new = {}
-        # for k, v in df_dict.items():
-        #     company, country = k
-        #     if company not in df_dict_new:
-        #         df_dict_new[company] = {}
-        #     df_dict_new[company][country] = v
         # Post-processing to get desired format
         results["i32aa"]["sv15"] = df_dict
     except Exception as e:

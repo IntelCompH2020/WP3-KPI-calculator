@@ -57,7 +57,3 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
     results["i42da"]["sv00"] = sorted_df.fillna(0).tail(20).to_dict()
 
     return results
-
-    # Bottom
-    # count all ESG reports. Count number of submetric titles where Rank is not null
-    # 100 * Count number of submetric titles where Rank is not null/ (count all ESG reports)

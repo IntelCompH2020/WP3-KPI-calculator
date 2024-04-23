@@ -1,0 +1,12 @@
+{
+    "jobId": "intelcomp",
+    "user_id": ["user_1"],
+    "domain": ["Climate Change"],
+    "category": ["Energy"],
+    "from": ["2000"],
+    "to": ["2023"],
+    "topics": [],
+    "indicators": ["i01"],
+    "countries": [],
+    "datasource": []
+}

@@ -58,15 +58,3 @@ def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
 
 
     return results
-
-
-# count all ESG reports. Count distinct metric titles. Count number of sub metric titles where Rank is not null
-# 100 * Count number of metric titles where Rank is not null/ (count all ESG reports* (Count distinct submetric titles per metric title))
-# scope 1 emission (metric title) --> 2 submetrics αρα περιμένω 2 τιμές.
-
-# Most reported metrics: 
-# Top 10 metrics by coverage (%) 
-# (= top 10 sub_metric_title BY share of reports with of non-null value for that metric =
-# 100* (# of ESG reports that have a non-null value for a submetric) / (total # of ESG reports with that sub-metric)
-
-# include the metric_title name

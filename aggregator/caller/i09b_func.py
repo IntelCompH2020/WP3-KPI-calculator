@@ -1,4 +1,5 @@
 from utils import uf
+import copy
 
 
 def i09b_aggregation_per_year(field, extra_aggr_param):

@@ -10,18 +10,16 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
     dg = uf.dg
     pv = uf.pv
     if dg == "dg01" and pv == "pv01":
-        path = "/home/gkou/dev/aggregator/aggregator/regulations/EU_energy.json"
+        path = "regulations/EU_energy.json"
     elif dg == "dg02" and pv == "pv01":
-        path = "/home/gkou/dev/aggregator/aggregator/regulations/Greece_energy.json"
+        path = "regulations/Greece_energy.json"
     elif dg == "dg01" and pv == "pv02":
-        path = "/home/gkou/dev/aggregator/aggregator/regulations/EU_agriculture.json"
+        path = "regulations/EU_agriculture.json"
     elif dg == "dg02" and pv == "pv02":
-        path = "/home/gkou/dev/aggregator/aggregator/regulations/Greece_agriculture.json"
+        path = "regulations/Greece_agriculture.json"
         
     # Load a json into a pandas dataframe
     df = pd.read_json(path)
-
-    print(len(df))
 
     # Display the dataframe
     results["i44"] = {}

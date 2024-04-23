@@ -1,8 +1,0 @@
-{
-  "client_id": "sti-viewer",
-  "grant_type": "password",
-  "client_secret": "39701171-2927-4dc1-902e-73883a4c2f85",
-  "username": "sti-viewer-import",
-  "password": "2106875370",
-  "directory": "/media/datalake/stiviewer/output"
-}

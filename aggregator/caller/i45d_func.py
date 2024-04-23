@@ -4,7 +4,7 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
 
     results['i45d'] = {}
     
-    path = "/home/gkou/dev/aggregator/aggregator/utils/green_skills_excel/greenskills.ods"
+    path = "utils/green_skills_excel/greenskills.ods"
 
     # Read Excel file into a pandas DataFrame
     xls = pd.ExcelFile(path)

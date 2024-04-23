@@ -1,4 +1,5 @@
 import pandas as pd
+import copy
 
 
 template = [
@@ -14,7 +15,7 @@ template = [
 def ind_caller(enco, results, logging, extra_aggr_param=[], working_path=""):
     results["i30a"] = {}
 
-    documents = enco.aggregate(extra_aggr_param + template)
+    documents = enco.aggregate(copy.deepcopy(extra_aggr_param) + template)
     df = pd.DataFrame(list(documents))
 
     df["TurnoverNumeric"] = pd.to_numeric(df["Turnover"], errors="coerce").fillna(0)

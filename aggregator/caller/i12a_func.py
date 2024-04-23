@@ -3,27 +3,29 @@ import json
 import os
 
 from utils import uf
+import copy
 
 
 def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
     results["i12a"] = {}
 
+    path = "/aggregator/patent_precalculations/green_skills_excel/greenskills.ods"
+
     dg = uf.dg
     pv = uf.pv
     if dg == "dg01" and pv == "pv01":
-        path = "/media/datalake/patstat_2022b/output/i12a-Energy/"
+        path = "/patent_spark_precalculations/i12a-Energy/"
         space = "-EU/"
     elif dg == "dg02" and pv == "pv01":
-        path = "/media/datalake/patstat_2022b/output/i12a-Energy/"
+        path = "/patent_spark_precalculations/i12a-Energy/"
         space = "-GR/"
     elif dg == "dg01" and pv == "pv02":
-        path = "/media/datalake/patstat_2022b/output/i12a-Agrifood/"
+        path = "/patent_spark_precalculations/i12a-Agrifood/"
         space = "-EU/"
     elif dg == "dg02" and pv == "pv02":
-        path = "/media/datalake/patstat_2022b/output/i12a-Agrifood/"
+        path = "/patstat_spark_2022b/output/i12a-Agrifood/"
         space = "-GR/"
 
-    # path = working_path + "i12a/"
 
     try:
         results["i12a"]["sv00"] = {}

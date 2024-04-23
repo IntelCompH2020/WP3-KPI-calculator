@@ -121,9 +121,8 @@ def get_data(dgid, pvid, indid, svid, data):
 
 
 def produce_results(dgid, pvid, results, logging):
-    # Convert results to desired format
-    output_lake = Path("/media/datalake/stiviewer")
-    output_dir = output_lake.joinpath("output/output_done/bugsfix")
+
+    output_dir = Path("output")
 
     for indid in results.keys():
         for svid in results[indid].keys():
@@ -133,7 +132,6 @@ def produce_results(dgid, pvid, results, logging):
                     new_data = [item for item in data if item["value"] != 0]
                 else:
                     new_data = data
-
                 data_file = json.dumps(new_data, indent=2)
                 data_path = output_dir.joinpath(
                     f"{dgid}_{pvid}_{indid}_{svid}_data.json"

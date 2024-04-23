@@ -1,4 +1,5 @@
 from utils import uf
+import copy
 
 
 def i24_aggregation(field, extra_aggr_param):
@@ -19,7 +20,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         results["i24"]["sv01"] = uf.secondary_view(
-            sci, "pub_year", i24_aggregation, extra_aggr_param
+            sci, "pub_year", i24_aggregation, copy.deepcopy(extra_aggr_param)
         )
     except Exception as e:
         results["i24"]["sv01"] = None
@@ -27,7 +28,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         results["i24"]["sv02"] = uf.inner_secondary_view(
-            sci, "topic", i24_aggregation, extra_aggr_param
+            sci, "topic", i24_aggregation, copy.deepcopy(extra_aggr_param)
         )
     except Exception as e:
         results["i24"]["sv02"] = None
@@ -35,7 +36,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         results["i24"]["sv03"] = uf.secondary_view(
-            sci, "category", i24_aggregation, extra_aggr_param
+            sci, "category", i24_aggregation, copy.deepcopy(extra_aggr_param)
         )
     except Exception as e:
         results["i24"]["sv03"] = None
@@ -43,7 +44,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         results["i24"]["sv05"] = uf.sdg_aggregation(
-            sci, i24_aggregation, extra_aggr_param
+            sci, i24_aggregation, copy.deepcopy(extra_aggr_param)
         )
     except Exception as e:
         results["i24"]["sv05"] = None
@@ -51,7 +52,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         results["i24"]["sv06"] = uf.inner_secondary_view(
-            sci, "affiliations.affiliation_name", i24_aggregation, extra_aggr_param
+            sci, "affiliations.affiliation_name", i24_aggregation, copy.deepcopy(extra_aggr_param)
         )
     except Exception as e:
         results["i24"]["sv06"] = None
@@ -59,7 +60,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         full_set = uf.inner_secondary_view(
-            sci, "affiliations.country", i24_aggregation, extra_aggr_param
+            sci, "affiliations.country", i24_aggregation, copy.deepcopy(extra_aggr_param)
         )
 
         results["i24"]["sv09"] = {}
@@ -75,7 +76,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
             sci,
             "published_venue",
             i24_aggregation,
-            uf.journal_filter + extra_aggr_param,
+            uf.journal_filter + copy.deepcopy(extra_aggr_param),
         )
     except Exception as e:
         results["i24"]["sv10"] = None
@@ -83,7 +84,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         results["i24"]["sv11"] = uf.secondary_view(
-            sci, "publisher", i24_aggregation, extra_aggr_param
+            sci, "publisher", i24_aggregation, copy.deepcopy(extra_aggr_param)
         )
     except Exception as e:
         results["i24"]["sv11"] = None
@@ -91,7 +92,7 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
 
     try:
         results["i24"]["sv12"] = uf.inner_secondary_view(
-            sci, "funders.funder", i24_aggregation, extra_aggr_param
+            sci, "funders.funder", i24_aggregation, copy.deepcopy(extra_aggr_param)
         )
     except Exception as e:
         results["i24"]["sv12"] = None

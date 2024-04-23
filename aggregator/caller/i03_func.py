@@ -1,11 +1,9 @@
 from utils import uf
+import copy
 
 def i03_aggregation_per_year(field, extra_aggr_param):
     return extra_aggr_param + [
         {"$group": {"_id": ["$pub_year", "$" + field], "count": {"$sum": 1}}}
-        # { "$unwind": "$topic" },  
-        # { "$group": { "_id": {"topic": "$topic", "year": "$pub_year"}, "count": { "$sum": 1 } } },
-        # { "$project": { "topic": "$_id.topic", "year": "$_id.year", "count": 1, "_id": 0 } }
     ]
 def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
     results["i03"] = {}
@@ -15,9 +13,9 @@ def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
             sci,
             "topic",
             i03_aggregation_per_year,
-            extra_aggr_param,
-            first_year=2014,
-            final_year=2021,
+            copy.deepcopy(extra_aggr_param),
+            first_year=2000,
+            final_year=2023,
         )
         
         new_res = {}

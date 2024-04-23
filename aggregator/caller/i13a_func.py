@@ -1,154 +1,112 @@
 import glob
 import json
 
+import copy
 from utils import uf
 
-# /media/datalake/patstat_2021b/output/i13a-energy/
+
+def i13a_aggregation(field, extra_aggr_param):
+    return extra_aggr_param + [
+        {
+            "$match": {
+                "patent_cited": {"$eq": True},
+            }
+        },
+        {"$group": {"_id": "$" + field, "count": {"$sum": 1}}},
+    ]
+
+def i13a_emerging_aggregation(field, extra_aggr_param):
+    return extra_aggr_param + [
+        {
+            "$match": {
+                "patent_cited": {"$eq": True},
+                "fos_prediction.is emerging": {"$eq": True},
+            }
+        },
+    ]
 
 
-def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
+
+def ind_caller(sci, results, logging, extra_aggr_param=[], working_path=""):
     results["i13a"] = {}
 
-    dg = uf.dg
-    pv = uf.pv
-    if dg == "dg01" and pv == "pv01":
-        path = "/media/datalake/patstat_2022b/output/i13a-Energy/"
-        space = "-EU/"
-    elif dg == "dg02" and pv == "pv01":
-        path = "/media/datalake/patstat_2022b/output/i13a-Energy/"
-        space = "-GR/"
-    elif dg == "dg01" and pv == "pv02":
-        path = "/media/datalake/patstat_2022b/output/i13a-Agrifood/"
-        space = "-EU/"
-    elif dg == "dg02" and pv == "pv02":
-        path = "/media/datalake/patstat_2022b/output/i13a-Agrifood/"
-        space = "-GR/"
-
-    # path = working_path + "i13a/"
 
     try:
-        sv_path = path + f"sv00{space}"
-        json_files = glob.glob(sv_path + "*.json")
-        data = []
-        with open(json_files[0]) as f:
-            for line in f:
-                data.append(json.loads(line))
-        results["i13a"]["sv00"] = {}
-        total = 0
-        for d in data:
-            total += d["patents_citing"]
-        results["i13a"]["sv00"]["total_publications"] = total
-    except Exception as e:
-        results["i13a"]["sv00"] = None
-        logging.error(f"Error calculating i13a[sv00]: {str(e)}")
-
-    try:
-        sv_path = path + f"sv01{space}"
-        print(sv_path)
-        json_files = glob.glob(sv_path + "*.json")
-        data = []
-        with open(json_files[0]) as f:
-            for line in f:
-                data.append(json.loads(line))
-        results["i13a"]["sv01"] = {}
-        for d in data:
-            if d["year"] < 2014:
-                continue
-            results["i13a"]["sv01"][d["year"]] = d["patents_citing"]
+        results["i13a"]["sv01"] = uf.secondary_view(
+            sci, "pub_year", i13a_aggregation, copy.deepcopy(extra_aggr_param)
+        )
     except Exception as e:
         results["i13a"]["sv01"] = None
-        logging.error(f"Error calculating i13a[sv01]: {str(e)}")
+        print(f"Error calculating sv01: {str(e)}")
+
 
     try:
-        sv_path = path + f"sv02{space}"
-        print(sv_path)
-        json_files = glob.glob(sv_path + "*.json")
-        data = []
-        with open(json_files[0]) as f:
-            for line in f:
-                data.append(json.loads(line))
-        results["i13a"]["sv02"] = {}
-        for d in data:
-            results["i13a"]["sv02"][d["topic"]] = d["patents_citing"]
+        results["i13a"]["sv02"] = uf.inner_secondary_view(
+            sci, "topic", i13a_aggregation, copy.deepcopy(extra_aggr_param)
+        )
     except Exception as e:
         results["i13a"]["sv02"] = None
-        logging.error(f"Error calculating i13a[sv02]: {str(e)}")
+        print(f"Error calculating sv02: {str(e)}")
+
 
     try:
-        sv_path = path + f"sv05{space}"
-        print(sv_path)
-        json_files = glob.glob(sv_path + "*.json")
-        data = []
-        with open(json_files[0]) as f:
-            for line in f:
-                data.append(json.loads(line))
-        results["i13a"]["sv05"] = {}
-        for d in data:
-            results["i13a"]["sv05"][d["sdg_prediction"]] = d["patents_citing"]
+        results["i13a"]["sv05"] = uf.sdg_aggregation(
+            sci, i13a_aggregation, copy.deepcopy(extra_aggr_param)
+        )
     except Exception as e:
         results["i13a"]["sv05"] = None
-        logging.error(f"Error calculating i13a[sv05]: {str(e)}")
+        print(f"Error calculating sv05: {str(e)}")
 
     try:
-        sv_path = path + f"sv06{space}"
-        print(sv_path)
-        json_files = glob.glob(sv_path + "*.json")
-        data = []
-        with open(json_files[0]) as f:
-            for line in f:
-                data.append(json.loads(line))
-        results["i13a"]["sv06"] = {}
-        for d in data:
-            results["i13a"]["sv06"][d["company"]] = d["patents_citing"]
+        results["i13a"]["sv06"] = uf.inner_secondary_view(
+            sci, "affiliations.affiliation_name", i13a_aggregation, copy.deepcopy(extra_aggr_param)
+        )
     except Exception as e:
         results["i13a"]["sv06"] = None
-        logging.error(f"Error calculating i13a[sv06]: {str(e)}")
+        print(f"Error calculating sv06: {str(e)}")
+
+
+    full_set = uf.inner_secondary_view(
+        sci, "affiliations.country", i13a_aggregation, copy.deepcopy(extra_aggr_param)
+    )
+    results["i13a"]["sv09"] = {}
+    for k in full_set.keys():
+        results["i13a"]["sv09"][k] = full_set[k]
 
     try:
-        sv_path = path + f"sv09{space}"
-        print(sv_path)
-        json_files = glob.glob(sv_path + "*.json")
-        data = []
-        with open(json_files[0]) as f:
-            for line in f:
-                data.append(json.loads(line))
-        results["i13a"]["sv09"] = {}
-        for d in data:
-            results["i13a"]["sv09"][d["affiliation_country_iso_code"]] = d[
-                "patents_citing"
-            ]
-    except Exception as e:
-        results["i13a"]["sv09"] = None
-        logging.error(f"Error calculating i13a[sv09]: {str(e)}")
-
-    try:
-        sv_path = path + f"sv10{space}"
-        print(sv_path)
-        json_files = glob.glob(sv_path + "*.json")
-        data = []
-        with open(json_files[0]) as f:
-            for line in f:
-                data.append(json.loads(line))
-        results["i13a"]["sv10"] = {}
-        for d in data:
-            results["i13a"]["sv10"][d["published_venue"]] = d["patents_citing"]
+        results["i13a"]["sv10"] = uf.secondary_view(
+            sci,
+            "published_venue",
+            i13a_aggregation,
+            uf.journal_filter + copy.deepcopy(extra_aggr_param),
+        )
     except Exception as e:
         results["i13a"]["sv10"] = None
-        logging.error(f"Error calculating i13a[sv10]: {str(e)}")
+        print(f"Error calculating sv10: {str(e)}")
 
     try:
-        sv_path = path + f"sv12{space}"
-        print(sv_path)
-        json_files = glob.glob(sv_path + "*.json")
-        data = []
-        with open(json_files[0]) as f:
-            for line in f:
-                data.append(json.loads(line))
-        results["i13a"]["sv12"] = {}
-        for d in data:
-            results["i13a"]["sv12"][d["funder"]] = d["patents_citing"]
+        results["i13a"]["sv11"] = uf.secondary_view(
+            sci, "publisher", i13a_aggregation, copy.deepcopy(extra_aggr_param)
+        )
+    except Exception as e:
+        results["i13a"]["sv11"] = None
+        print(f"Error calculating sv11: {str(e)}")
+
+    try:
+        results["i13a"]["sv12"] = uf.inner_secondary_view(
+            sci, "funders.funder", i13a_aggregation, copy.deepcopy(extra_aggr_param)
+        )
     except Exception as e:
         results["i13a"]["sv12"] = None
-        logging.error(f"Error calculating i13a[sv12]: {str(e)}")
+        print(f"Error calculating sv12: {str(e)}")
+
+    try:
+        results["i13a"]["sv25"] = uf.inner_secondary_view_pd(
+            sci, "emerging_topic", i13a_emerging_aggregation, copy.deepcopy(extra_aggr_param)
+        )
+    except Exception as e:
+        results["i13a"]["sv25"] = None
+        print(f"Error calculating sv25: {str(e)}")
 
     return results
+

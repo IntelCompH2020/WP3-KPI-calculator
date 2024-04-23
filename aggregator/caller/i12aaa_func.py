@@ -3,6 +3,7 @@ import json
 import os
 
 from utils import uf
+import copy
 
 
 def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
@@ -23,7 +24,6 @@ def ind_caller(pat, results, logging, extra_aggr_param=[], working_path=""):
         path = "/media/datalake/patstat_2022b/output/i12a-Agrifood/"
         space = "-GR/"
 
-    # path = working_path + "i12a/"
 
     try:
         results["i12a"]["sv00"] = {}

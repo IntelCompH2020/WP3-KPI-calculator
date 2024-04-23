@@ -11,6 +11,7 @@
   "pv03": "Raredisease",
 
   "i01": "Count of scientific publications",
+  "i01a": "Count of scientific publications per year",
   "i02": "Average annual growth of scientific publications",
   "i03": "Topic trends (share on a topic over time)",
   "i04": "Scientific publications specialisation ",
@@ -49,6 +50,9 @@
   "i27b": "FWCI of multidiscilinary publications",
   "i27c": "Average number of citations for multidisciplinary publications",
   "i28": "Ranking of organisations according to citations of multidiciplinary publications",
+  "i29": "Number of publications in emerging topics",
+  "i29a": "Average number of citations in emerging topics",
+  "i29q": "Number of citations in emerging topics",
   "i30a": "Ranking Names and counts of companies",
   "i30aa": "Count of companies",
   "i31": "Ranking of companies by number of publications by secondary view, and total number of publications",
@@ -71,7 +75,8 @@
   "i42d": "Bottom 10 ESG metrics by coverage",
   "i42da": "Bottom 10 ESG sub metrics by coverage",
   "i42e": "Average share of non-null metrics per report",
-  "i43": "Average ESG score per company",
+  "i43": "Numeric Average ESG score per company",
+  "i43a": "Categorical Average ESG score per company",
   "i44": "Count of Regulations",
   "i45": "Share of green job posts per year",
   "i45a": "Share of Green job posts per sectors in Greece",
@@ -112,5 +117,7 @@
   "sv24": "region",
   "sv02.01": "topic x over time",
   "sv17.01": "ESG scope x over time",
-  "sv18.01": "metric title x over time"
+  "sv18.01": "metric title x over time",
+  "sv25": "emerging topics",
+  "sv25.01": "emerging topics x over time"
 }
