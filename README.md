@@ -7,19 +7,19 @@ python Climate_EU.py config.json
 
 Alternatively, you can execute it within a Docker container.
 
-## Commands to Build and Run the Docker Container
+# Commands to Build and Run the Docker Container
 
-# Creating a Docker Image
+## Creating a Docker Image
 
 To create a Docker image, use the following command. The -t flag allows you to specify the image name and optionally tag it with a version:
 
 docker build -t NAME:tag <Dockerfile location>
 
-# Example:
+## Example:
 
 docker build --tag kpi-calculator .
 
-# Running the Docker Image
+## Running the Docker Image
 
 To run a Docker container using the created image, apply the following command:
 
