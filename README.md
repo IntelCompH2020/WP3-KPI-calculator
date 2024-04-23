@@ -7,6 +7,8 @@ python Climate_EU.py config.json
 
 Alternatively, you can execute it within a Docker container.
 
+**Important:** A copy of the OpenAIRE Research Graph should be available for the script execution.
+
 # Commands to Build and Run the Docker Container
 
 ## Creating a Docker Image
@@ -24,3 +26,5 @@ docker build --tag kpi-calculator .
 To run a Docker container using the created image, apply the following command:
 
 docker run --rm -i --name kpi_calculation python Climate_EU.py --config="config.json"
+
+![This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No. 101004870. H2020-SC6-GOVERNANCE-2018-2019-2020 / H2020-SC6-GOVERNANCE-2020](https://github.com/IntelCompH2020/.github/blob/main/profile/banner.png)
